@@ -1,0 +1,31 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Customer Form</title>
+</head>
+<body>
+
+<form action="#" th:action="@{/customers/save}"
+      th:object="${customer}" method="POST">
+
+    <input type="text" th:field="*{firstName}"
+           class="form-control mb-4 col-4" placeholder="First name">
+
+    <input type="text" th:field="*{lastName}"
+           class="form-control mb-4 col-4" placeholder="Last name">
+
+    <input type="text" th:field="*{email}"
+           class="form-control mb-4 col-4" placeholder="Email">
+
+    <select th:field="*{role}" >
+        <option value="1">Provider</option>
+        <option value="2">Customer</option>
+    </select>
+
+    <button type="submit" class="btn btn-info col-2">Save</button>
+
+</form>
+
+</body>
+</html>
