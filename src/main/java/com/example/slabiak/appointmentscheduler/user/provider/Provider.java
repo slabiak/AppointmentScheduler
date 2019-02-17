@@ -1,4 +1,4 @@
-package com.example.slabiak.appointmentscheduler.provider;
+package com.example.slabiak.appointmentscheduler.user.provider;
 
 import com.example.slabiak.appointmentscheduler.appointment.Appointment;
 import com.example.slabiak.appointmentscheduler.model.User;

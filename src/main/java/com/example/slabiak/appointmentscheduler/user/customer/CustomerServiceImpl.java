@@ -1,5 +1,8 @@
-package com.example.slabiak.appointmentscheduler.customer;
 
+
+import com.example.slabiak.appointmentscheduler.user.customer.Customer;
+import com.example.slabiak.appointmentscheduler.user.customer.CustomerRepository;
+import com.example.slabiak.appointmentscheduler.user.customer.CustomerService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -44,4 +47,5 @@ public class CustomerServiceImpl implements CustomerService {
     public void deleteById(int id) {
         customerRepository.deleteById(id);
     }
+
 }

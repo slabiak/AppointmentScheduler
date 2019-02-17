@@ -1,4 +1,4 @@
-package com.example.slabiak.appointmentscheduler.provider;
+package com.example.slabiak.appointmentscheduler.user.provider;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 

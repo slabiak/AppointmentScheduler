@@ -1,9 +1,9 @@
 package com.example.slabiak.appointmentscheduler.appointment;
 
 
-import com.example.slabiak.appointmentscheduler.customer.Customer;
+import com.example.slabiak.appointmentscheduler.user.customer.Customer;
 import com.example.slabiak.appointmentscheduler.model.BaseEntity;
-import com.example.slabiak.appointmentscheduler.provider.Provider;
+import com.example.slabiak.appointmentscheduler.user.provider.Provider;
 import com.example.slabiak.appointmentscheduler.work.Work;
 import org.springframework.format.annotation.DateTimeFormat;
 
