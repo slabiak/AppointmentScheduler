@@ -1,14 +1,14 @@
-package com.example.slabiak.appointmentscheduler.appointment;
+package com.example.slabiak.appointmentscheduler.service;
 
+import com.example.slabiak.appointmentscheduler.dao.AppointmentRepository;
+import com.example.slabiak.appointmentscheduler.model.Appointment;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
 
+public class AppointmentServiceImpl implements AppointmentService{
 
-@Service
-public class AppointmentServiceImpl implements AppointmentService {
     @Autowired
     AppointmentRepository appointmentRepository;
 
@@ -33,7 +33,6 @@ public class AppointmentServiceImpl implements AppointmentService {
 
         return appointment;
     }
-
 
     @Override
     public List<Appointment> findAll() {

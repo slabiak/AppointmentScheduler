@@ -1,10 +1,4 @@
-package com.example.slabiak.appointmentscheduler.appointment;
-
-
-import com.example.slabiak.appointmentscheduler.user.customer.Customer;
-import com.example.slabiak.appointmentscheduler.model.BaseEntity;
-import com.example.slabiak.appointmentscheduler.user.provider.Provider;
-import com.example.slabiak.appointmentscheduler.work.Work;
+package com.example.slabiak.appointmentscheduler.model;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.*;
@@ -24,13 +18,14 @@ public class Appointment extends BaseEntity {
 
     @ManyToOne
     @JoinColumn(name="customer_id")
-    private Customer customer;
+    private User customer;
+
+    @ManyToOne
+    @JoinColumn(name="provider_id")
+    private User provider;
 
     @ManyToOne
     @JoinColumn(name="work_id")
     private Work work;
 
-    @ManyToOne
-    @JoinColumn(name="provider_id")
-    private Provider provider;
 }

@@ -1,53 +1,46 @@
 package com.example.slabiak.appointmentscheduler.model;
 
-import javax.persistence.Column;
-import javax.persistence.MappedSuperclass;
+import javax.persistence.*;
+import java.util.Collection;
+import java.util.List;
 
-@MappedSuperclass
-public class User extends BaseEntity{
 
-    @Column(name="first_name")
+@Entity
+@Table(name="users")
+public class User extends BaseEntity {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id")
+    private Long id;
+
+    @Column(name = "username")
+    private String userName;
+
+    @Column(name = "password")
+    private String password;
+
+    @Column(name = "first_name")
     private String firstName;
 
-    @Column(name="last_name")
+    @Column(name = "last_name")
     private String lastName;
 
-    @Column(name="email")
+    @Column(name = "email")
     private String email;
 
-    @Column(name="role")
-    private int role;
+    @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @JoinTable(name = "users_roles", joinColumns = @JoinColumn(name = "user_id"), inverseJoinColumns = @JoinColumn(name = "role_id"))
+    private Collection<Role> roles;
 
+    @OneToMany(mappedBy = "customer")
+    private List<Appointment> appointmentsByCustomer;
 
-    public String getFirstName() {
-        return firstName;
-    }
+    @OneToMany(mappedBy = "provider")
+    private List<Appointment> appointmentsByProvider;
 
-    public void setFirstName(String firstName) {
-        this.firstName = firstName;
-    }
+    @ManyToMany
+    @JoinTable(name="works_providers", joinColumns=@JoinColumn(name="id_user"), inverseJoinColumns=@JoinColumn(name="id_work"))
+    private List<Work> works;
 
-    public String getLastName() {
-        return lastName;
-    }
-
-    public void setLastName(String lastName) {
-        this.lastName = lastName;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
-    public int getRole() {
-        return role;
-    }
-
-    public void setRole(int role) {
-        this.role = role;
-    }
 }

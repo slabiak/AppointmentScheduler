@@ -1,4 +1,6 @@
-package com.example.slabiak.appointmentscheduler.appointment;
+package com.example.slabiak.appointmentscheduler.service;
+
+import com.example.slabiak.appointmentscheduler.model.Appointment;
 
 import java.util.List;
 

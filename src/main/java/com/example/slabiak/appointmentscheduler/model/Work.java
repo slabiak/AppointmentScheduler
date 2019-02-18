@@ -1,7 +1,7 @@
-package com.example.slabiak.appointmentscheduler.work;
+package com.example.slabiak.appointmentscheduler.model;
 
 import com.example.slabiak.appointmentscheduler.model.BaseEntity;
-import com.example.slabiak.appointmentscheduler.user.provider.Provider;
+import com.example.slabiak.appointmentscheduler.model.User;
 
 import javax.persistence.*;
 import java.util.List;
@@ -23,7 +23,7 @@ public class Work extends BaseEntity {
     private int duration;
 
     @ManyToMany
-    @JoinTable(name="work_provider", joinColumns=@JoinColumn(name="work_id"), inverseJoinColumns=@JoinColumn(name="provider_id"))
-    private List<Provider> providers;
+    @JoinTable(name="works_providers", joinColumns=@JoinColumn(name="id_work"), inverseJoinColumns=@JoinColumn(name="id_user"))
+    private List<User> users;
 
 }
