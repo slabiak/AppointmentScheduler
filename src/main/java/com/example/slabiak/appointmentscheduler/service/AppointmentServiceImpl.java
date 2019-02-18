@@ -1,7 +1,7 @@
 package com.example.slabiak.appointmentscheduler.service;
 
 import com.example.slabiak.appointmentscheduler.dao.AppointmentRepository;
-import com.example.slabiak.appointmentscheduler.model.Appointment;
+import com.example.slabiak.appointmentscheduler.entity.Appointment;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.List;

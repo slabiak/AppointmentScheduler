@@ -1,4 +1,4 @@
-package com.example.slabiak.appointmentscheduler.model;
+package com.example.slabiak.appointmentscheduler.entity;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.*;

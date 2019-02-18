@@ -1,14 +1,23 @@
 <!DOCTYPE HTML>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.w3.org/1999/xhtml">
 <head>
     <meta charset="UTF-8">
     <title>Home!</title>
 </head>
 <body>
-<a th:href="@{/customers/showFormForAdd}">Add New Customer</a> <br>
-<a th:href="@{/providers/showFormForAdd}">Add New Provider</a> <br>
-<a th:href="@{/customers/list}">Show All Customers</a> <br>
-<a th:href="@{/providers/list}">Show All Providers</a> <br>
-<a th:href="@{/appointments/selectService}">Book appointment</a> <br>
+
+<div sec:authorize="hasRole('CUSTOMER')">customers panel</div>
+<div sec:authorize="hasRole('PROVIDER')">providers panel</div>
+<div sec:authorize="isAuthenticated()">
+    Hello!
+</div>
+Your username:
+<div sec:authentication="name"></div>
+Your roles:
+<div sec:authentication="principal.authorities"></div>
+
+<form th:action="@{perform_logout}" method="POST">
+    <input type="submit" value="Logout">
+</form>
 </body>
 </html>

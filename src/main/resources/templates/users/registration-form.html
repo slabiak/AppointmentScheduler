@@ -1,0 +1,32 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Registration form</title>
+</head>
+<body>
+<form action="#" th:action="@{/process_registration}"
+      th:object="${user}" method="POST">
+
+    <div th:if="${registrationError != null}">
+        <p th:text="${registrationError}"></p>
+    </div>
+
+    Username: <input type="text" th:field="*{userName}"  placeholder="User name"> <br>
+
+    Password: <input type="password" th:field="*{password}" >  <br>
+
+    Repeat password: <input type="password" th:field="*{matchingPassword}" >  <br>
+
+    First Name: <input type="text" th:field="*{firstName}"  placeholder="First name">  <br>
+
+    Last Name: <input type="text" th:field="*{lastName}" placeholder="Last name">  <br>
+
+    E-mail: <input type="text" th:field="*{email}" placeholder="Email"> <br>
+
+    <button type="submit">Save</button>
+
+</form>
+
+</body>
+</html>

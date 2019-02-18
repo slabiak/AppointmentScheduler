@@ -1,7 +1,4 @@
-package com.example.slabiak.appointmentscheduler.model;
-
-import com.example.slabiak.appointmentscheduler.model.BaseEntity;
-import com.example.slabiak.appointmentscheduler.model.User;
+package com.example.slabiak.appointmentscheduler.entity;
 
 import javax.persistence.*;
 import java.util.List;
