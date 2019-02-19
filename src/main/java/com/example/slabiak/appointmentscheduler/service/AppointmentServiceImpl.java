@@ -3,10 +3,12 @@ package com.example.slabiak.appointmentscheduler.service;
 import com.example.slabiak.appointmentscheduler.dao.AppointmentRepository;
 import com.example.slabiak.appointmentscheduler.entity.Appointment;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
 
+@Service
 public class AppointmentServiceImpl implements AppointmentService{
 
     @Autowired

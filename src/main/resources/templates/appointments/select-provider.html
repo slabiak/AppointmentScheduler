@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <title>Select Service</title>
+</head>
+<body>
+<form  method='POST' th:object="${appointmentForm}" th:action="@{/appointments/select_date}">
+    <input type="hidden" name="workId" th:value="${appointmentForm.workId}">
+
+    Select provider:
+    <select th:field="*{providerId}">
+            <option th:each="provider : ${providers}"
+                    th:value="${provider.id}"
+                    th:utext="${provider.firstName}"/>
+        </select>
+
+    <input name="submit" type="submit" value="submit" />
+</form>
+</body>
+</html>

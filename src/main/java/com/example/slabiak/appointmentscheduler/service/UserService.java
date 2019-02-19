@@ -2,6 +2,7 @@ package com.example.slabiak.appointmentscheduler.service;
 
 
 import com.example.slabiak.appointmentscheduler.entity.User;
+import com.example.slabiak.appointmentscheduler.entity.Work;
 import com.example.slabiak.appointmentscheduler.model.UserRegisterForm;
 import org.springframework.security.core.userdetails.UserDetailsService;
 
@@ -13,6 +14,7 @@ public interface UserService extends UserDetailsService {
     User findByUserName( String userName);
     List<User> findAll();
     void deleteById(int id);
+    List<User> findByWorks(Work work);
 
 
 

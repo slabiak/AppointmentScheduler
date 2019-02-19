@@ -18,6 +18,9 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     @Autowired
     private UserService userService;
 
+    @Autowired
+    private CustomAuthenticationSuccessHandler customAuthenticationSuccessHandler;
+
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
         auth.authenticationProvider(authenticationProvider());
@@ -27,17 +30,19 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity http) throws Exception {
         http.authorizeRequests()
                 .antMatchers("/").hasAnyRole("CUSTOMER", "PROVIDER")
+                .antMatchers("/customers/**").hasRole("CUSTOMER")
+                .antMatchers("/providers/**").hasRole("PROVIDER")
+                .antMatchers("/appointments/**").hasRole("CUSTOMER")
                 .and()
                 .formLogin()
                     .loginPage("/login")
                     .loginProcessingUrl("/perform_login")
-                    .defaultSuccessUrl("/", true)
+                    .successHandler(customAuthenticationSuccessHandler)
                     .permitAll()
                 .and()
                 .logout().logoutUrl("/perform_logout")
                 .and()
                 .exceptionHandling().accessDeniedPage("/access-denied");
-
     }
 
     @Bean

@@ -1,0 +1,47 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <title>Home!</title>
+</head>
+<body>
+
+PROVIDERS PANEL<br>
+
+
+
+    Hello!
+
+Your username:
+<div sec:authentication="name"></div>
+Your roles:
+<div sec:authentication="principal.authorities"></div>
+
+<table>
+    <thead>
+    <tr>
+        <th> Work </th>
+        <th> Customer </th>
+        <th> Start </th>
+        <th> End </th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:if="${provider.appointmentsByProvider == null}">
+        <td colspan="2"> No Appointments Available </td>
+    </tr>
+    <tr th:each="appointment : ${provider.appointmentsByProvider}">
+        <td><span th:text="${appointment.work.name}"> Work </span></td>
+        <td><span th:text="${appointment.customer.firstName}"> Customer </span></td>
+        <td><span th:text="${appointment.start}"> Start </span></td>
+        <td><span th:text="${appointment.end}"> End </span></td>
+    </tr>
+    </tbody>
+</table>
+
+
+<form th:action="@{/perform_logout}" method="POST">
+    <input type="submit" value="Logout">
+</form>
+</body>
+</html>

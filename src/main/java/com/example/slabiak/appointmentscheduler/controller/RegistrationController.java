@@ -19,7 +19,7 @@ public class RegistrationController {
     @GetMapping("/register")
     public String showRegistrationForm(Model theModel) {
         theModel.addAttribute("user", new UserRegisterForm());
-        return "users/registration-form";
+        return "user/register";
     }
 
     @PostMapping("/process_registration")
@@ -29,12 +29,12 @@ public class RegistrationController {
            model.addAttribute("user", new UserRegisterForm());
             model.addAttribute("registrationError", "User name already exists.");
 
-            return "users/registration-form";
+            return "user/register";
         }
 
         userService.register(userForm);
         model.addAttribute("userName",userForm.getUserName());
-        return "users/registration-confirmation";
+        return "user/register-success";
     }
 
 

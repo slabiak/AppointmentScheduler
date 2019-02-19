@@ -98,4 +98,28 @@ public class User extends BaseEntity {
     public void setRoles(Collection<Role> roles) {
         this.roles = roles;
     }
+
+    public List<Appointment> getAppointmentsByCustomer() {
+        return appointmentsByCustomer;
+    }
+
+    public void setAppointmentsByCustomer(List<Appointment> appointmentsByCustomer) {
+        this.appointmentsByCustomer = appointmentsByCustomer;
+    }
+
+    public List<Appointment> getAppointmentsByProvider() {
+        return appointmentsByProvider;
+    }
+
+    public void setAppointmentsByProvider(List<Appointment> appointmentsByProvider) {
+        this.appointmentsByProvider = appointmentsByProvider;
+    }
+
+    public List<Work> getWorks() {
+        return works;
+    }
+
+    public void setWorks(List<Work> works) {
+        this.works = works;
+    }
 }

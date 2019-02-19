@@ -5,6 +5,7 @@ import com.example.slabiak.appointmentscheduler.dao.RoleRepository;
 import com.example.slabiak.appointmentscheduler.dao.UserRepository;
 import com.example.slabiak.appointmentscheduler.entity.Role;
 import com.example.slabiak.appointmentscheduler.entity.User;
+import com.example.slabiak.appointmentscheduler.entity.Work;
 import com.example.slabiak.appointmentscheduler.model.UserRegisterForm;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.GrantedAuthority;
@@ -85,6 +86,11 @@ public class UserServiceImpl implements UserService {
     @Override
     public void deleteById(int id) {
         userRepository.deleteById(id);
+    }
+
+    @Override
+    public List<User> findByWorks(Work work) {
+        return userRepository.findByWorks(work);
     }
 
     @Override
