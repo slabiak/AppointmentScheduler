@@ -1,13 +1,8 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
-<head>
-    <meta charset="UTF-8">
-    <title>Select Service</title>
-</head>
+<html xmlns:th="http://www.thymeleaf.org" th:replace="~{fragments/layout :: layout (~{::body},'','Select date')}" xmlns:sec="http://www.w3.org/1999/xhtml">
 <body>
-
-
-    Select date:
+<div class="row align-items-center justify-content-center"   style="margin-top: 50px">
+    <p>Select date</p>
 <span th:text="${appointmentForm.workId}"></span>
     <form th:action="@{/appointments/save}" th:object="${appointmentForm}" method='POST'>
         <input type="hidden" name="workId" th:value="${appointmentForm.workId}">
@@ -20,7 +15,7 @@
 
     </form>
 
-
+</div>
 
 </body>
 </html>

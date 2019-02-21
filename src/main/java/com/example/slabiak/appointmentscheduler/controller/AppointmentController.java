@@ -7,9 +7,13 @@ import com.example.slabiak.appointmentscheduler.service.UserService;
 import com.example.slabiak.appointmentscheduler.service.WorkService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+
+import javax.servlet.http.HttpServletRequest;
 
 @Controller
 @RequestMapping("/appointments")
@@ -23,6 +27,18 @@ public class AppointmentController {
 
     @Autowired
     AppointmentService appointmentService;
+
+    @GetMapping("")
+    public String listAppointments(Model model, Authentication authentication) {
+        model.addAttribute("user",userService.findByUserName(authentication.getName()));
+        if (authentication.getAuthorities().contains(new SimpleGrantedAuthority("ROLE_CUSTOMER"))) {
+            return "appointments/customer-appointments";
+        } else if(authentication.getAuthorities().contains(new SimpleGrantedAuthority("ROLE_PROVIDER")))
+        return "appointments/provider-appointments";
+        else{
+            return "home";
+        }
+    }
 
 
     @GetMapping("/select_service")
@@ -46,7 +62,7 @@ public class AppointmentController {
     }
 
     @PostMapping("/save")
-    public String selectDate(@ModelAttribute("appointmentForm") AppointmentRegisterForm appointmentForm, Authentication authentication){
+    public String saveAppointment(@ModelAttribute("appointmentForm") AppointmentRegisterForm appointmentForm, Authentication authentication){
         Appointment appointment = new Appointment();
         appointment.setCustomer(userService.findByUserName(authentication.getName()));
         appointment.setProvider(userService.findById(appointmentForm.getProviderId()));

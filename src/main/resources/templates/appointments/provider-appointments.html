@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" th:replace="~{fragments/layout :: layout (~{::body},'appointments','Provider appointments')}" xmlns:sec="http://www.w3.org/1999/xhtml">
+
+<body>
+<!-- Page Content -->
+<div class="row align-items-center justify-content-center"   style="margin-top: 50px">
+<div>
+    <table class="table table-striped text-center" >
+        <thead class="thead-dark">
+            <tr>
+                <th> Work </th>
+                <th> Customer </th>
+                <th> Start </th>
+                <th> End </th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:if="${user.appointmentsByCustomer == null}">
+                <td colspan="2"> No Appointments Available </td>
+            </tr>
+            <tr th:each="appointment : ${user.appointmentsByProvider}">
+                <td><span th:text="${appointment.work.name}"> Work </span></td>
+                <td><span th:text="${appointment.customer.firstName}"> Provider </span></td>
+                <td><span th:text="${appointment.start}"> Start </span></td>
+                <td><span th:text="${appointment.end}"> End </span></td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+</body>
+
+</html>

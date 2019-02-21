@@ -27,7 +27,7 @@ public class CustomAuthenticationSuccessHandler implements AuthenticationSuccess
         User user = userService.findByUserName(userName);
 
         HttpSession session = request.getSession();
-        session.setAttribute("user", user);
+        //session.setAttribute("user", user);
 
         // forward to home page
 

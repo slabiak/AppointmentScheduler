@@ -1,9 +1,11 @@
-<html xmlns:th="http://www.w3.org/1999/xhtml">
-<head>
-    <title>Access denied!</title>
-</head>
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" th:replace="~{fragments/layout :: layout (~{::body},'','Access denied!')}" xmlns:sec="http://www.w3.org/1999/xhtml">
 <body>
-Sorry! You dont have access to this site :(
-</form>
+<div class="row">
+    <div class="col-lg-12 text-center">
+        <h1 class="mt-5">Access denied!</h1>
+        <p class="lead">Sorry, you are not authorized to view this site :((</p>
+    </div>
+</div>
 </body>
 </html>

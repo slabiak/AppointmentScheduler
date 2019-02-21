@@ -8,6 +8,8 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 
+import java.security.Principal;
+
 @Controller
 public class HomeController {
 
@@ -15,17 +17,15 @@ public class HomeController {
     UserService userService;
 
     @GetMapping("/")
-    public String showHome(SecurityContextHolderAwareRequestWrapper request) {
-            if(request.isUserInRole("CUSTOMER")) {
-                return "redirect:/customers/";
-            }
-            return "redirect:/providers/";
-
-
+    public String showHome(Model model) {
+        return "home";
     }
 
     @GetMapping("/login")
-    public String login(Model model) {
+    public String login(Model model, Principal principal) {
+        if(principal !=null){
+             return "redirect:/";
+        }
         return "user/login";
     }
 

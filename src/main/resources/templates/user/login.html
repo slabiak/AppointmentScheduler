@@ -1,21 +1,44 @@
-<html xmlns:th="http://www.w3.org/1999/xhtml">
-<head></head>
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" th:replace="~{fragments/layout :: layout (~{::body}, '','Login form')}" xmlns:sec="http://www.w3.org/1999/xhtml">
 <body>
-<h1>Login</h1>
-<form th:action="@{/perform_login}" method='POST'>
-    <table>
-        <tr>
-            <td>User:</td>
-            <td><input type='text' name='username' value=''></td>
-        </tr>
-        <tr>
-            <td>Password:</td>
-            <td><input type='password' name='password' /></td>
-        </tr>
-        <tr>
-            <td><input name="submit" type="submit" value="submit" /></td>
-        </tr>
-    </table>
-</form>
+    <div class="row" style="margin-top: 50px";>
+        <div class="col-lg-4 text-center"></div>
+        <div class="col-lg-4 text-center">
+            <div class="card">
+                <div class="card-header">
+                    Sign in
+                </div>
+                <div class="card-body">
+                    <form th:action="@{/perform_login}" method='POST' class="form-horizontal">
+                        <div th:if="${param.error != null}" class="alert alert-danger">
+                            Invalid username or password.
+                        </div>
+                        <div th:if="${createdUserName != null}" class="alert alert-success">
+                            <p>User <span th:text="${createdUserName}"></span> added!</p>
+                        </div>
+                        <div th:if="${param.logout != null}" class="alert alert-success">
+                            <p>Logged out successfully</p>
+                        </div>
+                        <div style="margin-bottom: 25px" class="input-group">
+                            <span class="input-group-addon"><i class="glyphicon glyphicon-user"></i></span>
+                            <input type="text" name="username" placeholder="username" class="form-control">
+                        </div>
+                        <div style="margin-bottom: 25px" class="input-group">
+                            <span class="input-group-addon"><i class="glyphicon glyphicon-lock"></i></span>
+                            <input type="password" name="password" placeholder="password" class="form-control" >
+                        </div>
+                        <div style="margin-top: 10px" class="input-group">
+                            <button type="submit" class="btn btn-success">Login</button>
+                        </div>
+                        <div style="margin-top: 10px" class="input-group">
+
+                        <p>Need account? <a th:href="@{/register}">Create new</a></p>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-4 text-center"></div>
+    </div>
 </body>
 </html>

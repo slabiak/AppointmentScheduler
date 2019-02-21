@@ -32,7 +32,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/").hasAnyRole("CUSTOMER", "PROVIDER")
                 .antMatchers("/customers/**").hasRole("CUSTOMER")
                 .antMatchers("/providers/**").hasRole("PROVIDER")
-                .antMatchers("/appointments/**").hasRole("CUSTOMER")
+                .antMatchers("/appointments/**").hasAnyRole("CUSTOMER", "PROVIDER")
                 .and()
                 .formLogin()
                     .loginPage("/login")

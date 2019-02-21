@@ -1,5 +1,10 @@
 package com.example.slabiak.appointmentscheduler.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
+
 import javax.persistence.*;
 import java.util.Collection;
 import java.util.List;
@@ -9,9 +14,11 @@ import java.util.List;
 @Table(name="users")
 public class User extends BaseEntity {
 
+    @JsonIgnore
     @Column(name = "username")
     private String userName;
 
+    @JsonIgnore
     @Column(name = "password")
     private String password;
 
@@ -21,19 +28,24 @@ public class User extends BaseEntity {
     @Column(name = "last_name")
     private String lastName;
 
+    @JsonIgnore
     @Column(name = "email")
     private String email;
 
+    @JsonIgnore
     @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinTable(name = "users_roles", joinColumns = @JoinColumn(name = "user_id"), inverseJoinColumns = @JoinColumn(name = "role_id"))
     private Collection<Role> roles;
 
+    @JsonIgnore
     @OneToMany(mappedBy = "customer")
     private List<Appointment> appointmentsByCustomer;
 
+    @JsonIgnore
     @OneToMany(mappedBy = "provider")
     private List<Appointment> appointmentsByProvider;
 
+    @JsonIgnore
     @ManyToMany
     @JoinTable(name="works_providers", joinColumns=@JoinColumn(name="id_user"), inverseJoinColumns=@JoinColumn(name="id_work"))
     private List<Work> works;
