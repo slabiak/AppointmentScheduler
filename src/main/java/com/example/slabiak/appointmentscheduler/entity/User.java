@@ -1,9 +1,6 @@
 package com.example.slabiak.appointmentscheduler.entity;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 
 import javax.persistence.*;
 import java.util.Collection;
@@ -133,5 +130,19 @@ public class User extends BaseEntity {
 
     public void setWorks(List<Work> works) {
         this.works = works;
+    }
+
+    @Override
+    public boolean equals(Object user) {
+        User compareUser = (User) user;
+        if(compareUser.getUserName().equals(this.userName) &&
+                compareUser.getPassword().equals(this.password) &&
+                compareUser.getFirstName().equals(this.firstName) &&
+                compareUser.getLastName().equals(this.lastName) &&
+                compareUser.getEmail().equals(this.email) &&
+                compareUser.getRoles().equals(this.roles))   return true;
+
+        else return false;
+
     }
 }

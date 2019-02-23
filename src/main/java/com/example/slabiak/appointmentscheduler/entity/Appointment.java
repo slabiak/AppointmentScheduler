@@ -28,6 +28,18 @@ public class Appointment extends BaseEntity {
     @JoinColumn(name="id_work")
     private Work work;
 
+    public Appointment(){
+
+    }
+
+    public Appointment(LocalDateTime start, LocalDateTime end, User customer, User provider, Work work) {
+        this.start = start;
+        this.end = end;
+        this.customer = customer;
+        this.provider = provider;
+        this.work = work;
+    }
+
     public LocalDateTime getStart() {
         return start;
     }

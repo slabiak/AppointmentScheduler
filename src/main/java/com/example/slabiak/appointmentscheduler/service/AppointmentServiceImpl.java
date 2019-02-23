@@ -23,7 +23,6 @@ public class AppointmentServiceImpl implements AppointmentService{
     @Override
     public Appointment findById(int id) {
         Optional<Appointment> result = appointmentRepository.findById(id);
-
         Appointment appointment = null;
 
         if (result.isPresent()) {
