@@ -1,6 +1,5 @@
 package com.example.slabiak.appointmentscheduler.service;
 
-
 import com.example.slabiak.appointmentscheduler.dao.RoleRepository;
 import com.example.slabiak.appointmentscheduler.dao.UserRepository;
 import com.example.slabiak.appointmentscheduler.entity.Role;

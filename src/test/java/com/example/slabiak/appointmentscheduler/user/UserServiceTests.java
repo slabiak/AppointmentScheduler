@@ -4,6 +4,7 @@ import com.example.slabiak.appointmentscheduler.dao.RoleRepository;
 import com.example.slabiak.appointmentscheduler.dao.UserRepository;
 import com.example.slabiak.appointmentscheduler.entity.Role;
 import com.example.slabiak.appointmentscheduler.entity.User;
+import com.example.slabiak.appointmentscheduler.entity.Work;
 import com.example.slabiak.appointmentscheduler.model.UserRegisterForm;
 import com.example.slabiak.appointmentscheduler.service.UserServiceImpl;
 import org.junit.Before;
@@ -13,6 +14,8 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
@@ -21,6 +24,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 
+import static java.util.Locale.US;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThat;
@@ -44,27 +48,37 @@ public class UserServiceTests {
 
     private UserRegisterForm userRegisterForm;
     private User user;
+    private String userName;
     private Optional<User> userOptional;
     private List<User> users;
     private Role role;
     private HashSet<Role> roles;
     private String password;
     private String roleName;
+    private Work work;
+    private List<Work> works;
 
     @Before
     public void initObjects(){
         password = "pass";
         roleName = "ROLE_CUSTOMER";
+        userName = "username";
 
-        userRegisterForm = new UserRegisterForm("username", password, password,"First", "Last","email" );
+        userRegisterForm = new UserRegisterForm(userName, password, password,"First", "Last","email" );
         role = new Role(roleName);
-        user = new User("username", password,"First","Last","email");
+        user = new User(userName, password,"First","Last","email");
         userOptional = Optional.of(user);
         roles = new HashSet<>();
         roles.add(role);
         user.setRoles(roles);
         users = new ArrayList<>();
         users.add(user);
+        work = new Work();
+        works = new ArrayList<Work>();
+        works.add(work);
+        user.setWorks(works);
+
+
 
     }
 
@@ -86,10 +100,34 @@ public class UserServiceTests {
     }
 
     @Test
+    public void shouldFindByName(){
+        when(userRepository.findByUserName(userName)).thenReturn(userOptional);
+        assertEquals(userOptional.get(),userService.findByUserName(userName));
+        verify(userRepository).findByUserName(userName);
+    }
+
+    @Test
     public void shouldFindAllUsers(){
         when(userRepository.findAll()).thenReturn(users);
         assertEquals(users,userService.findAll());
         verify(userRepository).findAll();
+    }
+
+    @Test
+    public void shouldFindByWork(){
+        when(userRepository.findByWorks(work)).thenReturn(users);
+        assertEquals(user,userService.findByWorks(work).get(0));
+        verify(userRepository).findByWorks(work);
+    }
+
+    @Test
+    public void shouldReturnUserDetails(){
+        ArrayList<SimpleGrantedAuthority> authorities = new ArrayList<>();
+        authorities.add(new SimpleGrantedAuthority(role.getName()));
+        UserDetails userDetails = new org.springframework.security.core.userdetails.User(user.getUserName(), user.getPassword(),authorities);
+        when(userRepository.findByUserName(userName)).thenReturn(userOptional);
+        assertEquals(userDetails.getUsername(), userService.loadUserByUsername(userName).getUsername());
+        verify(userRepository).findByUserName(userName);
     }
 
     @Test
@@ -98,3 +136,5 @@ public class UserServiceTests {
         verify(userRepository).deleteById(1);
     }
 }
+
+
