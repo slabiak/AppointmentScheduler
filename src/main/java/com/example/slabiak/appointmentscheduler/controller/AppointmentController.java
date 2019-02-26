@@ -10,10 +10,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 
 @Controller
 @RequestMapping("/appointments")
@@ -29,12 +26,24 @@ public class AppointmentController {
     AppointmentService appointmentService;
 
     @GetMapping("")
-    public String listAppointments(Model model, Authentication authentication) {
+    public String showAllAppointments(Model model, Authentication authentication) {
         model.addAttribute("user",userService.findByUserName(authentication.getName()));
         if (authentication.getAuthorities().contains(new SimpleGrantedAuthority("ROLE_CUSTOMER"))) {
             return "appointments/customer-appointments";
         } else if(authentication.getAuthorities().contains(new SimpleGrantedAuthority("ROLE_PROVIDER")))
         return "appointments/provider-appointments";
+        else{
+            return "home";
+        }
+    }
+
+    @GetMapping("/{id}")
+    public String showAppointmentDetail(@PathVariable("id") int id, Model model, Authentication authentication) {
+        model.addAttribute("appointment", appointmentService.findById(id));
+        if (authentication.getAuthorities().contains(new SimpleGrantedAuthority("ROLE_CUSTOMER"))) {
+            return "appointments/customer-appointment";
+        } else if(authentication.getAuthorities().contains(new SimpleGrantedAuthority("ROLE_PROVIDER")))
+            return "appointments/provider-appointment";
         else{
             return "home";
         }
@@ -71,6 +80,12 @@ public class AppointmentController {
         appointment.setEnd(appointmentForm.getEnd());
         appointmentService.save(appointment);
         return "redirect:/customers/";
+    }
+
+    @PostMapping("/cancel")
+    public String cancelAppointment(@RequestParam("id") int id, Authentication authentication){
+        appointmentService.deleteById(id);
+        return "redirect:/appointments";
     }
 
 }

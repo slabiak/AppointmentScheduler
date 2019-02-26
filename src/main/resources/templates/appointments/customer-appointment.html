@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" th:replace="~{fragments/layout :: layout (~{::body},'appointments','Appointment detail')}" xmlns:sec="http://www.w3.org/1999/xhtml">
+
+<body>
+<div class="row align-items-center justify-content-center"   style="margin-top: 50px">
+    <div>
+        <table id="appointments" class="table table-striped text-center" >
+            <thead class="thead-dark">
+            <tr>
+                <th colspan="2"> Appointment details: </th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+                <td>Start date </td>
+                <td><span th:text="${appointment.start}"> 10.01.2019 13:41:45 </span></td>
+            </tr>
+            <tr>
+                <td>Work </td>
+                <td><span th:text="${appointment.work.name}"> english </span></td>
+            </tr>
+            <tr>
+                <td>Duration </td>
+                <td><span th:text="${appointment.work.duration}"> 30 </span> min</td>
+            </tr>
+            <tr>
+                <td>Price </td>
+                <td><span th:text="${appointment.work.price}"> 50 </span> pln</td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+<div class="row align-items-center justify-content-center"   style="margin-top: 50px">
+<form th:action="@{/appointments/cancel}" method='POST'>
+    <input type="hidden" name="id" th:value="${appointment.id}">
+    <input type="submit" class="btn btn-danger" value="Cancel"/>
+</form>
+</div>
+</body>
+</html>

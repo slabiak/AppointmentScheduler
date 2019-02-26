@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org" th:replace="~{fragments/layout :: layout (~{::body},'','Select service')}" xmlns:sec="http://www.w3.org/1999/xhtml">
 <body>
-<div class="row align-items-center justify-content-center"   style="margin-top: 50px">
+<div class="row align-items-center justify-content-center d-block"   style="margin-top: 50px">
     <p> Select service: </p>
 <form  method='POST' th:object="${appointmentForm}" th:action="@{/appointments/select_provider}" >
 

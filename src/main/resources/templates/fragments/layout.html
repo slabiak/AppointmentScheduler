@@ -6,11 +6,22 @@
         <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
         <title th:text="${pageTitle}">Page title</title>
 
+        <!--Bootstrap Calendar CSS-->
+        <link rel="stylesheet" th:href="@{css/calendar.css}" />
         <!-- Bootstrap core CSS -->
         <link rel="stylesheet" href="/webjars/bootstrap/4.3.1/css/bootstrap.min.css" />
-        <!-- Bootstrap core JavaScript -->
+        <!--Popper-->
+        <script type="text/javascript" th:src="@{js/popper.js}"></script>
+        <!--jQuery-->
         <script src="/webjars/jquery/3.3.1-2/jquery.min.js"></script>
+        <!-- Bootstrap core JavaScript -->
         <script src="/webjars/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+        <!--Underscore-->
+        <script type="text/javascript" th:src="@{js/underscore-min.js}"></script>
+        <!--Moment-->
+        <script type="text/javascript" th:src="@{js/moment.js}"></script>
+        <!--Bootstrap Calendar JavaScript-->
+        <script type="text/javascript" th:src="@{js/calendar.js}"></script>
     </head>
 
     <body>

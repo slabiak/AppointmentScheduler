@@ -13,6 +13,7 @@
                 <th> Provider </th>
                 <th> Start </th>
                 <th> End </th>
+                <th> Details </th>
             </tr>
             </thead>
             <tbody>
@@ -24,10 +25,16 @@
                 <td><span th:text="${appointment.provider.firstName}"> Provider </span></td>
                 <td><span th:text="${appointment.start}"> Start </span></td>
                 <td><span th:text="${appointment.end}"> End </span></td>
+                <td> <a class="btn btn-secondary" th:href="@{'/appointments/' + ${appointment.id}}" role="button">Details</a></td>
             </tr>
             </tbody>
         </table>
     </div>
+
+
+</div>
+<div class="row align-items-center justify-content-center"   style="margin-top: 50px">
+    <a class="btn btn-primary" th:href="@{/appointments/select_service}" role="button">New appointment</a>
 </div>
 <script>
 
