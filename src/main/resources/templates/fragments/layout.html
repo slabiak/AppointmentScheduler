@@ -6,22 +6,21 @@
         <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
         <title th:text="${pageTitle}">Page title</title>
 
-        <!--Bootstrap Calendar CSS-->
-        <link rel="stylesheet" th:href="@{css/calendar.css}" />
+
         <!-- Bootstrap core CSS -->
         <link rel="stylesheet" href="/webjars/bootstrap/4.3.1/css/bootstrap.min.css" />
-        <!--Popper-->
-        <script type="text/javascript" th:src="@{js/popper.js}"></script>
+        <link rel="stylesheet" th:href="@{css/vendor/fullcalendar.css}" />
+        <link rel="stylesheet" th:href="@{css/style.css}" />
         <!--jQuery-->
+        <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
         <script src="/webjars/jquery/3.3.1-2/jquery.min.js"></script>
         <!-- Bootstrap core JavaScript -->
         <script src="/webjars/bootstrap/4.3.1/js/bootstrap.min.js"></script>
-        <!--Underscore-->
-        <script type="text/javascript" th:src="@{js/underscore-min.js}"></script>
         <!--Moment-->
-        <script type="text/javascript" th:src="@{js/moment.js}"></script>
-        <!--Bootstrap Calendar JavaScript-->
-        <script type="text/javascript" th:src="@{js/calendar.js}"></script>
+        <script type="text/javascript" th:src="@{js/vendor/moment.js}"></script>
+        <script type="text/javascript" th:src="@{js/vendor/fullcalendar.js}"></script>
+
+
     </head>
 
     <body>
@@ -62,8 +61,6 @@
         <div class="container">
             <th:block th:include="${content}"/>
         </div>
-
-
 
     </body>
 

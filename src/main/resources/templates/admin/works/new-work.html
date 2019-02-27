@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" th:replace="~{fragments/layout :: layout (~{::body},'works','Work form')}" xmlns:sec="http://www.w3.org/1999/xhtml">
+<body>
+<div class="row" style="margin-top: 50px";>
+    <div class="col-lg-3 text-center"></div>
+    <div class="col-lg-6 text-center">
+        <div class="card">
+            <div class="card-header">
+                Add or update work
+            </div>
+            <div class="card-body">
+                <!-- Registration Form -->
+                <form th:action="@{/works/new}" th:object="${work}" method="POST" class="form-horizontal">
+                 <input type="hidden" th:field="*{id}" th:value="${work.id}">
+                    <div th:if="${registrationError != null}" class="alert alert-danger">
+                        <p th:text="${registrationError}"></p>
+                    </div>
+
+                    <div style="margin-bottom: 25px" class="input-group">
+                        <span class="input-group-addon"><i class="glyphicon glyphicon-user"></i></span>
+                        <input type="text" th:field="*{name}"  placeholder="Name" class="form-control">
+                    </div>
+
+                    <div style="margin-bottom: 25px" class="input-group">
+                        <span class="input-group-addon"><i class="glyphicon glyphicon-user"></i></span>
+                        <input type="number" th:field="*{price}"  placeholder="Price" class="form-control">
+                    </div>
+
+                    <div style="margin-bottom: 25px" class="input-group">
+                        <span class="input-group-addon"><i class="glyphicon glyphicon-user"></i></span>
+                        <input type="number" th:field="*{duration}"  placeholder="Last Name" class="form-control">
+                    </div>
+
+                    <div style="margin-bottom: 25px" class="input-group">
+                          <textarea class="input-group" rows="3" th:field="*{description}" />
+                    </div>
+                    <div style="margin-top: 10px" class="input-group">
+                        <button type="submit" class="btn btn-success">Add work</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <div class="col-lg-3 text-center"></div>
+</div>
+</body>
+</html>

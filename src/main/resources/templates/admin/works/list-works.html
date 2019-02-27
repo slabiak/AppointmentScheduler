@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" th:replace="~{fragments/layout :: layout (~{::body},'works','Available works')}" xmlns:sec="http://www.w3.org/1999/xhtml">
+    <body>
+
+
+ <div class="row align-items-center justify-content-center"   style="margin-top: 50px">
+     <div>
+         <table id="works" class="table table-striped text-center" >
+             <thead class="thead-dark">
+             <tr>
+                 <th> Name </th>
+                 <th> Price </th>
+                 <th> Duration </th>
+                 <th> Action </th>
+             </tr>
+             </thead>
+             <tbody>
+             <tr th:if="${works == null}">
+                 <td colspan="4"> No Works Available </td>
+             </tr>
+             <tr th:each="work : ${works}">
+                 <td><span th:text="${work.name}"> english </span></td>
+                 <td><span th:text="${work.price + ' PLN'}"> 50 PLN </span></td>
+                 <td><span th:text="${work.duration+' min'}"> 30 min </span></td>
+                 <td> <a class="btn btn-secondary" th:href="@{'/works/update/' + ${work.id}}" role="button">Edit</a>
+                   <form class="d-inline-block" th:action="@{/works/delete}" method="POST">
+                       <input type="hidden" name="workId" th:value="${work.id}" />
+                       <button type="submit" name="submit" value="value" class="btn btn-danger">Delete</button>
+                   </form>
+                 </td>
+             </tr>
+             </tbody>
+         </table>
+     </div>
+
+ </div>
+ <div class="row align-items-center justify-content-center"   style="margin-top: 50px">
+     <a class="btn btn-primary" th:href="@{/works/new}" role="button">New work</a>
+ </div>
+
+
+
+    </body>
+</html>

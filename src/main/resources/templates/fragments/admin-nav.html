@@ -1,0 +1,15 @@
+<th:block th:fragment="navlinks(activeLink)">
+<div class="collapse navbar-collapse" id="navbarResponsive">
+    <ul class="navbar-nav mr-auto">
+        <li class="nav-item" th:classappend="${activeLink} == 'works' ? 'active':''">
+            <a class="nav-link" th:href="@{/works}">Works</a>
+        </li>
+        <li class="nav-item" th:classappend="${activeLink} == 'providers' ? 'active':''">
+            <a class="nav-link" th:href="@{/providers}">Providers</a>
+        </li>
+        <li class="nav-item" th:classappend="${activeLink} == 'customers' ? 'active':''">
+            <a class="nav-link" th:href="@{/providers}">Customers</a>
+        </li>
+    </ul>
+</div>
+</th:block>

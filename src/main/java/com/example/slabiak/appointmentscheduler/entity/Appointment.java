@@ -1,4 +1,6 @@
 package com.example.slabiak.appointmentscheduler.entity;
+import com.example.slabiak.appointmentscheduler.model.AppointmentSerializer;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.*;
@@ -6,6 +8,7 @@ import java.time.LocalDateTime;
 
 @Entity
 @Table(name="appointments")
+@JsonSerialize(using = AppointmentSerializer.class)
 public class Appointment extends BaseEntity {
 
     @Column(name="start")

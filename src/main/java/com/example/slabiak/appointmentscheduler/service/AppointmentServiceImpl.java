@@ -2,6 +2,7 @@ package com.example.slabiak.appointmentscheduler.service;
 
 import com.example.slabiak.appointmentscheduler.dao.AppointmentRepository;
 import com.example.slabiak.appointmentscheduler.entity.Appointment;
+import com.example.slabiak.appointmentscheduler.entity.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -44,4 +45,17 @@ public class AppointmentServiceImpl implements AppointmentService{
     public void deleteById(int id) {
         appointmentRepository.deleteById(id);
     }
+
+    @Override
+    public List<Appointment> findByCustomer(User customer) {
+        return appointmentRepository.findByCustomer(customer);
+    }
+
+    @Override
+    public List<Appointment> findByProvider(User provider) {
+        return appointmentRepository.findByCustomer(provider);
+    }
+
+
+
 }

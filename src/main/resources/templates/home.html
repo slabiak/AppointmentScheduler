@@ -1,31 +1,46 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org" th:replace="~{fragments/layout :: layout (~{::body},'home','Home')}" xmlns:sec="http://www.w3.org/1999/xhtml">
 <body>
-<div id="calendar"></div>
-<script type="text/javascript">
-    $(document).ready(function(){
-        var calendar = $('#calendar').calendar({
-            events_source: [
-                {
-                    "id": 1,
-                    "title": "Event 1",
-                    "url": "http://example.com",
-                    "class": "event-important",
-                    "start": moment().valueOf(), // Now in milliseconds
-                    "end": moment().add(2, 'days').valueOf() // Now + 2 days in milliseconds
-                },
-                {
-                    "id": 2,
-                    "title": "Event 2",
-                    "url": "http://example.com",
-                    "class": "event-default",
-                    "start": moment().add(1, 'days').valueOf(), // Now + 1 day in milliseconds
-                    "end": moment().add(3, 'days').valueOf() // Now + 3 days in milliseconds
-                },
-            ]
-        });
-    });
+<div class="row mt-3">
+    <div class="col">
 
+    </div>
+    <div class="col-10">
+        <div id='calendar'></div>
+    </div>
+    <div class="col">
+
+    </div>
+</div>
+</div>
+
+<script th:inline="javascript">
+    $(function() {
+        $('#calendar').fullCalendar({
+            defaultView: 'agendaWeek',
+            header: {
+                left: 'prev,next today',
+                center: 'title',
+                right: 'month,agendaWeek'
+            },
+            allDaySlot: false,
+            minTime: "06:00:00",
+            maxTime: "21:00:00",
+            firstDay: 1,
+            eventSources: [
+
+                {
+                    url: /*[[${'/api/user/'+user.id+'/appointments'}]]*/ '/api/user/1/appointments',
+                    color: 'yellow',
+                    textColor: 'black'
+
+                }
+            ]
+
+
+        })
+
+    });
 </script>
 </body>
 
