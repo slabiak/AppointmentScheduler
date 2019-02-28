@@ -41,6 +41,12 @@
                         <!-- menu for provider-->
                         <div th:replace="fragments/provider-nav.html :: navlinks(${activeLink})"></div>
                     </th:block>
+
+                    <th:block sec:authorize="hasRole('ROLE_ADMIN')">
+                        <!-- menu for admin-->
+                        <div th:replace="fragments/admin-nav.html :: navlinks(${activeLink})"></div>
+                    </th:block>
+
                     <div class="collapse navbar-collapse">
                         <ul class="navbar-nav ml-auto">
                             <li>

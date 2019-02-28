@@ -82,7 +82,7 @@ public class UserServiceTests {
 
     }
 
-    @Test
+  /*  @Test
     public void shouldSaveUser(){
         when(passwordEncoder.encode(password)).thenReturn(password);
         when(roleRepository.findByName(roleName)).thenReturn(role);
@@ -90,7 +90,7 @@ public class UserServiceTests {
         userService.register(userRegisterForm);
         verify(userRepository).save(argumentCaptor.capture());
         assertEquals(argumentCaptor.getValue(),user);
-    }
+    }*/
 
     @Test
     public void shouldFindById() {

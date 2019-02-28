@@ -14,11 +14,9 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import sun.swing.BakedArrayList;
 
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -31,8 +29,11 @@ public class UserServiceImpl implements UserService {
     @Autowired
     private BCryptPasswordEncoder passwordEncoder;
 
+    @Autowired
+    private WorkService workService;
+
     @Override
-    public void register(UserRegisterForm userForm) {
+    public void registerCustomer(UserRegisterForm userForm) {
         User user = new User();
         user.setUserName(userForm.getUserName());
         user.setPassword(passwordEncoder.encode(userForm.getPassword()));
@@ -45,6 +46,37 @@ public class UserServiceImpl implements UserService {
         user.setRoles(roles);
         userRepository.save(user);
     }
+
+    @Override
+    public void registerProvider(UserRegisterForm userForm) {
+        User user = new User();
+        user.setUserName(userForm.getUserName());
+        user.setPassword(passwordEncoder.encode(userForm.getPassword()));
+        user.setFirstName(userForm.getFirstName());
+        user.setLastName(userForm.getLastName());
+        user.setEmail(userForm.getEmail());
+        List<Work> works = new ArrayList<Work>();
+        for(int workId : userForm.getSelectedWorks()){
+            works.add(workService.findById(workId));
+        }
+        user.setWorks(works);
+        Role role = roleRepository.findByName("ROLE_PROVIDER");
+        HashSet<Role> roles = new HashSet<Role>();
+        roles.add(role);
+        user.setRoles(roles);
+        userRepository.save(user);
+    }
+
+    @Override
+    public void updateProvider(User userUpdateData) {
+        User user = findById(userUpdateData.getId());
+        user.setFirstName(userUpdateData.getFirstName());
+        user.setLastName(userUpdateData.getLastName());
+        user.setEmail(userUpdateData.getEmail());
+        user.setWorks(userUpdateData.getWorks());
+        userRepository.save(user);
+    }
+
 
     @Override
     public User findById(int id) {
@@ -75,6 +107,11 @@ public class UserServiceImpl implements UserService {
             // todo throw new excep
         }
         return user;
+    }
+
+    @Override
+    public List<User> findByRoleName(String roleName) {
+        return userRepository.findByRoleName(roleName);
     }
 
     @Override

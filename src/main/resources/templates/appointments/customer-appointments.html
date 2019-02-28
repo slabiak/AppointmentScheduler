@@ -5,7 +5,7 @@
 
 <!-- Page Content -->
 <div class="row align-items-center justify-content-center"   style="margin-top: 50px">
-    <div>
+    <div th:fragment="customerAppointments">
         <table id="appointments" class="table table-striped text-center" >
             <thead class="thead-dark">
             <tr>
@@ -13,7 +13,7 @@
                 <th> Provider </th>
                 <th> Start </th>
                 <th> End </th>
-                <th> Details </th>
+                <th> Action </th>
             </tr>
             </thead>
             <tbody>
@@ -30,6 +30,7 @@
             </tbody>
         </table>
     </div>
+
 
 
 </div>

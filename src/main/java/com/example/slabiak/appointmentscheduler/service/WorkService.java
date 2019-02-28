@@ -5,7 +5,8 @@ import com.example.slabiak.appointmentscheduler.entity.Work;
 import java.util.List;
 
 public interface WorkService {
-    void save(Work customer);
+    void save(Work work);
+    void update(Work work);
     Work findById(int id);
     List<Work> findAll();
     void deleteById(int id);

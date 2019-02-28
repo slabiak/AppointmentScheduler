@@ -12,10 +12,12 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
+@RequestMapping("/api")
 @RestController
 public class AjaxController {
 
@@ -28,17 +30,17 @@ public class AjaxController {
     @Autowired
     AppointmentService appointmentService;
 
-    @GetMapping("/api/works")
+    @GetMapping("/works")
     List<Work> getWorks(){
         return workService.findAll();
     }
 
-    @GetMapping("/api/users/works/{workId}")
+    @GetMapping("/users/works/{workId}")
     List<User> getUsersByWork(@PathVariable("workId") int workId){
         return userService.findByWorks(workService.findById(workId));
     }
 
-    @GetMapping("/api/user/{userId}/appointments")
+    @GetMapping("/user/{userId}/appointments")
     List<Appointment> getAppointmentsForUser(@PathVariable("userId") int userId, Authentication authentication) {
         if (authentication.getAuthorities().contains(new SimpleGrantedAuthority("ROLE_CUSTOMER"))) {
             return userService.findById(userId).getAppointmentsByCustomer();

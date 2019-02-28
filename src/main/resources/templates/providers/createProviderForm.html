@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" th:replace="~{fragments/layout :: layout (~{::body},'','Registration form')}" xmlns:sec="http://www.w3.org/1999/xhtml">
+<body>
+<div class="row" style="margin-top: 50px";>
+    <div class="col-lg-3 text-center"></div>
+    <div class="col-lg-6 text-center">
+        <div class="card">
+            <div class="card-header">
+                Create or Update Provider
+            </div>
+            <div class="card-body">
+                <!-- Registration Form -->
+                <form th:action="@{/providers/new}" th:object="${user}" method="POST" class="form-horizontal">
+
+                    <div th:if="${id!=null}">
+                        <input type="hidden" name="id" th:value="${id}">
+                    </div>
+
+                    <div th:if="${registrationError != null}" class="alert alert-danger">
+                        <p th:text="${registrationError}"></p>
+                    </div>
+
+                    <div style="margin-bottom: 25px" class="input-group">
+                        <span class="input-group-addon"><i class="glyphicon glyphicon-user"></i></span>
+                        <input type="text" th:field="*{userName}"  placeholder="Username" class="form-control">
+                    </div>
+
+                    <div style="margin-bottom: 25px" class="input-group">
+                        <span class="input-group-addon"><i class="glyphicon glyphicon-lock"></i></span>
+                        <input type="password" th:field="*{password}" placeholder="Password" class="form-control" >
+                    </div>
+
+                    <div style="margin-bottom: 25px" class="input-group">
+                        <span class="input-group-addon"><i class="glyphicon glyphicon-lock"></i></span>
+                        <input type="password" th:field="*{matchingPassword}" placeholder="Repeat password" class="form-control" >
+                    </div>
+                    <div style="margin-bottom: 25px" class="input-group">
+                        <span class="input-group-addon"><i class="glyphicon glyphicon-user"></i></span>
+                        <input type="text" th:field="*{firstName}"  placeholder="First Name" class="form-control">
+                    </div>
+
+                    <div style="margin-bottom: 25px" class="input-group">
+                        <span class="input-group-addon"><i class="glyphicon glyphicon-user"></i></span>
+                        <input type="text" th:field="*{lastName}"  placeholder="Last Name" class="form-control">
+                    </div>
+
+                    <div style="margin-bottom: 25px" class="input-group">
+                        <span class="input-group-addon"><i class="glyphicon glyphicon-user"></i></span>
+                        <input type="text" th:field="*{email}"  placeholder="E-mail" class="form-control">
+                    </div>
+
+                    <div style="margin-bottom: 25px" class="input-group">
+                        <ul>
+                            <li th:each="work : ${works}">
+                                <input type="checkbox" th:field="*{selectedWorks}" th:value="${work.id}" />
+                                <label th:for="${#ids.prev('selectedWorks')}"
+                                       th:text="${work.name}">Heating</label>
+                            </li>
+                        </ul>
+                    </div>
+
+
+                    <div style="margin-top: 10px" class="input-group">
+                        <button type="submit" class="btn btn-success">Save provider</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <div class="col-lg-3 text-center"></div>
+</div>
+</body>
+</html>

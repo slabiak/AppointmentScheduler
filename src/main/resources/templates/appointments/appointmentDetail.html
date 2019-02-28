@@ -12,12 +12,24 @@
             </thead>
             <tbody>
             <tr>
-                <td>Start date </td>
-                <td><span th:text="${appointment.start}"> 10.01.2019 13:41:45 </span></td>
+                <td>Customer</td>
+                <td><span th:text="${appointment.customer.firstName+' '+appointment.customer.userName}">Name Surname</span></td>
+            </tr>
+            <tr>
+                <td>Provider</td>
+                <td><span th:text="${appointment.provider.firstName+' '+appointment.provider.userName}">Name Surname</span></td>
             </tr>
             <tr>
                 <td>Work </td>
                 <td><span th:text="${appointment.work.name}"> english </span></td>
+            </tr>
+            <tr>
+                <td>Description </td>
+                <td><span th:text="${appointment.work.description}">description</span></td>
+            </tr>
+            <tr>
+                <td>Start date </td>
+                <td><span th:text="${appointment.start}"> 10.01.2019 13:41:45 </span></td>
             </tr>
             <tr>
                 <td>Duration </td>

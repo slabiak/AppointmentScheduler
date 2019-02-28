@@ -24,7 +24,7 @@ public class Work extends BaseEntity {
     @JsonIgnore
     @ManyToMany
     @JoinTable(name="works_providers", joinColumns=@JoinColumn(name="id_work"), inverseJoinColumns=@JoinColumn(name="id_user"))
-    private List<User> users;
+    private List<User> providers;
 
     public String getName() {
         return name;
@@ -58,11 +58,11 @@ public class Work extends BaseEntity {
         this.duration = duration;
     }
 
-    public List<User> getUsers() {
-        return users;
+    public List<User> getProviders() {
+        return providers;
     }
 
-    public void setUsers(List<User> users) {
-        this.users = users;
+    public void setProviders(List<User> providers) {
+        this.providers = providers;
     }
 }

@@ -40,14 +40,8 @@ public class AppointmentController {
     @GetMapping("/{id}")
     public String showAppointmentDetail(@PathVariable("id") int id, Model model, Authentication authentication) {
         model.addAttribute("appointment", appointmentService.findById(id));
-        if (authentication.getAuthorities().contains(new SimpleGrantedAuthority("ROLE_CUSTOMER"))) {
-            return "appointments/customer-appointment";
-        } else if(authentication.getAuthorities().contains(new SimpleGrantedAuthority("ROLE_PROVIDER")))
-            return "appointments/provider-appointment";
-        else{
-            return "home";
+            return "appointments/appointmentDetail";
         }
-    }
 
 
     @GetMapping("/select_service")

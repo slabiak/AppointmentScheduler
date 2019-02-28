@@ -1,6 +1,9 @@
 package com.example.slabiak.appointmentscheduler.model;
 
 
+import javax.persistence.criteria.CriteriaBuilder;
+import java.util.List;
+
 public class UserRegisterForm {
 
     private String userName;
@@ -14,6 +17,8 @@ public class UserRegisterForm {
     private String lastName;
 
     private String email;
+
+    private List<Integer> selectedWorks;
 
     public UserRegisterForm(){
 
@@ -75,5 +80,13 @@ public class UserRegisterForm {
 
     public void setEmail(String email) {
         this.email = email;
+    }
+
+    public List<Integer> getSelectedWorks() {
+        return selectedWorks;
+    }
+
+    public void setSelectedWorks(List<Integer> selectedWorks) {
+        this.selectedWorks = selectedWorks;
     }
 }

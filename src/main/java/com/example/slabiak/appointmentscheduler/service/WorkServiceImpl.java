@@ -21,6 +21,16 @@ public class WorkServiceImpl implements WorkService {
     }
 
     @Override
+    public void update(Work workUpdateData) {
+        Work work = findById(workUpdateData.getId());
+        work.setName(workUpdateData.getName());
+        work.setPrice(workUpdateData.getPrice());
+        work.setDuration(workUpdateData.getDuration());
+        work.setDescription(workUpdateData.getDescription());
+        workRepository.save(work);
+    }
+
+    @Override
     public Work findById(int id) {
         Optional<Work> result = workRepository.findById(id);
 
