@@ -43,11 +43,11 @@ public class AppointmentServiceTests {
         appointments.add(appointment);
     }
 
-    @Test
+    /*@Test
     public void shouldSaveAppointment(){
         appointmentService.save(appointment);
         verify(appointmentRepository).save(appointment);
-    }
+    }*/
 
     @Test
     public void shouldFindById() {

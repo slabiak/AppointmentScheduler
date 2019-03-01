@@ -1,5 +1,7 @@
 package com.example.slabiak.appointmentscheduler.controller;
 
+import com.example.slabiak.appointmentscheduler.dao.WorkingPlanRepository;
+import com.example.slabiak.appointmentscheduler.entity.WorkingPlan;
 import com.example.slabiak.appointmentscheduler.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
@@ -14,15 +16,20 @@ public class HomeController {
 
     @Autowired
     UserService userService;
+    @Autowired
+    WorkingPlanRepository workingPlanRepository;
 
     @GetMapping("/")
     public String showHome(Model model, Authentication authentication) {
         model.addAttribute("user",userService.findByUserName(authentication.getName()));
+
         return "home";
     }
 
     @GetMapping("/login")
     public String login(Model model, Principal principal) {
+        WorkingPlan plan = workingPlanRepository.getOne(1);
+        System.out.println(plan.getSunday().getStart());
         if(principal !=null){
              return "redirect:/";
         }

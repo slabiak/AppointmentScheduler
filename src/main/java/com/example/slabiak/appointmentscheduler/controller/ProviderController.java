@@ -1,5 +1,6 @@
 package com.example.slabiak.appointmentscheduler.controller;
 
+import com.example.slabiak.appointmentscheduler.dao.WorkingPlanRepository;
 import com.example.slabiak.appointmentscheduler.entity.User;
 import com.example.slabiak.appointmentscheduler.model.UserRegisterForm;
 import com.example.slabiak.appointmentscheduler.service.UserService;
@@ -19,6 +20,9 @@ public class ProviderController {
 
     @Autowired
     private WorkService workService;
+
+    @Autowired
+    private WorkingPlanRepository workingPlanRepository;
 
     @GetMapping("")
     public String showAllProviders(Model model) {
@@ -50,6 +54,7 @@ public class ProviderController {
     public String showProviderDetails(@PathVariable("id") int id, Model model) {
         model.addAttribute("provider", userService.findById(id));
         model.addAttribute("allWorks", workService.findAll());
+        model.addAttribute("plan",workingPlanRepository.getOne(1));
         return "providers/updateProviderForm";
     }
 

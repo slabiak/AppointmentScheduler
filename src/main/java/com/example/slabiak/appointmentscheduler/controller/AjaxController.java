@@ -15,6 +15,10 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.util.ArrayList;
 import java.util.List;
 
 @RequestMapping("/api")
@@ -47,7 +51,15 @@ public class AjaxController {
         } else if(authentication.getAuthorities().contains(new SimpleGrantedAuthority("ROLE_PROVIDER")))
             return userService.findById(userId).getAppointmentsByProvider();
         else return null;
+    }
 
+    @GetMapping("/hours/{userId}/{workId}/{date}")
+    List<LocalTime> getAvailableHours(@PathVariable("userId") int userId, @PathVariable("workId") int workId, @PathVariable("date") String date) {
+        LocalDate d = LocalDate.parse(date);
+        ArrayList<LocalTime> availablesHours = new ArrayList<LocalTime>();
+        availablesHours.add(LocalTime.now());
+        availablesHours.add(LocalTime.now().plusMinutes(20));
+        return availablesHours;
     }
 
 }

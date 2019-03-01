@@ -7,10 +7,7 @@
     <form th:action="@{/appointments/save}" th:object="${appointmentForm}" method='POST'>
         <input type="hidden" name="workId" th:value="${appointmentForm.workId}">
         <input type="hidden" name="providerId" th:value="${appointmentForm.providerId}">
-
-
         <label>Start date: </label><input type="datetime-local" th:field="*{start}"/>
-        <label>End date: </label><input type="datetime-local" th:field="*{end}"/>
         <input type="submit" value="Submit"/>
 
     </form>

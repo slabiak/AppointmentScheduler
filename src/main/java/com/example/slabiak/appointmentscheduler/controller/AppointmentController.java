@@ -66,13 +66,8 @@ public class AppointmentController {
 
     @PostMapping("/save")
     public String saveAppointment(@ModelAttribute("appointmentForm") AppointmentRegisterForm appointmentForm, Authentication authentication){
-        Appointment appointment = new Appointment();
-        appointment.setCustomer(userService.findByUserName(authentication.getName()));
-        appointment.setProvider(userService.findById(appointmentForm.getProviderId()));
-        appointment.setWork(workService.findById(appointmentForm.getWorkId()));
-        appointment.setStart(appointmentForm.getStart());
-        appointment.setEnd(appointmentForm.getEnd());
-        appointmentService.save(appointment);
+        appointmentForm.setCustomerId(userService.findByUserName(authentication.getName()).getId());
+        appointmentService.save(appointmentForm);
         return "redirect:/customers/";
     }
 

@@ -8,6 +8,7 @@ public class AppointmentRegisterForm {
 
     private int workId;
     private int providerId;
+    private int customerId;
 
     @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm")
     private LocalDateTime start;
@@ -48,5 +49,13 @@ public class AppointmentRegisterForm {
 
     public void setEnd(LocalDateTime end) {
         this.end = end;
+    }
+
+    public int getCustomerId() {
+        return customerId;
+    }
+
+    public void setCustomerId(int customerId) {
+        this.customerId = customerId;
     }
 }
