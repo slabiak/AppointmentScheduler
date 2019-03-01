@@ -252,7 +252,7 @@ a[data-goto]:hover {
   border-top: 0 hidden transparent;
   /* no top border on first row */ }
 
-/* Day Row (used within the header and the DayGrid)
+/* DayPlan Row (used within the header and the DayGrid)
 --------------------------------------------------------------------------------------------------*/
 .fc-row {
   position: relative; }

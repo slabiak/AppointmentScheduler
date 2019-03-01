@@ -4,6 +4,7 @@ import com.example.slabiak.appointmentscheduler.entity.Appointment;
 import com.example.slabiak.appointmentscheduler.entity.User;
 import com.example.slabiak.appointmentscheduler.entity.Work;
 import com.example.slabiak.appointmentscheduler.model.ApiResponse;
+import com.example.slabiak.appointmentscheduler.model.TimePeroid;
 import com.example.slabiak.appointmentscheduler.service.AppointmentService;
 import com.example.slabiak.appointmentscheduler.service.UserService;
 import com.example.slabiak.appointmentscheduler.service.WorkService;
@@ -54,12 +55,11 @@ public class AjaxController {
     }
 
     @GetMapping("/hours/{userId}/{workId}/{date}")
-    List<LocalTime> getAvailableHours(@PathVariable("userId") int userId, @PathVariable("workId") int workId, @PathVariable("date") String date) {
+    List<TimePeroid> getAvailableHours(@PathVariable("userId") int userId, @PathVariable("workId") int workId, @PathVariable("date") String date) {
         LocalDate d = LocalDate.parse(date);
-        ArrayList<LocalTime> availablesHours = new ArrayList<LocalTime>();
-        availablesHours.add(LocalTime.now());
-        availablesHours.add(LocalTime.now().plusMinutes(20));
-        return availablesHours;
+        List<TimePeroid> peroids = appointmentService.getProviderAvailableTimePeroids(1,1,d);
+        return peroids;
+
     }
 
 }

@@ -29,7 +29,7 @@ public class HomeController {
     @GetMapping("/login")
     public String login(Model model, Principal principal) {
         WorkingPlan plan = workingPlanRepository.getOne(1);
-        System.out.println(plan.getSunday().getStart());
+        System.out.println(plan.getSunday().getWorkingHours().getStart());
         if(principal !=null){
              return "redirect:/";
         }

@@ -1,7 +1,6 @@
 package com.example.slabiak.appointmentscheduler.entity;
 
-import com.example.slabiak.appointmentscheduler.entity.BaseEntity;
-import com.example.slabiak.appointmentscheduler.model.Day;
+import com.example.slabiak.appointmentscheduler.model.DayPlan;
 import org.hibernate.annotations.Type;
 
 import javax.persistence.Column;
@@ -14,88 +13,116 @@ public class WorkingPlan extends BaseEntity {
 
     @Type(type = "json")
     @Column(columnDefinition = "json", name="monday")
-    private Day monday;
+    private DayPlan monday;
 
     @Type(type = "json")
     @Column(columnDefinition = "json", name="tuesday")
-    private Day tuesday;
+    private DayPlan tuesday;
 
     @Type(type = "json")
     @Column(columnDefinition = "json", name="wednesday")
-    private Day wednesday;
+    private DayPlan wednesday;
 
     @Type(type = "json")
     @Column(columnDefinition = "json", name="thursday")
-    private Day thursday;
+    private DayPlan thursday;
 
     @Type(type = "json")
     @Column(columnDefinition = "json", name="friday")
-    private Day friday;
+    private DayPlan friday;
 
     @Type(type = "json")
     @Column(columnDefinition = "json", name="saturday")
-    private Day saturday;
+    private DayPlan saturday;
 
     @Type(type = "json")
     @Column(columnDefinition = "json", name="sunday")
-    private Day sunday;
+    private DayPlan sunday;
 
     public WorkingPlan() {
     }
 
-    public Day getMonday() {
+    public DayPlan getDay(String day){
+        switch(day){
+            case "monday":
+            return monday;
+
+            case "tuesday":
+            return tuesday;
+
+            case "wednesday":
+                return wednesday;
+
+            case "thursday":
+                return thursday;
+
+            case "friday":
+                return friday;
+
+            case "saturday":
+                return saturday;
+
+            case "sunday":
+                return sunday;
+
+                default:
+                    return null;
+        }
+    }
+
+    public DayPlan getMonday() {
         return monday;
     }
 
-    public void setMonday(Day monday) {
+    public void setMonday(DayPlan monday) {
         this.monday = monday;
     }
 
-    public Day getTuesday() {
+    public DayPlan getTuesday() {
         return tuesday;
     }
 
-    public void setTuesday(Day tuesday) {
+    public void setTuesday(DayPlan tuesday) {
         this.tuesday = tuesday;
     }
 
-    public Day getWednesday() {
+    public DayPlan getWednesday() {
         return wednesday;
     }
 
-    public void setWednesday(Day wednesday) {
+    public void setWednesday(DayPlan wednesday) {
         this.wednesday = wednesday;
     }
 
-    public Day getThursday() {
+    public DayPlan getThursday() {
         return thursday;
     }
 
-    public void setThursday(Day thursday) {
+    public void setThursday(DayPlan thursday) {
         this.thursday = thursday;
     }
 
-    public Day getFriday() {
+    public DayPlan getFriday() {
         return friday;
     }
 
-    public void setFriday(Day friday) {
+    public void setFriday(DayPlan friday) {
         this.friday = friday;
     }
 
-    public Day getSaturday() {
+    public DayPlan getSaturday() {
         return saturday;
     }
 
-    public void setSaturday(Day saturday) {
+    public void setSaturday(DayPlan saturday) {
         this.saturday = saturday;
     }
 
-    public Day getSunday() {
+    public DayPlan getSunday() {
         return sunday;
     }
 
-    public void setSunday(Day sunday) {
+    public void setSunday(DayPlan sunday) {
         this.sunday = sunday;
     }
 }

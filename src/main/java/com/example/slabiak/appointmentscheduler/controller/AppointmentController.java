@@ -58,7 +58,7 @@ public class AppointmentController {
         return "appointments/select-provider";
     }
 
-    @PostMapping("/select_date")
+    @GetMapping("/select_date")
     public String selectDate(@ModelAttribute("appointmentForm") AppointmentRegisterForm appointmentForm, Model model){
         model.addAttribute(appointmentForm);
         return "appointments/select-date";

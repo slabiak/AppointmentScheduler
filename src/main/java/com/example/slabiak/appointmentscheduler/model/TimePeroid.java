@@ -1,19 +1,17 @@
 package com.example.slabiak.appointmentscheduler.model;
 
+import java.sql.Time;
 import java.time.LocalTime;
-import java.util.List;
 
-public class Day {
-
+public class TimePeroid implements Comparable<TimePeroid> {
     private LocalTime start;
     private LocalTime end;
-    private List<Break> breaks;
 
-    public Day(){
+    public TimePeroid(){
 
     }
 
-    public Day(LocalTime start, LocalTime end) {
+    public TimePeroid(LocalTime start, LocalTime end) {
         this.start = start;
         this.end = end;
     }
@@ -34,11 +32,8 @@ public class Day {
         this.end = end;
     }
 
-    public List<Break> getBreaks() {
-        return breaks;
-    }
-
-    public void setBreaks(List<Break> breaks) {
-        this.breaks = breaks;
+    @Override
+    public int compareTo(TimePeroid o) {
+        return this.getStart().compareTo(o.getStart());
     }
 }
