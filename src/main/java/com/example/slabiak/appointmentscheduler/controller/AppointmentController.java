@@ -12,6 +12,9 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+
 @Controller
 @RequestMapping("/appointments")
 public class AppointmentController {
@@ -44,30 +47,38 @@ public class AppointmentController {
         }
 
 
-    @GetMapping("/select_service")
+    @GetMapping("/new")
   public String selectService(Model model) {
         model.addAttribute("works", workService.findAll());
-        model.addAttribute("appointmentForm", new AppointmentRegisterForm());
         return "appointments/select-service";
     }
 
-   @PostMapping("/select_provider")
-    public String selectProvider(@ModelAttribute("appointmentForm") AppointmentRegisterForm appointmentForm, Model model) {
-        model.addAttribute("providers", userService.findByWorks(workService.findById(appointmentForm.getWorkId())));
-        model.addAttribute(appointmentForm);
+   @GetMapping("/new/{workId}")
+    public String selectProvider(@PathVariable("workId") int workId, Model model) {
+        model.addAttribute("providers", userService.findByWorks(workService.findById(workId)));
+        model.addAttribute("workId",workId);
         return "appointments/select-provider";
     }
 
-    @GetMapping("/select_date")
-    public String selectDate(@ModelAttribute("appointmentForm") AppointmentRegisterForm appointmentForm, Model model){
-        model.addAttribute(appointmentForm);
+    @GetMapping("/new/{workId}/{providerId}")
+    public String selectDate(@PathVariable("workId") int workId,@PathVariable("providerId") int providerId, Model model){
+        model.addAttribute("providerId",providerId);
+        model.addAttribute("workId",workId);
         return "appointments/select-date";
     }
 
-    @PostMapping("/save")
-    public String saveAppointment(@ModelAttribute("appointmentForm") AppointmentRegisterForm appointmentForm, Authentication authentication){
-        appointmentForm.setCustomerId(userService.findByUserName(authentication.getName()).getId());
-        appointmentService.save(appointmentForm);
+    @GetMapping("/new/{workId}/{providerId}/{dateTime}")
+    public String confirm(@PathVariable("workId") int workId,@PathVariable("providerId") int providerId,@PathVariable("dateTime") String dateTime,Model model){
+        model.addAttribute(workId);
+        model.addAttribute(providerId);
+        model.addAttribute("start",dateTime);
+        return "appointments/confirm";
+    }
+
+    @PostMapping("/new")
+    public String saveAppointment(@RequestParam("workId") int workId,@RequestParam("providerId") int providerId,@RequestParam("start") String start, Authentication authentication){
+        int customerId= userService.findByUserName(authentication.getName()).getId();
+        appointmentService.save(workId,providerId,customerId,LocalDateTime.parse(start));
         return "redirect:/customers/";
     }
 

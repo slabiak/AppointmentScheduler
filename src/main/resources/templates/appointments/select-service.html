@@ -2,19 +2,36 @@
 <html xmlns:th="http://www.thymeleaf.org" th:replace="~{fragments/layout :: layout (~{::body},'','Select service')}" xmlns:sec="http://www.w3.org/1999/xhtml">
 <body>
 <div class="row align-items-center justify-content-center d-block"   style="margin-top: 50px">
-    <p> Select service: </p>
-<form  method='POST' th:object="${appointmentForm}" th:action="@{/appointments/select_provider}" >
+    <div class="row align-items-center justify-content-center"   style="margin-top: 50px">
+        <div>
+            <table id="customers" class="table table-striped text-center" >
+                <thead class="thead-dark">
+                <tr>
+                    <th> Name </th>
+                    <th> Duration </th>
+                    <th> Price </th>
+                    <th> Available providers </th>
+                    <th> Action </th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:if="${works == null}">
+                    <td colspan="4"> No works available </td>
+                </tr>
+                <tr th:each="work : ${works}">
+                    <td><span th:text="${work.name}"> work name </span></td>
+                    <td><span th:text="${work.duration }"> 30 min </span></td>
+                    <td><span th:text="${work.price}"> 3 </span></td>
+                    <td><span th:text="${work.providers.size()}"> 3 </span></td>
+                    <td> <a class="btn btn-primary" th:href="@{'/appointments/new/' + ${work.id}}" role="button">Select</a>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
 
+    </div>
 
-
-    <select th:field="*{workId}">
-        <option th:each="work : ${works}"
-                th:value="${work.id}"
-                th:utext="${work.name}"/>
-    </select>
-
-    <input name="submit" type="submit" value="submit" />
-</form>
 </div>
 </body>
 </html>

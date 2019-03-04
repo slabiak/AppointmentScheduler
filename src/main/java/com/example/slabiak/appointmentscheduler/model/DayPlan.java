@@ -14,18 +14,25 @@ public class DayPlan {
     public DayPlan(){
     }
 
-    public ArrayList<TimePeroid> getPeroidsWithBreaksExcluded(){
+    public ArrayList<TimePeroid> peroidsWithBreaksExcluded(){
         ArrayList<TimePeroid> breaksExcluded = new ArrayList<>();
         breaksExcluded.add(getWorkingHours());
         List<TimePeroid> breaks = getBreaks();
+
         if(breaks.size()>0) {
             ArrayList<TimePeroid> toAdd = new ArrayList<TimePeroid>();
             for (TimePeroid break1 : breaks) {
+                if(break1.getStart().isBefore(workingHours.getStart())){
+                    break1.setStart(workingHours.getStart());
+                }
+                if(break1.getEnd().isAfter(workingHours.getEnd())){
+                    break1.setEnd(workingHours.getEnd());
+                }
                 for (TimePeroid peroid : breaksExcluded) {
-                    if (break1.getStart().isBefore(peroid.getStart()) && break1.getEnd().isAfter(peroid.getStart()) && break1.getEnd().isBefore(peroid.getEnd())) {
+                    if (break1.getStart().equals(peroid.getStart()) && break1.getEnd().isAfter(peroid.getStart()) && break1.getEnd().isBefore(peroid.getEnd())) {
                         peroid.setStart(break1.getEnd());
                     }
-                    if (break1.getStart().isAfter(peroid.getStart()) && break1.getStart().isBefore(peroid.getEnd()) && break1.getEnd().isAfter(peroid.getEnd())) {
+                    if (break1.getStart().isAfter(peroid.getStart()) && break1.getStart().isBefore(peroid.getEnd()) && break1.getEnd().equals(peroid.getEnd())) {
                         peroid.setEnd(break1.getStart());
                     }
                     if (break1.getStart().isAfter(peroid.getStart()) && break1.getEnd().isBefore(peroid.getEnd())) {
@@ -37,6 +44,8 @@ public class DayPlan {
             breaksExcluded.addAll(toAdd);
             Collections.sort(breaksExcluded);
         }
+
+
         return breaksExcluded;
     }
 
@@ -55,4 +64,5 @@ public class DayPlan {
     public void setBreaks(List<TimePeroid> breaks) {
         this.breaks = breaks;
     }
+
 }

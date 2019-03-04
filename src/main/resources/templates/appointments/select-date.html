@@ -1,20 +1,68 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org" th:replace="~{fragments/layout :: layout (~{::body},'','Select date')}" xmlns:sec="http://www.w3.org/1999/xhtml">
+<html xmlns:th="http://www.thymeleaf.org" th:replace="~{fragments/layout :: layout (~{::body},'home','Home')}" xmlns:sec="http://www.w3.org/1999/xhtml">
 <body>
+<div class="row mt-3">
+    <div class="col">
 
-<div class="row align-items-center justify-content-center"   style="margin-top: 50px">
-    <p>Select date</p>
-<span th:text="${appointmentForm.workId}"></span>
-    <form th:action="@{/appointments/save}" th:object="${appointmentForm}" method='POST'>
-        <input type="hidden" name="workId" th:value="${appointmentForm.workId}">
-        <input type="hidden" name="providerId" th:value="${appointmentForm.providerId}">
-        <label>Start date: </label><input type="datetime-local" th:field="*{start}"/>
-        <input type="submit" value="Submit"/>
+    </div>
+    <div class="col-10">
+        <div id='calendar'></div>
+    </div>
+    <div class="col">
 
-    </form>
-
+    </div>
+</div>
 </div>
 
+<script th:inline="javascript">
 
+
+    $(function() {
+        $('#calendar').fullCalendar({
+            defaultView: 'listDay',
+            header: {
+                center: 'title',
+            },
+            allDaySlot: false,
+            minTime: "06:00:00",
+            maxTime: "21:00:00",
+            firstDay: 2,
+            timeFormat: 'H:mm', // uppercase H for 24-hour clock
+            eventSources: [
+
+                // your event source
+                {
+                    events: function(start, end, timezone, callback) {
+                        var url = [[${'/api/hours/'+workId+'/'+providerId+'/'}]] + start.format('YYYY-MM-DD').toString();
+                        console.log(url);
+                        $.ajax({
+                            url:  url,
+                            data: {
+                            },
+                            success: function(doc) {
+
+                                var x = doc.map(function(entry) {
+                                    var URL = [[${'/appointments/new/'+workId+'/'+providerId+'/'}]] + entry.start;
+                                    entry.url = URL;
+                                    return entry;
+                                });
+                                callback(x);
+                            }
+                        });
+                    },
+                    color: 'yellow',   // an option!
+                    textColor: 'black' // an option!
+                }
+            ]
+
+        })
+
+    });
+
+
+
+
+</script>
 </body>
+
 </html>

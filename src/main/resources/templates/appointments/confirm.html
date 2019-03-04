@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" th:replace="~{fragments/layout :: layout (~{::body},'appointments','New appointment confirmation')}" xmlns:sec="http://www.w3.org/1999/xhtml">
+
+<body>
+work id: <span th:text="${workId}"></span>
+provider id: <span th:text="${providerId}"></span>
+date: <span th:text="${start}"></span>
+<form th:action="@{/appointments/new}" method="POST">
+    <input type="hidden" name="workId" th:value="${workId}">
+    <input type="hidden" name="providerId" th:value="${providerId}">
+    <input type="hidden" name="start" th:value="${start}">
+
+    <input type="submit">
+</body>
+
+</form>
+</html>

@@ -4,6 +4,7 @@ import com.example.slabiak.appointmentscheduler.entity.Appointment;
 import com.example.slabiak.appointmentscheduler.entity.User;
 import com.example.slabiak.appointmentscheduler.entity.Work;
 import com.example.slabiak.appointmentscheduler.model.ApiResponse;
+import com.example.slabiak.appointmentscheduler.model.AppointmentRegisterForm;
 import com.example.slabiak.appointmentscheduler.model.TimePeroid;
 import com.example.slabiak.appointmentscheduler.service.AppointmentService;
 import com.example.slabiak.appointmentscheduler.service.UserService;
@@ -16,6 +17,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.sql.Time;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -54,12 +56,22 @@ public class AjaxController {
         else return null;
     }
 
-    @GetMapping("/hours/{userId}/{workId}/{date}")
-    List<TimePeroid> getAvailableHours(@PathVariable("userId") int userId, @PathVariable("workId") int workId, @PathVariable("date") String date) {
+    @GetMapping("/hours/{workId}/{userId}/{date}")
+    List<AppointmentRegisterForm> getAvailableHours(@PathVariable("userId") int userId, @PathVariable("workId") int workId, @PathVariable("date") String date) {
         LocalDate d = LocalDate.parse(date);
-        List<TimePeroid> peroids = appointmentService.getProviderAvailableTimePeroids(1,1,d);
-        return peroids;
-
+        List<TimePeroid> peroids = appointmentService.getProviderAvailableTimePeroids(userId,workId,d);
+        List<AppointmentRegisterForm> appointments = new ArrayList<>();
+        for(TimePeroid peroid:peroids){
+            appointments.add(new AppointmentRegisterForm(workId,userId,peroid.getStart().atDate(d),peroid.getEnd().atDate(d)));
+        }
+        return appointments;
     }
+
+//    @GetMapping("/hours/free/{workId}/{userId}/{date}")
+//    List<AppointmentRegisterForm> getFreeskits(@PathVariable("userId") int userId, @PathVariable("workId") int workId, @PathVariable("date") String date) {
+//        LocalDate d = LocalDate.parse(date);
+//        List<TimePeroid> peroids = appointmentService.getProviderAvailableTimePeroids(userId,workId,d);
+//        return appointments;
+//    }
 
 }

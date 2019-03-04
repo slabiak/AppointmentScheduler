@@ -19,6 +19,13 @@ public class AppointmentRegisterForm {
     public AppointmentRegisterForm(){
     }
 
+    public AppointmentRegisterForm(int workId, int providerId, LocalDateTime start, LocalDateTime end) {
+        this.workId = workId;
+        this.providerId = providerId;
+        this.start = start;
+        this.end = end;
+    }
+
     public int getWorkId() {
         return workId;
     }

@@ -21,4 +21,5 @@ public interface AppointmentService {
     List<Appointment> getAvailableAppointments(int providerId, int workId, LocalDate date);
     public List<TimePeroid> getProviderAvailableTimePeroids(int providerId, int workId, LocalDate date);
 
+    void save(int workId, int providerId, int customerId, LocalDateTime start);
 }

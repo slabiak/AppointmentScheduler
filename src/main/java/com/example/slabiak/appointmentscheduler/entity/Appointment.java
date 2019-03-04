@@ -9,7 +9,7 @@ import java.time.LocalDateTime;
 @Entity
 @Table(name="appointments")
 @JsonSerialize(using = AppointmentSerializer.class)
-public class Appointment extends BaseEntity {
+public class Appointment extends BaseEntity implements Comparable<Appointment> {
 
     @Column(name="start")
     @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm")
@@ -81,5 +81,10 @@ public class Appointment extends BaseEntity {
 
     public void setWork(Work work) {
         this.work = work;
+    }
+
+    @Override
+    public int compareTo(Appointment o) {
+        return this.getStart().compareTo(o.getStart());
     }
 }

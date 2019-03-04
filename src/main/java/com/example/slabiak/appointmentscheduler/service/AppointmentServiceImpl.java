@@ -17,6 +17,7 @@ import org.springframework.stereotype.Service;
 
 import java.sql.Time;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -98,39 +99,78 @@ public class AppointmentServiceImpl implements AppointmentService{
 
     @Override
     public List<TimePeroid> getProviderAvailableTimePeroids(int providerId, int workId, LocalDate date){
-        WorkingPlan workingPlan = workingPlanRepository.getOne(1);
+       WorkingPlan workingPlan = workingPlanRepository.getOne(1);
         DayPlan selectedDay = workingPlan.getDay(date.getDayOfWeek().toString().toLowerCase());
-        List<Appointment> providerAppointments = findByProviderAndDate(userService.findById(providerId),date);
 
+        List<Appointment> providerAppointments = findByProviderAndDate(userService.findById(providerId),date);
 
         List<TimePeroid> availablePeroids = new ArrayList<TimePeroid>();
         // get peroids from working hours for selected day excluding breaks
-        availablePeroids = selectedDay.getPeroidsWithBreaksExcluded();
+
+        availablePeroids = selectedDay.peroidsWithBreaksExcluded();
         // exclude booked appointments for selected provider
         availablePeroids = excludeAppointments(availablePeroids,providerAppointments);
-        return availablePeroids;
+       return calculateAvailableHours(availablePeroids,workService.findById(workId));
+       // return availablePeroids;
+    }
+
+    @Override
+    public void save(int workId, int providerId, int customerId, LocalDateTime start) {
+        Appointment appointment = new Appointment();
+        appointment.setCustomer(userService.findById(customerId));
+        appointment.setProvider(userService.findById(providerId));
+        Work work = workService.findById(workId);
+        appointment.setWork(work);
+        appointment.setStart(start);
+        appointment.setEnd(start.plusMinutes(work.getDuration()));
+        appointmentRepository.save(appointment);
+    }
+
+    public List<TimePeroid> calculateAvailableHours(List<TimePeroid> tp, Work work){
+
+        ArrayList<TimePeroid> availableHours = new ArrayList<TimePeroid>();
+
+
+        for(TimePeroid peroid: tp){
+            TimePeroid workPeroid = new TimePeroid(peroid.getStart(),peroid.getStart().plusMinutes(work.getDuration()));
+            while(workPeroid.getEnd().isBefore(peroid.getEnd()) || workPeroid.getEnd().equals(peroid.getEnd())){
+                availableHours.add(new TimePeroid(workPeroid.getStart(),workPeroid.getStart().plusMinutes(work.getDuration())));
+                workPeroid.setStart(workPeroid.getStart().plusMinutes(work.getDuration()));
+                workPeroid.setEnd(workPeroid.getEnd().plusMinutes(work.getDuration()));
+
+            }
+        }
+
+        return availableHours;
     }
 
     public List<TimePeroid> excludeAppointments(List<TimePeroid> peroids, List<Appointment> appointments){
-        if(appointments.size()>0){
+
+        System.out.println("total app:" +appointments.size());
             List<TimePeroid> toAdd = new ArrayList<TimePeroid>();
+            Collections.sort(appointments);
             for(Appointment appointment: appointments){
-                for(TimePeroid plan:peroids){
-                    if(appointment.getStart().toLocalTime().isBefore(plan.getStart()) && appointment.getEnd().toLocalTime().isAfter(plan.getStart()) && appointment.getEnd().toLocalTime().isBefore(plan.getEnd())){
-                        plan.setStart(appointment.getEnd().toLocalTime());
+                System.out.println("====");
+                System.out.println("appointment start:" + appointment.getStart()+" --- appointemt end:" +appointment.getEnd());
+                for(TimePeroid peroid:peroids){
+                    System.out.println("peroid start:" +peroid.getStart()+" -- peroid end:" +peroid.getEnd());
+                    if((appointment.getStart().toLocalTime().isBefore(peroid.getStart()) || appointment.getStart().toLocalTime().equals(peroid.getStart())) && appointment.getEnd().toLocalTime().isAfter(peroid.getStart()) && appointment.getEnd().toLocalTime().isBefore(peroid.getEnd())){
+                        peroid.setStart(appointment.getEnd().toLocalTime());
+                        System.out.println("1");
                     }
-                    if(appointment.getStart().toLocalTime().isAfter(plan.getStart()) && appointment.getStart().toLocalTime().isBefore(plan.getEnd()) && appointment.getEnd().toLocalTime().isAfter(plan.getEnd())){
-                        plan.setEnd(appointment.getStart().toLocalTime());
+                    if(appointment.getStart().toLocalTime().isAfter(peroid.getStart())&& appointment.getStart().toLocalTime().isBefore(peroid.getEnd()) && appointment.getEnd().toLocalTime().isAfter(peroid.getEnd()) || appointment.getEnd().toLocalTime().equals(peroid.getEnd())){
+                        peroid.setEnd(appointment.getStart().toLocalTime());
+                        System.out.println("2");
                     }
-                    if(appointment.getStart().toLocalTime().isAfter(plan.getStart()) && appointment.getEnd().toLocalTime().isBefore(plan.getEnd())){
-                        toAdd.add(new TimePeroid(plan.getStart(),appointment.getStart().toLocalTime()));
-                        plan.setStart(appointment.getEnd().toLocalTime());
+                    if(appointment.getStart().toLocalTime().isAfter(peroid.getStart()) && appointment.getEnd().toLocalTime().isBefore(peroid.getEnd())){
+                        toAdd.add(new TimePeroid(peroid.getStart(),appointment.getStart().toLocalTime()));
+                        peroid.setStart(appointment.getEnd().toLocalTime());
+                        System.out.println("3");
                     }
                 }
             }
             peroids.addAll(toAdd);
             Collections.sort(peroids);
-        }
         return peroids;
     }
 
