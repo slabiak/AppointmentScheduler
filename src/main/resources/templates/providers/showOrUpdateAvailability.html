@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" th:replace="~{fragments/layout :: layout (~{::body},'availabaility','Availability settings')}" xmlns:sec="http://www.w3.org/1999/xhtml">
+<body>
+<div class="row" style="margin-top: 50px";>
+    <div class="col-lg-3 text-center"></div>
+    <div class="col-lg-6 text-center">
+
+        <div>
+            <h2>Working plan:</h2>
+            <table class="table table-striped text-center">
+                <thead class="thead-dark">
+
+                <tr>
+                    <th>Day</th>
+                    <th>Start</th>
+                    <th>End</th>
+                    <th>Breaks</th>
+                </tr>
+                </thead>
+                <form th:action="@{/providers/availability}" method="POST" th:object="${plan}">
+                    <input type="hidden" th:field="*{id}" th:value="${plan.id}">
+                <tr>
+                    <td>Monday</td>
+                    <td><input type="time" th:field="*{monday.workingHours.start}" th:value="${plan.monday.workingHours.start}"></td>
+                    <td><input type="time" th:field="*{monday.workingHours.end}" th:value="${plan.monday.workingHours.start}"></td>
+                    <td><span th:text="${plan.monday.breaks.size()}">3</span> </td>
+                </tr>
+                <tr>
+                    <td>Tuesday</td>
+                    <td><input type="time" th:field="*{tuesday.workingHours.start}" th:value="${plan.tuesday.workingHours.start}"></td>
+                    <td><input type="time" th:field="*{tuesday.workingHours.end}" th:value="${plan.tuesday.workingHours.start}"></td>
+                    <td><span th:text="${plan.tuesday.breaks.size()}">3</span> </td>
+                </tr>
+                <tr>
+                    <td>Wednesday</td>
+                    <td><input type="time" th:field="*{wednesday.workingHours.start}" th:value="${plan.wednesday.workingHours.start}"></td>
+                    <td><input type="time" th:field="*{wednesday.workingHours.end}" th:value="${plan.wednesday.workingHours.start}"></td>
+                    <td><span th:text="${plan.wednesday.breaks.size()}">3</span> </td>
+                </tr>
+                <tr>
+                    <td>Thursday</td>
+                    <td><input type="time" th:field="*{thursday.workingHours.start}" th:value="${plan.thursday.workingHours.start}"></td>
+                    <td><input type="time" th:field="*{thursday.workingHours.end}" th:value="${plan.thursday.workingHours.start}"></td>
+                    <td><span th:text="${plan.thursday.breaks.size()}">3</span> </td>
+                </tr>
+                <tr>
+                    <td>Friday</td>
+                    <td><input type="time" th:field="*{friday.workingHours.start}" th:value="${plan.friday.workingHours.start}"></td>
+                    <td><input type="time" th:field="*{friday.workingHours.end}" th:value="${plan.friday.workingHours.start}"></td>
+                    <td><span th:text="${plan.friday.breaks.size()}">3</span> </td>
+                </tr>
+                <tr>
+                    <td>Saturday</td>
+                    <td><input type="time" th:field="*{saturday.workingHours.start}" th:value="${plan.saturday.workingHours.start}"></td>
+                    <td><input type="time" th:field="*{saturday.workingHours.end}" th:value="${plan.saturday.workingHours.start}"></td>
+                    <td><span th:text="${plan.saturday.breaks.size()}">3</span> </td>
+                </tr>
+                <tr>
+                    <td>Sunday</td>
+                    <td><input type="time" th:field="*{sunday.workingHours.start}" th:value="${plan.sunday.workingHours.start}"></td>
+                    <td><input type="time" th:field="*{sunday.workingHours.end}" th:value="${plan.sunday.workingHours.start}"></td>
+                    <td><span th:text="${plan.sunday.breaks.size()}">3</span> </td>
+                </tr>
+                    <button type="submit" class="button btn-success">Save</button>
+                </form>
+            </table>
+        </div>
+
+        <div>
+            <h2>Breaks</h2>
+            <table  class="table table-striped text-center">
+                <thead class="thead-dark">
+
+                <tr>
+                    <th>Day</th>
+                    <th>Start</th>
+                    <th>End</th>
+                </tr>
+                </thead>
+
+                <tr th:each="break : ${plan.monday.breaks}">
+                    <td>Monday</td>
+                    <td><span th:text="${break.start}">06:00</span></td>
+                    <td><span th:text="${break.end}">18:00</span></td>
+                </tr>
+
+                <tr th:each="break : ${plan.tuesday.breaks}">
+                    <td>Tuesday</td>
+                    <td><span th:text="${break.start}">06:00</span></td>
+                    <td><span th:text="${break.end}">18:00</span></td>
+                </tr>
+
+                <tr th:each="break : ${plan.wednesday.breaks}">
+                    <td>Wednesday</td>
+                    <td><span th:text="${break.start}">06:00</span></td>
+                    <td><span th:text="${break.end}">18:00</span></td>
+                </tr>
+
+                <tr th:each="break : ${plan.thursday.breaks}">
+                    <td>Thursday</td>
+                    <td><span th:text="${break.start}">06:00</span></td>
+                    <td><span th:text="${break.end}">18:00</span></td>
+                </tr>
+
+                <tr th:each="break : ${plan.friday.breaks}">
+                    <td>Friday</td>
+                    <td><span th:text="${break.start}">06:00</span></td>
+                    <td><span th:text="${break.end}">18:00</span></td>
+                </tr>
+
+                <tr th:each="break : ${plan.saturday.breaks}">
+                    <td>Saturday</td>
+                    <td><span th:text="${break.start}">06:00</span></td>
+                    <td><span th:text="${break.end}">18:00</span></td>
+                </tr>
+
+                <tr th:each="break : ${plan.sunday.breaks}">
+                    <td>Sunday</td>
+                    <td><span th:text="${break.start}">06:00</span></td>
+                    <td><span th:text="${break.end}">18:00</span></td>
+                </tr>
+            </table>
+
+        </div>
+    </div>
+
+    <div class="col-lg-3 text-center"></div>
+</div>
+</body>
+</html>

@@ -47,6 +47,11 @@ public class User extends BaseEntity {
     @JoinTable(name="works_providers", joinColumns=@JoinColumn(name="id_user"), inverseJoinColumns=@JoinColumn(name="id_work"))
     private List<Work> works;
 
+    @JsonIgnore
+    @OneToOne(mappedBy="provider", cascade = {CascadeType.ALL})
+    private WorkingPlan workingPlan;
+
+
     public User(){
 
     }
@@ -130,6 +135,15 @@ public class User extends BaseEntity {
 
     public void setWorks(List<Work> works) {
         this.works = works;
+    }
+
+
+    public WorkingPlan getWorkingPlan() {
+        return workingPlan;
+    }
+
+    public void setWorkingPlan(WorkingPlan workingPlan) {
+        this.workingPlan = workingPlan;
     }
 
     @Override

@@ -12,6 +12,12 @@ public class DayPlan {
     private List<TimePeroid> breaks;
 
     public DayPlan(){
+        breaks = new ArrayList<TimePeroid>();
+    }
+
+    public DayPlan(TimePeroid workingHours){
+        this.workingHours = workingHours;
+        this.breaks = new ArrayList<TimePeroid>();
     }
 
     public ArrayList<TimePeroid> peroidsWithBreaksExcluded(){

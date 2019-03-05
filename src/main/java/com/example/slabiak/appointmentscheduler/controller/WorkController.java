@@ -42,8 +42,6 @@ public class WorkController {
         return "redirect:/works";
     }
 
-
-
     @PostMapping("/delete")
     public String deleteWork(@RequestParam("workId") int workId){
         workService.deleteById(workId);

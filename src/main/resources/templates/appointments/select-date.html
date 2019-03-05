@@ -2,13 +2,13 @@
 <html xmlns:th="http://www.thymeleaf.org" th:replace="~{fragments/layout :: layout (~{::body},'home','Home')}" xmlns:sec="http://www.w3.org/1999/xhtml">
 <body>
 <div class="row mt-3">
-    <div class="col">
+    <div class="col-3">
 
     </div>
-    <div class="col-10">
+    <div class="col-6">
         <div id='calendar'></div>
     </div>
-    <div class="col">
+    <div class="col-3">
 
     </div>
 </div>
@@ -20,8 +20,17 @@
     $(function() {
         $('#calendar').fullCalendar({
             defaultView: 'listDay',
+            contentHeight: "auto",
+            validRange: function(nowDate) {
+                return {
+                    start: nowDate,
+                    end: nowDate.clone().add(7, 'days')
+                };
+            },
             header: {
-                center: 'title',
+                left:   'title',
+                center: '',
+                right:  'today prev,next'
             },
             allDaySlot: false,
             minTime: "06:00:00",

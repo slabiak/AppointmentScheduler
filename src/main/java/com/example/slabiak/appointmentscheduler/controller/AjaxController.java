@@ -1,8 +1,10 @@
 package com.example.slabiak.appointmentscheduler.controller;
 
+import com.example.slabiak.appointmentscheduler.dao.WorkingPlanRepository;
 import com.example.slabiak.appointmentscheduler.entity.Appointment;
 import com.example.slabiak.appointmentscheduler.entity.User;
 import com.example.slabiak.appointmentscheduler.entity.Work;
+import com.example.slabiak.appointmentscheduler.entity.WorkingPlan;
 import com.example.slabiak.appointmentscheduler.model.ApiResponse;
 import com.example.slabiak.appointmentscheduler.model.AppointmentRegisterForm;
 import com.example.slabiak.appointmentscheduler.model.TimePeroid;
@@ -37,6 +39,9 @@ public class AjaxController {
     @Autowired
     AppointmentService appointmentService;
 
+    @Autowired
+    WorkingPlanRepository workingPlanRepository;
+
     @GetMapping("/works")
     List<Work> getWorks(){
         return workService.findAll();
@@ -67,11 +72,11 @@ public class AjaxController {
         return appointments;
     }
 
-//    @GetMapping("/hours/free/{workId}/{userId}/{date}")
-//    List<AppointmentRegisterForm> getFreeskits(@PathVariable("userId") int userId, @PathVariable("workId") int workId, @PathVariable("date") String date) {
-//        LocalDate d = LocalDate.parse(date);
-//        List<TimePeroid> peroids = appointmentService.getProviderAvailableTimePeroids(userId,workId,d);
-//        return appointments;
-//    }
+    @GetMapping("/api/plan")
+    String getPlan(){
+       WorkingPlan plan =  workingPlanRepository.getOne(1);
+
+       return userService.findById(1).getWorkingPlan().getMonday().getWorkingHours().getStart().toString();
+    }
 
 }

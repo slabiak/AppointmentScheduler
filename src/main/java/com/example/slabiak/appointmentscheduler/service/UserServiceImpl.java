@@ -5,7 +5,12 @@ import com.example.slabiak.appointmentscheduler.dao.UserRepository;
 import com.example.slabiak.appointmentscheduler.entity.Role;
 import com.example.slabiak.appointmentscheduler.entity.User;
 import com.example.slabiak.appointmentscheduler.entity.Work;
+import com.example.slabiak.appointmentscheduler.entity.WorkingPlan;
+import com.example.slabiak.appointmentscheduler.model.DayPlan;
+import com.example.slabiak.appointmentscheduler.model.TimePeroid;
 import com.example.slabiak.appointmentscheduler.model.UserRegisterForm;
+import org.apache.tomcat.jni.Local;
+import org.apache.tomcat.jni.Time;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -16,6 +21,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import sun.swing.BakedArrayList;
 
+import java.time.LocalTime;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -64,6 +70,16 @@ public class UserServiceImpl implements UserService {
         HashSet<Role> roles = new HashSet<Role>();
         roles.add(role);
         user.setRoles(roles);
+        WorkingPlan wp= new WorkingPlan();
+        wp.setMonday(new DayPlan(new TimePeroid(LocalTime.parse("06:00"),LocalTime.parse("18:00"))));
+        wp.setTuesday(new DayPlan(new TimePeroid(LocalTime.of(06,00),LocalTime.of(18,00))));
+        wp.setWednesday(new DayPlan(new TimePeroid(LocalTime.of(06,00),LocalTime.of(18,00))));
+        wp.setThursday(new DayPlan(new TimePeroid(LocalTime.of(06,00),LocalTime.of(18,00))));
+        wp.setFriday(new DayPlan(new TimePeroid(LocalTime.of(06,00),LocalTime.of(18,00))));
+        wp.setSaturday(new DayPlan(new TimePeroid(LocalTime.of(06,00),LocalTime.of(18,00))));
+        wp.setSunday(new DayPlan(new TimePeroid(LocalTime.of(06,00),LocalTime.of(18,00))));
+        wp.setProvider(user);
+        user.setWorkingPlan(wp);
         userRepository.save(user);
     }
 

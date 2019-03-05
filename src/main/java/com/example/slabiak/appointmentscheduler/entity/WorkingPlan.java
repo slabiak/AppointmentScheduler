@@ -1,15 +1,27 @@
 package com.example.slabiak.appointmentscheduler.entity;
 
 import com.example.slabiak.appointmentscheduler.model.DayPlan;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.vladmihalcea.hibernate.type.json.JsonStringType;
 import org.hibernate.annotations.Type;
+import org.hibernate.annotations.TypeDef;
+import org.hibernate.annotations.TypeDefs;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Table;
+import javax.persistence.*;
 
-@Entity(name = "Plan")
+@TypeDefs(@TypeDef(name = "json", typeClass = JsonStringType.class))
+@Entity
 @Table(name = "working_plans")
-public class WorkingPlan extends BaseEntity {
+public class WorkingPlan{
+
+    @Id
+    @Column(name = "id_provider")
+    private int id;
+
+    @MapsId
+    @OneToOne
+    @JoinColumn(name = "id_provider")
+    private User provider;
 
     @Type(type = "json")
     @Column(columnDefinition = "json", name="monday")
@@ -39,7 +51,25 @@ public class WorkingPlan extends BaseEntity {
     @Column(columnDefinition = "json", name="sunday")
     private DayPlan sunday;
 
+
+
     public WorkingPlan() {
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public User getProvider() {
+        return provider;
+    }
+
+    public void setProvider(User provider) {
+        this.provider = provider;
     }
 
     public DayPlan getDay(String day){

@@ -2,10 +2,12 @@ package com.example.slabiak.appointmentscheduler.controller;
 
 import com.example.slabiak.appointmentscheduler.dao.WorkingPlanRepository;
 import com.example.slabiak.appointmentscheduler.entity.User;
+import com.example.slabiak.appointmentscheduler.entity.WorkingPlan;
 import com.example.slabiak.appointmentscheduler.model.UserRegisterForm;
 import com.example.slabiak.appointmentscheduler.service.UserService;
 import com.example.slabiak.appointmentscheduler.service.WorkService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.parameters.P;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -54,7 +56,7 @@ public class ProviderController {
     public String showProviderDetails(@PathVariable("id") int id, Model model) {
         model.addAttribute("provider", userService.findById(id));
         model.addAttribute("allWorks", workService.findAll());
-        model.addAttribute("plan",workingPlanRepository.getOne(1));
+        model.addAttribute("plan",userService.findById(id).getWorkingPlan());
         return "providers/updateProviderForm";
     }
 
@@ -64,13 +66,31 @@ public class ProviderController {
         return "redirect:/providers";
     }
 
-
-
-
     @PostMapping("/delete")
     public String deleteProvider(@RequestParam("providerId") int providerId){
         userService.deleteById(providerId);
         return "redirect:/providers";
+    }
+
+    @GetMapping("/availability")
+    public String showAvailability(Model model, Authentication authentication){
+        model.addAttribute("plan",userService.findByUserName(authentication.getName()).getWorkingPlan());
+        return "providers/showOrUpdateAvailability";
+    }
+
+    @PostMapping("/availability")
+    public String updateAvailability(@ModelAttribute("plan") WorkingPlan plan){
+        WorkingPlan wp = workingPlanRepository.getOne(plan.getId());
+        wp.setMonday(plan.getMonday());
+        wp.setTuesday(plan.getTuesday());
+        wp.setWednesday(plan.getWednesday());
+        wp.setThursday(plan.getThursday());
+        wp.setFriday(plan.getFriday());
+        wp.setSaturday(plan.getSaturday());
+        wp.setSunday(plan.getSunday());
+        workingPlanRepository.save(wp);
+
+        return "providers/showOrUpdateAvailability";
     }
 
 

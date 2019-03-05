@@ -9,7 +9,6 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.MappedSuperclass;
 
-@TypeDefs(@TypeDef(name = "json", typeClass = JsonStringType.class))
 @MappedSuperclass
 public class BaseEntity{
 
