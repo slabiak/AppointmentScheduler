@@ -71,4 +71,13 @@ public class DayPlan {
         this.breaks = breaks;
     }
 
+    public void removeBreak(TimePeroid breakToRemove){
+        System.out.println("usuwam:"+ breakToRemove.getStart());
+        breaks.remove(breakToRemove);
+    }
+
+    public void addBreak(TimePeroid breakToAdd){
+        breaks.add(breakToAdd);
+    }
+
 }

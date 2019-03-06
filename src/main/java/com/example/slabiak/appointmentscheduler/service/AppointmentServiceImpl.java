@@ -146,7 +146,6 @@ public class AppointmentServiceImpl implements AppointmentService{
 
     public List<TimePeroid> excludeAppointments(List<TimePeroid> peroids, List<Appointment> appointments){
 
-        System.out.println("total app:" +appointments.size());
             List<TimePeroid> toAdd = new ArrayList<TimePeroid>();
             Collections.sort(appointments);
             for(Appointment appointment: appointments){
