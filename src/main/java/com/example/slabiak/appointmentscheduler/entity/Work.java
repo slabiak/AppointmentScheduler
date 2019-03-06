@@ -21,6 +21,9 @@ public class Work extends BaseEntity {
     @Column(name="duration")
     private int duration;
 
+    @Column(name="editable")
+    private boolean editable;
+
     @JsonIgnore
     @ManyToMany
     @JoinTable(name="works_providers", joinColumns=@JoinColumn(name="id_work"), inverseJoinColumns=@JoinColumn(name="id_user"))
@@ -64,5 +67,13 @@ public class Work extends BaseEntity {
 
     public void setProviders(List<User> providers) {
         this.providers = providers;
+    }
+
+    public boolean getEditable() {
+        return editable;
+    }
+
+    public void setEditable(boolean editable) {
+        this.editable = editable;
     }
 }

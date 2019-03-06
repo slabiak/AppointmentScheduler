@@ -5,6 +5,7 @@ import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Entity
 @Table(name="appointments")
@@ -19,6 +20,9 @@ public class Appointment extends BaseEntity implements Comparable<Appointment> {
     @Column(name="end")
     private LocalDateTime end;
 
+    @Column(name="status")
+    private String status;
+
     @ManyToOne
     @JoinColumn(name="id_customer")
     private User customer;
@@ -30,6 +34,9 @@ public class Appointment extends BaseEntity implements Comparable<Appointment> {
     @ManyToOne
     @JoinColumn(name="id_work")
     private Work work;
+
+    @OneToMany(mappedBy = "appointment")
+    private List<Note> notes;
 
     public Appointment(){
 
@@ -81,6 +88,22 @@ public class Appointment extends BaseEntity implements Comparable<Appointment> {
 
     public void setWork(Work work) {
         this.work = work;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
+    }
+
+    public List<Note> getNotes() {
+        return notes;
+    }
+
+    public void setNotes(List<Note> notes) {
+        this.notes = notes;
     }
 
     @Override

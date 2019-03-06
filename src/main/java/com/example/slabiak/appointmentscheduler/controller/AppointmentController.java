@@ -1,5 +1,6 @@
 package com.example.slabiak.appointmentscheduler.controller;
 
+import com.example.slabiak.appointmentscheduler.dao.NoteRepository;
 import com.example.slabiak.appointmentscheduler.entity.Appointment;
 import com.example.slabiak.appointmentscheduler.model.AppointmentRegisterForm;
 import com.example.slabiak.appointmentscheduler.service.AppointmentService;
@@ -28,6 +29,9 @@ public class AppointmentController {
     @Autowired
     AppointmentService appointmentService;
 
+    @Autowired
+    NoteRepository noteRepository;
+
     @GetMapping("")
     public String showAllAppointments(Model model, Authentication authentication) {
         model.addAttribute("user",userService.findByUserName(authentication.getName()));
@@ -45,6 +49,13 @@ public class AppointmentController {
         model.addAttribute("appointment", appointmentService.findById(id));
             return "appointments/appointmentDetail";
         }
+
+    @GetMapping("/{id}/notes")
+    public String showNotes(@PathVariable("id") int id, Model model, Authentication authentication) {
+        System.out.println("notes size:" + appointmentService.findById(id).getNotes().size());
+        model.addAttribute("appointment", appointmentService.findById(id));
+        return "appointments/appointmentDetail";
+    }
 
 
     @GetMapping("/new")

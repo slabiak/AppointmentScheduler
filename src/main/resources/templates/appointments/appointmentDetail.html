@@ -43,7 +43,7 @@
         </table>
     </div>
 </div>
-<div class="row align-items-center justify-content-center"   style="margin-top: 50px">
+<div th:if="${appointment.work.editable}" class="row align-items-center justify-content-center"   style="margin-top: 50px">
 <form th:action="@{/appointments/cancel}" method='POST'>
     <input type="hidden" name="id" th:value="${appointment.id}">
     <input type="submit" class="btn btn-danger" value="Cancel"/>
