@@ -1,10 +1,10 @@
 package com.example.slabiak.appointmentscheduler.model;
 
-import java.sql.Time;
 import java.time.LocalTime;
 import java.util.Objects;
 
 public class TimePeroid implements Comparable<TimePeroid> {
+
     private LocalTime start;
     private LocalTime end;
 

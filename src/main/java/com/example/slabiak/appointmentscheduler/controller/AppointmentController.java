@@ -1,8 +1,7 @@
 package com.example.slabiak.appointmentscheduler.controller;
 
-import com.example.slabiak.appointmentscheduler.dao.NoteRepository;
-import com.example.slabiak.appointmentscheduler.entity.Appointment;
-import com.example.slabiak.appointmentscheduler.model.AppointmentRegisterForm;
+import com.example.slabiak.appointmentscheduler.dao.ChatMessageRepository;
+import com.example.slabiak.appointmentscheduler.entity.ChatMessage;
 import com.example.slabiak.appointmentscheduler.service.AppointmentService;
 import com.example.slabiak.appointmentscheduler.service.UserService;
 import com.example.slabiak.appointmentscheduler.service.WorkService;
@@ -13,7 +12,6 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Controller
@@ -30,7 +28,7 @@ public class AppointmentController {
     AppointmentService appointmentService;
 
     @Autowired
-    NoteRepository noteRepository;
+    ChatMessageRepository chatMessageRepository;
 
     @GetMapping("")
     public String showAllAppointments(Model model, Authentication authentication) {
@@ -46,15 +44,17 @@ public class AppointmentController {
 
     @GetMapping("/{id}")
     public String showAppointmentDetail(@PathVariable("id") int id, Model model, Authentication authentication) {
+        model.addAttribute("chatMessage", new ChatMessage());
         model.addAttribute("appointment", appointmentService.findById(id));
             return "appointments/appointmentDetail";
         }
 
-    @GetMapping("/{id}/notes")
-    public String showNotes(@PathVariable("id") int id, Model model, Authentication authentication) {
-        System.out.println("notes size:" + appointmentService.findById(id).getNotes().size());
-        model.addAttribute("appointment", appointmentService.findById(id));
-        return "appointments/appointmentDetail";
+    @PostMapping("/messages/new")
+    public String adNewChatMessage(@ModelAttribute("chatMessage") ChatMessage chatMessage, @RequestParam("appointmentId") int appointmentId, Authentication authentication, Model model) {
+        int authorId = userService.findByUserName(authentication.getName()).getId();
+        appointmentService.addChatMessageToAppointment(appointmentId,authorId, chatMessage);
+        model.addAttribute("appointment", appointmentService.findById(appointmentId));
+        return "redirect:/appointments/"+appointmentId;
     }
 
 
@@ -95,7 +95,7 @@ public class AppointmentController {
 
     @PostMapping("/cancel")
     public String cancelAppointment(@RequestParam("id") int id, Authentication authentication){
-        appointmentService.deleteById(id);
+        appointmentService.cancelById(id);
         return "redirect:/appointments";
     }
 

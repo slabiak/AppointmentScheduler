@@ -1,18 +1,14 @@
 package com.example.slabiak.appointmentscheduler.entity;
 
 import javax.persistence.*;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Entity
 @Table(name="notes")
-public class Note extends BaseEntity{
+public class ChatMessage extends BaseEntity implements Comparable<ChatMessage>{
 
     @Column(name="created_at")
     private LocalDateTime createdAt;
-
-    @Column(name="subject")
-    private String subject;
 
     @Column(name="message")
     private String message;
@@ -25,13 +21,8 @@ public class Note extends BaseEntity{
     @JoinColumn(name="id_appointment")
     private Appointment appointment;
 
-    public Note(){
+    public ChatMessage(){
 
-    }
-
-    public Note(String subject, String message){
-        this.subject=subject;
-        this.message = message;
     }
 
     public LocalDateTime getCreatedAt() {
@@ -40,14 +31,6 @@ public class Note extends BaseEntity{
 
     public void setCreatedAt(LocalDateTime createdAt) {
         this.createdAt = createdAt;
-    }
-
-    public String getSubject() {
-        return subject;
-    }
-
-    public void setSubject(String subject) {
-        this.subject = subject;
     }
 
     public String getMessage() {
@@ -72,5 +55,10 @@ public class Note extends BaseEntity{
 
     public void setAppointment(Appointment appointment) {
         this.appointment = appointment;
+    }
+
+    @Override
+    public int compareTo(ChatMessage o) {
+        return this.createdAt.compareTo(o.getCreatedAt());
     }
 }

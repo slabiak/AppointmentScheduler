@@ -1,7 +1,5 @@
 package com.example.slabiak.appointmentscheduler.model;
 
-import java.sql.Time;
-import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;

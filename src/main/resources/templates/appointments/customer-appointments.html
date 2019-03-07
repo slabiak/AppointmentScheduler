@@ -6,13 +6,14 @@
 <!-- Page Content -->
 <div class="row align-items-center justify-content-center"   style="margin-top: 50px">
     <div th:fragment="customerAppointments">
-        <table id="appointments" class="table table-striped text-center" >
+        <table id="appointments" class="table text-center" >
             <thead class="thead-dark">
             <tr>
                 <th> Work </th>
+                <th> Status </th>
                 <th> Provider </th>
                 <th> Start </th>
-                <th> End </th>
+                <th> Duration </th>
                 <th> Action </th>
             </tr>
             </thead>
@@ -20,11 +21,12 @@
             <tr th:if="${user.appointmentsByCustomer == null}">
                 <td colspan="2"> No Appointments Available </td>
             </tr>
-            <tr th:each="appointment : ${user.appointmentsByCustomer}">
+            <tr th:each="appointment : ${user.appointmentsByCustomer}" th:classappend="${appointment.status == 'canceled' || appointment.status == 'finished' || appointment.status == 'confirmed'} ? table-secondary : table-primary">
                 <td><span th:text="${appointment.work.name}"> Work </span></td>
-                <td><span th:text="${appointment.provider.firstName}"> Provider </span></td>
+                <td><span th:text="${appointment.status}"> scheduled </span></td>
+                <td><span th:text="${appointment.provider.firstName + ' ' + appointment.provider.lastName}"> Provider </span></td>
                 <td><span th:text="${appointment.start}"> Start </span></td>
-                <td><span th:text="${appointment.end}"> End </span></td>
+                <td><span th:text="${appointment.work.duration + ' min'}"> 60 min </span></td>
                 <td> <a class="btn btn-secondary" th:href="@{'/appointments/' + ${appointment.id}}" role="button">Details</a></td>
             </tr>
             </tbody>

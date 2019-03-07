@@ -1,10 +1,10 @@
 package com.example.slabiak.appointmentscheduler.service;
 
 import com.example.slabiak.appointmentscheduler.entity.Appointment;
+import com.example.slabiak.appointmentscheduler.entity.ChatMessage;
 import com.example.slabiak.appointmentscheduler.entity.User;
 import com.example.slabiak.appointmentscheduler.model.AppointmentRegisterForm;
 import com.example.slabiak.appointmentscheduler.model.TimePeroid;
-import org.apache.tomcat.jni.Local;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -22,4 +22,8 @@ public interface AppointmentService {
     public List<TimePeroid> getProviderAvailableTimePeroids(int providerId, int workId, LocalDate date);
 
     void save(int workId, int providerId, int customerId, LocalDateTime start);
+
+    void cancelById(int id);
+
+    void addChatMessageToAppointment(int appointmentId, int authorId, ChatMessage chatMessage);
 }

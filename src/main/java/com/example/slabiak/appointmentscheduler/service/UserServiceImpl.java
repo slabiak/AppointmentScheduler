@@ -9,8 +9,6 @@ import com.example.slabiak.appointmentscheduler.entity.WorkingPlan;
 import com.example.slabiak.appointmentscheduler.model.DayPlan;
 import com.example.slabiak.appointmentscheduler.model.TimePeroid;
 import com.example.slabiak.appointmentscheduler.model.UserRegisterForm;
-import org.apache.tomcat.jni.Local;
-import org.apache.tomcat.jni.Time;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -19,7 +17,6 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import sun.swing.BakedArrayList;
 
 import java.time.LocalTime;
 import java.util.*;

@@ -1,7 +1,5 @@
 package com.example.slabiak.appointmentscheduler.controller;
 
-import com.example.slabiak.appointmentscheduler.dao.WorkingPlanRepository;
-import com.example.slabiak.appointmentscheduler.entity.WorkingPlan;
 import com.example.slabiak.appointmentscheduler.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;

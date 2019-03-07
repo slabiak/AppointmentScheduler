@@ -34,7 +34,6 @@ public class WorkController {
 
     @PostMapping("/new")
     public String saveWork(@ModelAttribute("work") Work work) {
-        System.out.println(work.getEditable());
         if(work.getId()!=null){
             workService.update(work);
         }else {

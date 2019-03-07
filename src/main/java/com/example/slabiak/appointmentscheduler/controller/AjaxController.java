@@ -5,7 +5,6 @@ import com.example.slabiak.appointmentscheduler.entity.Appointment;
 import com.example.slabiak.appointmentscheduler.entity.User;
 import com.example.slabiak.appointmentscheduler.entity.Work;
 import com.example.slabiak.appointmentscheduler.entity.WorkingPlan;
-import com.example.slabiak.appointmentscheduler.model.ApiResponse;
 import com.example.slabiak.appointmentscheduler.model.AppointmentRegisterForm;
 import com.example.slabiak.appointmentscheduler.model.TimePeroid;
 import com.example.slabiak.appointmentscheduler.service.AppointmentService;
@@ -19,10 +18,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.sql.Time;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 

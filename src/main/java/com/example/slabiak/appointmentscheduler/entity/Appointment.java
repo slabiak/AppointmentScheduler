@@ -5,7 +5,14 @@ import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
+import java.util.Collections;
 import java.util.List;
+
+/*
+statuses:
+scheduled, canceled, finished, confirmed
+*/
+
 
 @Entity
 @Table(name="appointments")
@@ -36,7 +43,7 @@ public class Appointment extends BaseEntity implements Comparable<Appointment> {
     private Work work;
 
     @OneToMany(mappedBy = "appointment")
-    private List<Note> notes;
+    private List<ChatMessage> chatMessages;
 
     public Appointment(){
 
@@ -98,12 +105,14 @@ public class Appointment extends BaseEntity implements Comparable<Appointment> {
         this.status = status;
     }
 
-    public List<Note> getNotes() {
-        return notes;
+    public List<ChatMessage> getChatMessages() {
+
+        Collections.sort(chatMessages);
+        return chatMessages;
     }
 
-    public void setNotes(List<Note> notes) {
-        this.notes = notes;
+    public void setChatMessages(List<ChatMessage> chatMessages) {
+        this.chatMessages = chatMessages;
     }
 
     @Override

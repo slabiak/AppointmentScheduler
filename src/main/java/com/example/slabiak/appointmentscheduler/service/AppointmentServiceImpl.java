@@ -1,21 +1,15 @@
 package com.example.slabiak.appointmentscheduler.service;
 
 import com.example.slabiak.appointmentscheduler.dao.AppointmentRepository;
-import com.example.slabiak.appointmentscheduler.dao.UserRepository;
+import com.example.slabiak.appointmentscheduler.dao.ChatMessageRepository;
 import com.example.slabiak.appointmentscheduler.dao.WorkingPlanRepository;
-import com.example.slabiak.appointmentscheduler.entity.Appointment;
-import com.example.slabiak.appointmentscheduler.entity.User;
-import com.example.slabiak.appointmentscheduler.entity.Work;
-import com.example.slabiak.appointmentscheduler.entity.WorkingPlan;
+import com.example.slabiak.appointmentscheduler.entity.*;
 import com.example.slabiak.appointmentscheduler.model.AppointmentRegisterForm;
 import com.example.slabiak.appointmentscheduler.model.DayPlan;
 import com.example.slabiak.appointmentscheduler.model.TimePeroid;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.parameters.P;
 import org.springframework.stereotype.Service;
 
-import java.sql.Time;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -38,11 +32,14 @@ public class AppointmentServiceImpl implements AppointmentService{
     @Autowired
     private WorkingPlanRepository workingPlanRepository;
 
+    @Autowired
+    private ChatMessageRepository chatMessageRepository;
+
 
     @Override
     public void save(AppointmentRegisterForm appointmentRegisterForm) {
         Appointment appointment = new Appointment();
-
+        appointment.setStatus("scheduled");
         appointment.setCustomer(userService.findById(appointmentRegisterForm.getCustomerId()));
         appointment.setProvider(userService.findById(appointmentRegisterForm.getProviderId()));
         Work work = workService.findById(appointmentRegisterForm.getWorkId());
@@ -117,6 +114,7 @@ public class AppointmentServiceImpl implements AppointmentService{
     @Override
     public void save(int workId, int providerId, int customerId, LocalDateTime start) {
         Appointment appointment = new Appointment();
+        appointment.setStatus("scheduled");
         appointment.setCustomer(userService.findById(customerId));
         appointment.setProvider(userService.findById(providerId));
         Work work = workService.findById(workId);
@@ -124,6 +122,21 @@ public class AppointmentServiceImpl implements AppointmentService{
         appointment.setStart(start);
         appointment.setEnd(start.plusMinutes(work.getDuration()));
         appointmentRepository.save(appointment);
+    }
+
+    @Override
+    public void cancelById(int id) {
+        Appointment appointment = appointmentRepository.getOne(id);
+        appointment.setStatus("canceled");
+        appointmentRepository.save(appointment);
+    }
+
+    @Override
+    public void addChatMessageToAppointment(int appointmentId, int authorId, ChatMessage chatMessage) {
+        chatMessage.setAuthor(userService.findById(authorId));
+        chatMessage.setAppointment(findById(appointmentId));
+        chatMessage.setCreatedAt(LocalDateTime.now());
+        chatMessageRepository.save(chatMessage);
     }
 
     public List<TimePeroid> calculateAvailableHours(List<TimePeroid> tp, Work work){
@@ -149,22 +162,16 @@ public class AppointmentServiceImpl implements AppointmentService{
             List<TimePeroid> toAdd = new ArrayList<TimePeroid>();
             Collections.sort(appointments);
             for(Appointment appointment: appointments){
-                System.out.println("====");
-                System.out.println("appointment start:" + appointment.getStart()+" --- appointemt end:" +appointment.getEnd());
                 for(TimePeroid peroid:peroids){
-                    System.out.println("peroid start:" +peroid.getStart()+" -- peroid end:" +peroid.getEnd());
                     if((appointment.getStart().toLocalTime().isBefore(peroid.getStart()) || appointment.getStart().toLocalTime().equals(peroid.getStart())) && appointment.getEnd().toLocalTime().isAfter(peroid.getStart()) && appointment.getEnd().toLocalTime().isBefore(peroid.getEnd())){
                         peroid.setStart(appointment.getEnd().toLocalTime());
-                        System.out.println("1");
                     }
                     if(appointment.getStart().toLocalTime().isAfter(peroid.getStart())&& appointment.getStart().toLocalTime().isBefore(peroid.getEnd()) && appointment.getEnd().toLocalTime().isAfter(peroid.getEnd()) || appointment.getEnd().toLocalTime().equals(peroid.getEnd())){
                         peroid.setEnd(appointment.getStart().toLocalTime());
-                        System.out.println("2");
                     }
                     if(appointment.getStart().toLocalTime().isAfter(peroid.getStart()) && appointment.getEnd().toLocalTime().isBefore(peroid.getEnd())){
                         toAdd.add(new TimePeroid(peroid.getStart(),appointment.getStart().toLocalTime()));
                         peroid.setStart(appointment.getEnd().toLocalTime());
-                        System.out.println("3");
                     }
                 }
             }

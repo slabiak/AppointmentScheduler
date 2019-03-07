@@ -12,6 +12,10 @@
             </thead>
             <tbody>
             <tr>
+                <td>Status </td>
+                <td><span th:text="${appointment.status}"> true </span></td>
+            </tr>
+            <tr>
                 <td>Customer</td>
                 <td><span th:text="${appointment.customer.firstName+' '+appointment.customer.userName}">Name Surname</span></td>
             </tr>
@@ -22,6 +26,10 @@
             <tr>
                 <td>Work </td>
                 <td><span th:text="${appointment.work.name}"> english </span></td>
+            </tr>
+            <tr>
+                <td>Cancellable </td>
+                <td><span th:text="${appointment.work.editable}"> true </span></td>
             </tr>
             <tr>
                 <td>Description </td>
@@ -48,6 +56,69 @@
     <input type="hidden" name="id" th:value="${appointment.id}">
     <input type="submit" class="btn btn-danger" value="Cancel"/>
 </form>
+</div>
+<!--<div class="row align-items-center justify-content-center"   style="margin-top: 50px">
+    <form th:action="@{/appointments/chatMessages/new}" th:object="${chatMessage}" method='POST'>
+        <input type="hidden" name="appointmentId" th:value="${appointment.id}">
+        <input type="text" th:field="*{subject}" placeholder="subject"><br>
+        <textarea class="input-group" rows="3" th:field="*{message}" placeholder="message" /><br>
+        <input type="submit" class="btn btn-primary" value="Add message"/>
+    </form>
+</div>-->
+<div class="row">
+    <div class="col-sm-3">
+
+    </div>
+    <div class="col-sm-6">
+        <div class="chatbody">
+            <div class="panel panel-primary">
+                <div class="panel-heading top-bar">
+                    <div class="col-md-8 col-xs-8">
+                        <h3 class="panel-title">
+                            Chat -
+                            <span sec:authorize="hasRole('ROLE_PROVIDER')" th:text="${appointment.customer.userName}"></span>
+                            <span sec:authorize="hasRole('ROLE_CUSTOMER')" th:text="${appointment.provider.userName}"></span>
+                        </h3>
+                    </div>
+                </div>
+
+                <div class="panel-body msg_container_base">
+                    <div th:each="chatMessage : ${appointment.chatMessages}" class="row msg_container base_receive">
+                        <div class="col-md-12 col-xs-12">
+                            <div class="messages msg_receive">
+                                <p th:text="${chatMessage.message}">messae</p>
+                                <time datetime="2009-11-13T20:00"><span th:text="${chatMessage.author.firstName}">author</span> • <span th:text="${chatMessage.createdAt}"></span></time>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <form th:action="@{/appointments/messages/new}" th:object="${chatMessage}" method='POST'>
+                <div class="input-group mb-3">
+                        <input type="hidden" name="appointmentId" th:value="${appointment.id}">
+                    <input type="text" class="form-control"  th:field="*{message}" placeholder="Write your message here..." aria-label="Recipient's username" aria-describedby="basic-addon2">
+                    <div class="input-group-append">
+                        <button class="btn btn-outline-secondary" type="submit">Send</button>
+                    </div>
+                </div>
+                </form>
+
+
+               <!-- <div class="input-group mb-3">
+                    <input type="text" class="form-control" placeholder="Recipient's username" aria-label="Recipient's username" aria-describedby="basic-addon2">
+                    <div class="input-group-append">
+                        <button class="btn btn-outline-secondary" type="button">Button</button>
+                    </div>
+                </div>-->
+
+            </div>
+
+        </div>
+    </div>
+    <div class="col-sm-3">
+
+    </div>
+</div>
 </div>
 </body>
 </html>

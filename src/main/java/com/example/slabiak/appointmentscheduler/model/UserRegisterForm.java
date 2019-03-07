@@ -1,7 +1,6 @@
 package com.example.slabiak.appointmentscheduler.model;
 
 
-import javax.persistence.criteria.CriteriaBuilder;
 import java.util.List;
 
 public class UserRegisterForm {

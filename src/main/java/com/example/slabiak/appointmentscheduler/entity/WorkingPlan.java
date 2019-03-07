@@ -1,7 +1,6 @@
 package com.example.slabiak.appointmentscheduler.entity;
 
 import com.example.slabiak.appointmentscheduler.model.DayPlan;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.vladmihalcea.hibernate.type.json.JsonStringType;
 import org.hibernate.annotations.Type;
 import org.hibernate.annotations.TypeDef;

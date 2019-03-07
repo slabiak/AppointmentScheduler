@@ -6,7 +6,6 @@ import com.fasterxml.jackson.databind.SerializerProvider;
 import com.fasterxml.jackson.databind.ser.std.StdSerializer;
 
 import java.io.IOException;
-import java.time.ZoneId;
 import java.time.ZoneOffset;
 
 public class AppointmentSerializer extends StdSerializer<Appointment> {
