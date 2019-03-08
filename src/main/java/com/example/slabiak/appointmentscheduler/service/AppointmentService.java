@@ -12,6 +12,7 @@ import java.util.List;
 
 public interface AppointmentService {
     void save(AppointmentRegisterForm appointment);
+    void update(Appointment appointment);
     Appointment findById(int id);
     List<Appointment> findAll();
     void deleteById(int id);
@@ -27,6 +28,9 @@ public interface AppointmentService {
 
     void addChatMessageToAppointment(int appointmentId, int authorId, ChatMessage chatMessage);
 
+
     boolean isUserAllowedToCancelAppointment(int userId, int appointmentId);
     List<Appointment> getAppointmentsCanceledByUserInThisMonth(int userId);
+
+    List<Appointment> findExpired();
 }

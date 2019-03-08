@@ -26,7 +26,7 @@ public class AppointmentSerializer extends StdSerializer<Appointment> {
             gen.writeNumberField("start", appointment.getStart().toInstant(ZoneOffset.UTC).toEpochMilli());
             gen.writeNumberField("end", appointment.getEnd().toInstant(ZoneOffset.UTC).toEpochMilli());
             gen.writeStringField("url", "/appointments/" + appointment.getId());
-            gen.writeStringField("color","blue");
+            gen.writeStringField("color",appointment.getStatus().equals("scheduled") ? "blue":"grey");
             gen.writeEndObject();
     }
 }

@@ -51,6 +51,11 @@ public class AppointmentServiceImpl implements AppointmentService{
     }
 
     @Override
+    public void update(Appointment appointment) {
+        appointmentRepository.save(appointment);
+    }
+
+    @Override
     public Appointment findById(int id) {
         Optional<Appointment> result = appointmentRepository.findById(id);
         Appointment appointment = null;
@@ -202,6 +207,10 @@ public class AppointmentServiceImpl implements AppointmentService{
         return appointmentRepository.getAppointmentsCanceledByUserInThisMonth(user, LocalDate.now().with(TemporalAdjusters.firstDayOfMonth()).atStartOfDay());
     }
 
+    @Override
+    public List<Appointment> findExpired() {
+        return appointmentRepository.findExpired(LocalDateTime.now());
+    }
 
 
 }

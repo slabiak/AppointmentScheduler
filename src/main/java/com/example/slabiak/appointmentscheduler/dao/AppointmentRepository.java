@@ -19,4 +19,7 @@ public interface AppointmentRepository  extends JpaRepository<Appointment, Integ
 
     @Query("select a from Appointment a where a.customer = :user and  a.canceledAt >=:beginingOfCurrentMonth")
     List<Appointment> getAppointmentsCanceledByUserInThisMonth(@Param("user") User user,@Param("beginingOfCurrentMonth") LocalDateTime beginingOfCurrentMonth);
+
+    @Query("select a from Appointment a where a.status = 'scheduled' and :now >= a.end")
+    List<Appointment> findExpired(@Param("now") LocalDateTime now);
 }
