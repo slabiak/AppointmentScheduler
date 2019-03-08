@@ -4,6 +4,7 @@ import com.example.slabiak.appointmentscheduler.entity.User;
 import com.example.slabiak.appointmentscheduler.model.UserRegisterForm;
 import com.example.slabiak.appointmentscheduler.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -26,6 +27,13 @@ public class CustomerController {
     @GetMapping("/{id}")
     public String showCustomer(@PathVariable int id, Model model) {
         model.addAttribute("user", userService.findById(id));
+        return "customers/customerDetails";
+    }
+
+    @GetMapping("/account")
+    public String showCustomer(Model model, Authentication authentication) {
+         model.addAttribute("user", userService.findByUserName(authentication.getName()));
+
         return "customers/customerDetails";
     }
 

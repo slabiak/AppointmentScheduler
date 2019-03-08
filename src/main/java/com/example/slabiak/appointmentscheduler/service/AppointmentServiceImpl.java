@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.temporal.TemporalAdjusters;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -128,6 +129,7 @@ public class AppointmentServiceImpl implements AppointmentService{
     public void cancelById(int id) {
         Appointment appointment = appointmentRepository.getOne(id);
         appointment.setStatus("canceled");
+        appointment.setCanceledAt(LocalDateTime.now());
         appointmentRepository.save(appointment);
     }
 
@@ -137,6 +139,21 @@ public class AppointmentServiceImpl implements AppointmentService{
         chatMessage.setAppointment(findById(appointmentId));
         chatMessage.setCreatedAt(LocalDateTime.now());
         chatMessageRepository.save(chatMessage);
+    }
+
+    @Override
+    public boolean isUserAllowedToCancelAppointment(String userName, int appointmentId) {
+        User user = userService.findByUserName(userName);
+        Appointment appointment = findById(appointmentId);
+         if(appointment.getProvider().equals(user)){
+            return true;
+        }  else if(LocalDateTime.now().plusHours(24).isAfter(appointment.getStart())){
+            return false;
+        }
+        else if(appointment.getCustomer().equals(user) && appointment.getWork().getEditable() && getAppointmentsCanceledByUserInThisMonth(user).size()<=1){
+            return true;
+        }
+        return false;
     }
 
     public List<TimePeroid> calculateAvailableHours(List<TimePeroid> tp, Work work){
@@ -178,6 +195,10 @@ public class AppointmentServiceImpl implements AppointmentService{
             peroids.addAll(toAdd);
             Collections.sort(peroids);
         return peroids;
+    }
+
+    public List<Appointment> getAppointmentsCanceledByUserInThisMonth(User user){
+        return appointmentRepository.getAppointmentsCanceledByUserInThisMonth(user, LocalDate.now().with(TemporalAdjusters.firstDayOfMonth()).atStartOfDay());
     }
 
 

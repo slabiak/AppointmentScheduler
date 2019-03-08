@@ -1,10 +1,12 @@
 package com.example.slabiak.appointmentscheduler.controller;
 
 import com.example.slabiak.appointmentscheduler.dao.ChatMessageRepository;
+import com.example.slabiak.appointmentscheduler.entity.Appointment;
 import com.example.slabiak.appointmentscheduler.entity.ChatMessage;
 import com.example.slabiak.appointmentscheduler.service.AppointmentService;
 import com.example.slabiak.appointmentscheduler.service.UserService;
 import com.example.slabiak.appointmentscheduler.service.WorkService;
+import org.apache.tomcat.jni.Local;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -44,7 +46,23 @@ public class AppointmentController {
 
     @GetMapping("/{id}")
     public String showAppointmentDetail(@PathVariable("id") int id, Model model, Authentication authentication) {
+        Appointment appointment = appointmentService.findById(id);
         model.addAttribute("chatMessage", new ChatMessage());
+        boolean allowCancel =appointmentService.isUserAllowedToCancelAppointment(authentication.getName(),id);
+        model.addAttribute("allowCancel",allowCancel);
+        if(!allowCancel && !appointment.getStatus().equals("canceled")){
+            String denyCancelReason = "";
+             if(LocalDateTime.now().plusHours(24).isAfter(appointment.getStart())) {
+                 denyCancelReason = "expired";
+             }
+            else if (appointmentService.findById(id).getWork().getEditable() == false){
+                denyCancelReason = "type";
+            }
+            else if(appointmentService.getAppointmentsCanceledByUserInThisMonth(userService.findByUserName(authentication.getName())).size()>=1){
+                denyCancelReason = "limitExceed";
+            }
+             model.addAttribute("denyCancelReason",denyCancelReason);
+        }
         model.addAttribute("appointment", appointmentService.findById(id));
             return "appointments/appointmentDetail";
         }

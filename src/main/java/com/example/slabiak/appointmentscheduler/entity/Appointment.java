@@ -27,6 +27,10 @@ public class Appointment extends BaseEntity implements Comparable<Appointment> {
     @Column(name="end")
     private LocalDateTime end;
 
+    @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm")
+    @Column(name="canceled_at")
+    private LocalDateTime canceledAt;
+
     @Column(name="status")
     private String status;
 
@@ -113,6 +117,14 @@ public class Appointment extends BaseEntity implements Comparable<Appointment> {
 
     public void setChatMessages(List<ChatMessage> chatMessages) {
         this.chatMessages = chatMessages;
+    }
+
+    public LocalDateTime getCanceledAt() {
+        return canceledAt;
+    }
+
+    public void setCanceledAt(LocalDateTime canceledAt) {
+        this.canceledAt = canceledAt;
     }
 
     @Override

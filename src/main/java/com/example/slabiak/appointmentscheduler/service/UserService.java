@@ -19,7 +19,4 @@ public interface UserService extends UserDetailsService {
     List<User> findAll();
     void deleteById(int id);
     List<User> findByWorks(Work work);
-
-
-
 }

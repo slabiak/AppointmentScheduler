@@ -142,6 +142,7 @@ public class UserServiceImpl implements UserService {
         return userRepository.findByWorks(work);
     }
 
+
     @Override
     @Transactional
     public UserDetails loadUserByUsername(String userName) throws UsernameNotFoundException {

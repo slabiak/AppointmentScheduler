@@ -13,7 +13,7 @@
             <tbody>
             <tr>
                 <td>Status </td>
-                <td><span th:text="${appointment.status}"> true </span></td>
+                <td><span th:text="${appointment.status}"> scheduled </span></td>
             </tr>
             <tr>
                 <td>Customer</td>
@@ -51,12 +51,20 @@
         </table>
     </div>
 </div>
-<div th:if="${appointment.work.editable}" class="row align-items-center justify-content-center"   style="margin-top: 50px">
-<form th:action="@{/appointments/cancel}" method='POST'>
-    <input type="hidden" name="id" th:value="${appointment.id}">
-    <input type="submit" class="btn btn-danger" value="Cancel"/>
-</form>
+<div th:if="${allowCancel}">
+    <form th:action="@{/appointments/cancel}" method='POST'>
+        <input type="hidden" name="id" th:value="${appointment.id}">
+        <input type="submit" class="btn btn-danger" value="Cancel"/>
+    </form>
 </div>
+<div th:unless="${allowCancel && appointment.status == 'canceled'}">
+    <div th:switch="${denyCancelReason}">
+        <p th:case="'limitExceed'">You can't cancel this appointment because you exceeded maximum number of cancellations in this month.</p>
+        <p th:case="'expired'">Appointments which will be in less than 24 hours cannot be canceled.</p>
+        <p th:case="'type'">This type of appointment can be cancelled only by Provider.</p>
+    </div>
+</div>
+
 <!--<div class="row align-items-center justify-content-center"   style="margin-top: 50px">
     <form th:action="@{/appointments/chatMessages/new}" th:object="${chatMessage}" method='POST'>
         <input type="hidden" name="appointmentId" th:value="${appointment.id}">
@@ -65,6 +73,7 @@
         <input type="submit" class="btn btn-primary" value="Add message"/>
     </form>
 </div>-->
+
 <div class="row">
     <div class="col-sm-3">
 
