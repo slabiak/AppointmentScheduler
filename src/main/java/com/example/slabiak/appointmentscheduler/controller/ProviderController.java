@@ -5,10 +5,13 @@ import com.example.slabiak.appointmentscheduler.entity.User;
 import com.example.slabiak.appointmentscheduler.entity.WorkingPlan;
 import com.example.slabiak.appointmentscheduler.model.TimePeroid;
 import com.example.slabiak.appointmentscheduler.model.UserRegisterForm;
+import com.example.slabiak.appointmentscheduler.security.CustomUserDetails;
 import com.example.slabiak.appointmentscheduler.service.UserService;
 import com.example.slabiak.appointmentscheduler.service.WorkService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -54,9 +57,10 @@ public class ProviderController {
 
     @GetMapping("/{id}")
     public String showProviderDetails(@PathVariable("id") int id, Model model) {
-        model.addAttribute("provider", userService.findById(id));
+        User provider = userService.findById(id);
+        model.addAttribute("provider", provider);
         model.addAttribute("allWorks", workService.findAll());
-        model.addAttribute("plan",userService.findById(id).getWorkingPlan());
+        model.addAttribute("plan",provider.getWorkingPlan());
         return "providers/updateProviderForm";
     }
 
@@ -67,14 +71,14 @@ public class ProviderController {
     }
 
     @PostMapping("/delete")
-    public String deleteProvider(@RequestParam("providerId") int providerId){
+    public String processDeleteProviderRequest(@RequestParam("providerId") int providerId){
         userService.deleteById(providerId);
         return "redirect:/providers";
     }
 
     @GetMapping("/availability")
-    public String showAvailability(Model model, Authentication authentication){
-        model.addAttribute("plan",userService.findByUserName(authentication.getName()).getWorkingPlan());
+    public String showAvailability(Model model,@AuthenticationPrincipal CustomUserDetails currentUser){
+        model.addAttribute("plan",userService.findById(currentUser.getId()).getWorkingPlan());
         model.addAttribute("break1", new TimePeroid());
         return "providers/showOrUpdateAvailability";
     }

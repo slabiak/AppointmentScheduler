@@ -142,15 +142,15 @@ public class AppointmentServiceImpl implements AppointmentService{
     }
 
     @Override
-    public boolean isUserAllowedToCancelAppointment(String userName, int appointmentId) {
-        User user = userService.findByUserName(userName);
+    public boolean isUserAllowedToCancelAppointment(int userId, int appointmentId) {
+        User user = userService.findById(userId);
         Appointment appointment = findById(appointmentId);
          if(appointment.getProvider().equals(user)){
             return true;
         }  else if(LocalDateTime.now().plusHours(24).isAfter(appointment.getStart())){
             return false;
         }
-        else if(appointment.getCustomer().equals(user) && appointment.getWork().getEditable() && getAppointmentsCanceledByUserInThisMonth(user).size()<=1){
+        else if(appointment.getCustomer().equals(user) && appointment.getWork().getEditable() && getAppointmentsCanceledByUserInThisMonth(userId).size()<=1){
             return true;
         }
         return false;
@@ -197,7 +197,8 @@ public class AppointmentServiceImpl implements AppointmentService{
         return peroids;
     }
 
-    public List<Appointment> getAppointmentsCanceledByUserInThisMonth(User user){
+    public List<Appointment> getAppointmentsCanceledByUserInThisMonth(int userId){
+        User user = userService.findById(userId);
         return appointmentRepository.getAppointmentsCanceledByUserInThisMonth(user, LocalDate.now().with(TemporalAdjusters.firstDayOfMonth()).atStartOfDay());
     }
 

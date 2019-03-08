@@ -7,11 +7,13 @@ import com.example.slabiak.appointmentscheduler.entity.Work;
 import com.example.slabiak.appointmentscheduler.entity.WorkingPlan;
 import com.example.slabiak.appointmentscheduler.model.AppointmentRegisterForm;
 import com.example.slabiak.appointmentscheduler.model.TimePeroid;
+import com.example.slabiak.appointmentscheduler.security.CustomUserDetails;
 import com.example.slabiak.appointmentscheduler.service.AppointmentService;
 import com.example.slabiak.appointmentscheduler.service.UserService;
 import com.example.slabiak.appointmentscheduler.service.WorkService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -26,8 +28,6 @@ import java.util.List;
 @RestController
 public class AjaxController {
 
-    @Autowired
-    WorkService workService;
 
     @Autowired
     UserService userService;
@@ -35,24 +35,11 @@ public class AjaxController {
     @Autowired
     AppointmentService appointmentService;
 
-    @Autowired
-    WorkingPlanRepository workingPlanRepository;
-
-    @GetMapping("/works")
-    List<Work> getWorks(){
-        return workService.findAll();
-    }
-
-    @GetMapping("/users/works/{workId}")
-    List<User> getUsersByWork(@PathVariable("workId") int workId){
-        return userService.findByWorks(workService.findById(workId));
-    }
-
     @GetMapping("/user/{userId}/appointments")
-    List<Appointment> getAppointmentsForUser(@PathVariable("userId") int userId, Authentication authentication) {
-        if (authentication.getAuthorities().contains(new SimpleGrantedAuthority("ROLE_CUSTOMER"))) {
+    List<Appointment> getAppointmentsForUser(@PathVariable("userId") int userId,@AuthenticationPrincipal CustomUserDetails currentUser) {
+        if (currentUser.getAuthorities().contains(new SimpleGrantedAuthority("ROLE_CUSTOMER"))) {
             return userService.findById(userId).getAppointmentsByCustomer();
-        } else if(authentication.getAuthorities().contains(new SimpleGrantedAuthority("ROLE_PROVIDER")))
+        } else if(currentUser.getAuthorities().contains(new SimpleGrantedAuthority("ROLE_PROVIDER")))
             return userService.findById(userId).getAppointmentsByProvider();
         else return null;
     }
@@ -66,13 +53,6 @@ public class AjaxController {
             appointments.add(new AppointmentRegisterForm(workId,userId,peroid.getStart().atDate(d),peroid.getEnd().atDate(d)));
         }
         return appointments;
-    }
-
-    @GetMapping("/api/plan")
-    String getPlan(){
-       WorkingPlan plan =  workingPlanRepository.getOne(1);
-
-       return userService.findById(1).getWorkingPlan().getMonday().getWorkingHours().getStart().toString();
     }
 
 }

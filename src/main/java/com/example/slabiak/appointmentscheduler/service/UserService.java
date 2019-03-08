@@ -9,7 +9,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 
 import java.util.List;
 
-public interface UserService extends UserDetailsService {
+public interface UserService {
     void registerProvider(UserRegisterForm userForm);
     void updateProvider(User user);
     void registerCustomer(UserRegisterForm userForm);

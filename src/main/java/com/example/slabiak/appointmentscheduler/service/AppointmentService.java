@@ -27,6 +27,6 @@ public interface AppointmentService {
 
     void addChatMessageToAppointment(int appointmentId, int authorId, ChatMessage chatMessage);
 
-    boolean isUserAllowedToCancelAppointment(String name, int appointmentId);
-    List<Appointment> getAppointmentsCanceledByUserInThisMonth(User user);
+    boolean isUserAllowedToCancelAppointment(int userId, int appointmentId);
+    List<Appointment> getAppointmentsCanceledByUserInThisMonth(int userId);
 }

@@ -1,4 +1,4 @@
-package com.example.slabiak.appointmentscheduler.config;
+package com.example.slabiak.appointmentscheduler.security;
 
 import com.example.slabiak.appointmentscheduler.entity.User;
 import com.example.slabiak.appointmentscheduler.service.UserService;

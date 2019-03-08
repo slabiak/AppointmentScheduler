@@ -3,12 +3,14 @@ package com.example.slabiak.appointmentscheduler.controller;
 import com.example.slabiak.appointmentscheduler.dao.ChatMessageRepository;
 import com.example.slabiak.appointmentscheduler.entity.Appointment;
 import com.example.slabiak.appointmentscheduler.entity.ChatMessage;
+import com.example.slabiak.appointmentscheduler.security.CustomUserDetails;
 import com.example.slabiak.appointmentscheduler.service.AppointmentService;
 import com.example.slabiak.appointmentscheduler.service.UserService;
 import com.example.slabiak.appointmentscheduler.service.WorkService;
 import org.apache.tomcat.jni.Local;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -29,15 +31,12 @@ public class AppointmentController {
     @Autowired
     AppointmentService appointmentService;
 
-    @Autowired
-    ChatMessageRepository chatMessageRepository;
-
     @GetMapping("")
-    public String showAllAppointments(Model model, Authentication authentication) {
-        model.addAttribute("user",userService.findByUserName(authentication.getName()));
-        if (authentication.getAuthorities().contains(new SimpleGrantedAuthority("ROLE_CUSTOMER"))) {
+    public String showAllAppointments(Model model, @AuthenticationPrincipal CustomUserDetails currentUser) {
+        model.addAttribute("user",userService.findById(currentUser.getId()));
+        if (currentUser.getAuthorities().contains(new SimpleGrantedAuthority("ROLE_CUSTOMER"))) {
             return "appointments/customer-appointments";
-        } else if(authentication.getAuthorities().contains(new SimpleGrantedAuthority("ROLE_PROVIDER")))
+        } else if(currentUser.getAuthorities().contains(new SimpleGrantedAuthority("ROLE_PROVIDER")))
         return "appointments/provider-appointments";
         else{
             return "home";
@@ -45,31 +44,31 @@ public class AppointmentController {
     }
 
     @GetMapping("/{id}")
-    public String showAppointmentDetail(@PathVariable("id") int id, Model model, Authentication authentication) {
-        Appointment appointment = appointmentService.findById(id);
+    public String showAppointmentDetail(@PathVariable("id") int appointmentId, Model model,@AuthenticationPrincipal CustomUserDetails currentUser) {
+        Appointment appointment = appointmentService.findById(appointmentId);
         model.addAttribute("chatMessage", new ChatMessage());
-        boolean allowCancel =appointmentService.isUserAllowedToCancelAppointment(authentication.getName(),id);
+        boolean allowCancel =appointmentService.isUserAllowedToCancelAppointment(currentUser.getId(),appointmentId);
         model.addAttribute("allowCancel",allowCancel);
         if(!allowCancel && !appointment.getStatus().equals("canceled")){
             String denyCancelReason = "";
              if(LocalDateTime.now().plusHours(24).isAfter(appointment.getStart())) {
                  denyCancelReason = "expired";
              }
-            else if (appointmentService.findById(id).getWork().getEditable() == false){
+            else if (appointment.getWork().getEditable() == false){
                 denyCancelReason = "type";
             }
-            else if(appointmentService.getAppointmentsCanceledByUserInThisMonth(userService.findByUserName(authentication.getName())).size()>=1){
+            else if(appointmentService.getAppointmentsCanceledByUserInThisMonth(currentUser.getId()).size()>=1){
                 denyCancelReason = "limitExceed";
             }
              model.addAttribute("denyCancelReason",denyCancelReason);
         }
-        model.addAttribute("appointment", appointmentService.findById(id));
+        model.addAttribute("appointment", appointment);
             return "appointments/appointmentDetail";
         }
 
     @PostMapping("/messages/new")
-    public String adNewChatMessage(@ModelAttribute("chatMessage") ChatMessage chatMessage, @RequestParam("appointmentId") int appointmentId, Authentication authentication, Model model) {
-        int authorId = userService.findByUserName(authentication.getName()).getId();
+    public String adNewChatMessage(@ModelAttribute("chatMessage") ChatMessage chatMessage, @RequestParam("appointmentId") int appointmentId, @AuthenticationPrincipal CustomUserDetails currentUser, Model model) {
+        int authorId = currentUser.getId();
         appointmentService.addChatMessageToAppointment(appointmentId,authorId, chatMessage);
         model.addAttribute("appointment", appointmentService.findById(appointmentId));
         return "redirect:/appointments/"+appointmentId;
@@ -105,14 +104,14 @@ public class AppointmentController {
     }
 
     @PostMapping("/new")
-    public String saveAppointment(@RequestParam("workId") int workId,@RequestParam("providerId") int providerId,@RequestParam("start") String start, Authentication authentication){
-        int customerId= userService.findByUserName(authentication.getName()).getId();
+    public String saveAppointment(@RequestParam("workId") int workId,@RequestParam("providerId") int providerId,@RequestParam("start") String start, @AuthenticationPrincipal CustomUserDetails currentUser){
+        int customerId= currentUser.getId();
         appointmentService.save(workId,providerId,customerId,LocalDateTime.parse(start));
         return "redirect:/customers/";
     }
 
     @PostMapping("/cancel")
-    public String cancelAppointment(@RequestParam("id") int id, Authentication authentication){
+    public String cancelAppointment(@RequestParam("id") int id){
         appointmentService.cancelById(id);
         return "redirect:/appointments";
     }
