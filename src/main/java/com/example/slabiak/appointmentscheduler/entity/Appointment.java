@@ -10,7 +10,7 @@ import java.util.List;
 
 /*
 statuses:
-scheduled, canceled, finished, confirmed
+scheduled, canceled, finished, invoiced
 */
 
 

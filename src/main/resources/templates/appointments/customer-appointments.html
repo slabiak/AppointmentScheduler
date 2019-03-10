@@ -21,7 +21,7 @@
             <tr th:if="${user.appointmentsByCustomer == null}">
                 <td colspan="2"> No Appointments Available </td>
             </tr>
-            <tr th:each="appointment : ${user.appointmentsByCustomer}" th:classappend="${appointment.status == 'canceled' || appointment.status == 'finished' || appointment.status == 'confirmed'} ? table-secondary : table-primary">
+            <tr th:each="appointment : ${user.appointmentsByCustomer}" th:classappend="${appointment.status == 'canceled' || appointment.status == 'finished' || appointment.status == 'invoiced' || appointment.status == 'denied'} ? table-secondary : table-primary">
                 <td><span th:text="${appointment.work.name}"> Work </span></td>
                 <td><span th:text="${appointment.status}"> scheduled </span></td>
                 <td><span th:text="${appointment.provider.firstName + ' ' + appointment.provider.lastName}"> Provider </span></td>

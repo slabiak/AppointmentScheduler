@@ -31,6 +31,13 @@ public interface AppointmentService {
 
     boolean isUserAllowedToCancelAppointment(int userId, int appointmentId);
     List<Appointment> getAppointmentsCanceledByUserInThisMonth(int userId);
+    void updateUserAppointmentsStatuses(int userId);
+    public void updateAllAppointmentsStatuses();
 
-    List<Appointment> findExpired();
+
+    boolean isUserAllowedToDenyThatAppointmentTookPlace(Integer id, int appointmentId);
+
+    boolean denyAppointment(int appointmentId, int customerId);
+
+    boolean denyAppointment(String token);
 }

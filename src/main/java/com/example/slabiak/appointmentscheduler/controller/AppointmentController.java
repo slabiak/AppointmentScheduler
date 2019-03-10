@@ -16,6 +16,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.Duration;
 import java.time.LocalDateTime;
 
 @Controller
@@ -48,10 +49,19 @@ public class AppointmentController {
         Appointment appointment = appointmentService.findById(appointmentId);
         model.addAttribute("chatMessage", new ChatMessage());
         boolean allowCancel =appointmentService.isUserAllowedToCancelAppointment(currentUser.getId(),appointmentId);
+        boolean allowDeny = appointmentService.isUserAllowedToDenyThatAppointmentTookPlace(currentUser.getId(),appointmentId);
+
+        model.addAttribute("allowDeny",allowDeny);
+        if(allowDeny){
+            model.addAttribute("remainingTime",humanReadableFormat(Duration.between(LocalDateTime.now(),appointment.getEnd().plusHours(24))));
+        }
         model.addAttribute("allowCancel",allowCancel);
-        if(!allowCancel && !appointment.getStatus().equals("canceled")){
+        if(!allowCancel){
             String denyCancelReason = "";
-             if(LocalDateTime.now().plusHours(24).isAfter(appointment.getStart())) {
+            if(!appointment.getStatus().equals("scheduled")){
+                denyCancelReason = "status";
+            }
+             else if(LocalDateTime.now().plusHours(24).isAfter(appointment.getStart())) {
                  denyCancelReason = "expired";
              }
             else if (appointment.getWork().getEditable() == false){
@@ -66,11 +76,30 @@ public class AppointmentController {
             return "appointments/appointmentDetail";
         }
 
+    public static String humanReadableFormat(Duration duration) {
+        long s = duration.getSeconds();
+        return   String.format("%dh and %02dm", s / 3600, (s % 3600) / 60);
+
+    }
+
+    @PostMapping("/deny")
+    public String denyAppointment(@RequestParam("appointmentId") int appointmentId, @AuthenticationPrincipal CustomUserDetails currentUser, Model model) {
+        int customerId = currentUser.getId();
+        boolean result = appointmentService.denyAppointment(appointmentId,customerId);
+        return "redirect:/appointments/"+appointmentId;
+    }
+
+    @GetMapping("/deny")
+    public String denyAppointment(@RequestParam("token") String token, Model model) {
+        boolean result = appointmentService.denyAppointment(token);
+        model.addAttribute("result",result);
+        return "appointments/denyConfirmation";
+    }
+
     @PostMapping("/messages/new")
-    public String adNewChatMessage(@ModelAttribute("chatMessage") ChatMessage chatMessage, @RequestParam("appointmentId") int appointmentId, @AuthenticationPrincipal CustomUserDetails currentUser, Model model) {
+    public String adNewChatMessage(@ModelAttribute("chatMessage") ChatMessage chatMessage, @RequestParam("appointmentId") int appointmentId, @AuthenticationPrincipal CustomUserDetails currentUser) {
         int authorId = currentUser.getId();
         appointmentService.addChatMessageToAppointment(appointmentId,authorId, chatMessage);
-        model.addAttribute("appointment", appointmentService.findById(appointmentId));
         return "redirect:/appointments/"+appointmentId;
     }
 

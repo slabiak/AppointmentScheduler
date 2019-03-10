@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head></head>
+<body>
+<p>Hello, <span th:text="${customer}"></span></p>
+<p>This is your finished appointment summary:</p>
+<p>Date: <span th:text="${start}"></span></p>
+<p>Provider: <span th:text="${provider}"></span></p>
+<p>Duration: <span th:text="${duration}"></span></p>
+<p>Price: <span th:text="${price}"></span></p>
+<p>If by some reason this appointemt didn't take place, you have 24h to report this by clicking <a th:href="${url}">here</a></p>
+
+</body>
+</html>

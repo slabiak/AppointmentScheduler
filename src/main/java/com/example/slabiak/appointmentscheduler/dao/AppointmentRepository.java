@@ -21,5 +21,17 @@ public interface AppointmentRepository  extends JpaRepository<Appointment, Integ
     List<Appointment> getAppointmentsCanceledByUserInThisMonth(@Param("user") User user,@Param("beginingOfCurrentMonth") LocalDateTime beginingOfCurrentMonth);
 
     @Query("select a from Appointment a where a.status = 'scheduled' and :now >= a.end")
-    List<Appointment> findExpired(@Param("now") LocalDateTime now);
+    List<Appointment> findAllAppointmentsThatNeedsStatusChangeFromScheduledToFinished(@Param("now") LocalDateTime now);
+
+    @Query("select a from Appointment a where a.status = 'scheduled' and :now >= a.end")
+    List<Appointment> findAllScheduledAppointmentsWithEndBeforeDate(@Param("now") LocalDateTime now);
+
+    @Query("select a from Appointment a where a.status = 'scheduled' and :now >= a.end and (a.customer.id = :userId or a.provider.id = :userId)")
+    List<Appointment> findUserScheduledAppointmentsWithEndBeforeDate(@Param("now")LocalDateTime now, @Param("userId") int userId);
+
+    @Query("select a from Appointment a where a.status = 'finished' and :dayAgo >= a.end")
+    List<Appointment> findAllFinishedAppointmentsWithEndBeforeDate(@Param("dayAgo")LocalDateTime dayAgo);
+
+    @Query("select a from Appointment a where a.status = 'finished' and :dayAgo >= a.end and (a.customer.id = :userId or a.provider.id = :userId)")
+    List<Appointment> findUserFinishedAppointmentsWithEndBeforeDate(@Param("dayAgo")LocalDateTime dayAgo,@Param("userId") int userId);
 }
