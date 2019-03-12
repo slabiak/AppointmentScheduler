@@ -31,6 +31,10 @@ public class Appointment extends BaseEntity implements Comparable<Appointment> {
     @Column(name="canceled_at")
     private LocalDateTime canceledAt;
 
+    @OneToOne
+    @JoinColumn(name="id_canceler")
+    private User canceler;
+
     @Column(name="status")
     private String status;
 
@@ -113,6 +117,14 @@ public class Appointment extends BaseEntity implements Comparable<Appointment> {
 
         Collections.sort(chatMessages);
         return chatMessages;
+    }
+
+    public User getCanceler() {
+        return canceler;
+    }
+
+    public void setCanceler(User canceler) {
+        this.canceler = canceler;
     }
 
     public void setChatMessages(List<ChatMessage> chatMessages) {

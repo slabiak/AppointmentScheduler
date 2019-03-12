@@ -15,6 +15,10 @@
                 <td>Status </td>
                 <td><span th:text="${appointment.status}"> scheduled </span></td>
             </tr>
+            <tr th:if="${appointment.status=='invoiced'}">
+                <td>Invoice </td>
+                <td><a th:href="@{'/invoices/'+${appointment.id}+'/download'}">Download</a> </td>
+            </tr>
             <tr>
                 <td>Customer</td>
                 <td><span th:text="${appointment.customer.firstName+' '+appointment.customer.userName}">Name Surname</span></td>
@@ -37,7 +41,7 @@
             </tr>
             <tr>
                 <td>Start date </td>
-                <td><span th:text="${appointment.start}"> 10.01.2019 13:41:45 </span></td>
+                <td><span th:text="${#temporals.format(appointment.start, 'dd-MM-yyyy HH:mm')}"> 10.01.2019 13:41 </span></td>
             </tr>
             <tr>
                 <td>Duration </td>
@@ -63,7 +67,7 @@
 
 <div th:if="${allowCancel}">
     <form th:action="@{/appointments/cancel}" method='POST'>
-        <input type="hidden" name="id" th:value="${appointment.id}">
+        <input type="hidden" name="appointmentId" th:value="${appointment.id}">
         <input type="submit" class="btn btn-danger" value="Cancel"/>
     </form>
 </div>

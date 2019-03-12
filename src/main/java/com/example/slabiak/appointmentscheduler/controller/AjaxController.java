@@ -1,5 +1,6 @@
 package com.example.slabiak.appointmentscheduler.controller;
 
+import com.example.slabiak.appointmentscheduler.dao.InvoiceRepository;
 import com.example.slabiak.appointmentscheduler.dao.WorkingPlanRepository;
 import com.example.slabiak.appointmentscheduler.entity.Appointment;
 import com.example.slabiak.appointmentscheduler.entity.User;
@@ -17,6 +18,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.mail.MessagingException;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -34,6 +36,12 @@ public class AjaxController {
 
     @Autowired
     EmailService emailService;
+
+    @Autowired
+    InvoiceRepository invoiceRepository;
+
+    @Autowired
+    JwtTokenService jwtTokenService;
 
     @GetMapping("/user/{userId}/appointments")
     List<Appointment> getAppointmentsForUser(@PathVariable("userId") int userId,@AuthenticationPrincipal CustomUserDetails currentUser) {
@@ -53,6 +61,26 @@ public class AjaxController {
             appointments.add(new AppointmentRegisterForm(workId,userId,peroid.getStart().atDate(d),peroid.getEnd().atDate(d)));
         }
         return appointments;
+    }
+
+
+    @GetMapping("/invoice")
+    String invoice(){
+        emailService.sendInvoice(invoiceRepository.getOne(6));
+        return "success";
+    }
+
+
+    @GetMapping("/date")
+    String date(){
+        jwtTokenService.convertLocalDateTimeToDate(LocalDateTime.now());
+        return "success";
+    }
+
+    @GetMapping("/token")
+    String token(){
+
+        return jwtTokenService.generateDenyTokenForAppointment(appointmentService.findById(2));
     }
 
 

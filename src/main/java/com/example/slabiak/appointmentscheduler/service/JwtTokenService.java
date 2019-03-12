@@ -8,8 +8,7 @@ import io.jsonwebtoken.SignatureAlgorithm;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
-import java.time.Instant;
-import java.time.ZoneOffset;
+import java.time.*;
 import java.util.Date;
 
 @Component
@@ -19,18 +18,15 @@ public class JwtTokenService {
     private String jwtSecret;
 
 
-    public String generateDenyToken(Appointment appointment){
-
-        Instant intstatExpiryDate = appointment.getEnd().plusHours(24).toInstant(ZoneOffset.UTC);
-        Date expiryDate = Date.from(intstatExpiryDate);
-        System.out.println(jwtSecret);
+    public String generateDenyTokenForAppointment(Appointment appointment){
+        ZoneId zoneId = ZoneId.of("Europe/Warsaw");
+        Date expiryDate = convertLocalDateTimeToDate(appointment.getEnd().plusHours(24));
         return Jwts.builder()
                 .claim("appointmentId",appointment.getId())
                 .claim("customerId",appointment.getCustomer().getId())
                 .setExpiration(expiryDate)
                 .signWith(SignatureAlgorithm.HS512, jwtSecret)
                 .compact();
-
     }
 
     public boolean validateToken(String token){
@@ -58,5 +54,12 @@ public class JwtTokenService {
                 .parseClaimsJws(token)
                 .getBody();
         return (int) claims.get("customerId");
+    }
+
+    public Date convertLocalDateTimeToDate(LocalDateTime localDateTime){
+        ZoneId zone = ZoneId.of("Europe/Warsaw");
+        ZoneOffset zoneOffSet = zone.getRules().getOffset(localDateTime);
+        Instant instant = localDateTime.toInstant(zoneOffSet);
+        return Date.from(instant);
     }
 }

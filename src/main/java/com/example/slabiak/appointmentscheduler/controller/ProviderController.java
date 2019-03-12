@@ -84,7 +84,7 @@ public class ProviderController {
     }
 
     @PostMapping("/availability")
-    public String updateAvailability(@ModelAttribute("plan") WorkingPlan plan){
+    public String updateWorkingPlan(@ModelAttribute("plan") WorkingPlan plan){
         WorkingPlan wp = workingPlanRepository.getOne(plan.getId());
         wp.getMonday().setWorkingHours(plan.getMonday().getWorkingHours());
         wp.getTuesday().setWorkingHours(plan.getTuesday().getWorkingHours());

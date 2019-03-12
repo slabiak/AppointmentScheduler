@@ -4,7 +4,7 @@ import javax.persistence.*;
 import java.time.LocalDateTime;
 
 @Entity
-@Table(name="notes")
+@Table(name="messages")
 public class ChatMessage extends BaseEntity implements Comparable<ChatMessage>{
 
     @Column(name="created_at")

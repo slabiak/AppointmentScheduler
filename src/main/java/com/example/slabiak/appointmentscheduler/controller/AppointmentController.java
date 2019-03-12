@@ -1,15 +1,11 @@
 package com.example.slabiak.appointmentscheduler.controller;
 
-import com.example.slabiak.appointmentscheduler.dao.ChatMessageRepository;
 import com.example.slabiak.appointmentscheduler.entity.Appointment;
 import com.example.slabiak.appointmentscheduler.entity.ChatMessage;
 import com.example.slabiak.appointmentscheduler.security.CustomUserDetails;
-import com.example.slabiak.appointmentscheduler.service.AppointmentService;
-import com.example.slabiak.appointmentscheduler.service.UserService;
-import com.example.slabiak.appointmentscheduler.service.WorkService;
-import org.apache.tomcat.jni.Local;
+import com.example.slabiak.appointmentscheduler.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.Authentication;
+
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.stereotype.Controller;
@@ -32,6 +28,11 @@ public class AppointmentController {
     @Autowired
     AppointmentService appointmentService;
 
+    @Autowired
+    EmailService emailService;
+
+
+
     @GetMapping("")
     public String showAllAppointments(Model model, @AuthenticationPrincipal CustomUserDetails currentUser) {
         model.addAttribute("user",userService.findById(currentUser.getId()));
@@ -53,7 +54,7 @@ public class AppointmentController {
 
         model.addAttribute("allowDeny",allowDeny);
         if(allowDeny){
-            model.addAttribute("remainingTime",humanReadableFormat(Duration.between(LocalDateTime.now(),appointment.getEnd().plusHours(24))));
+            model.addAttribute("remainingTime", formatDuration(Duration.between(LocalDateTime.now(),appointment.getEnd().plusHours(24))));
         }
         model.addAttribute("allowCancel",allowCancel);
         if(!allowCancel){
@@ -75,12 +76,6 @@ public class AppointmentController {
         model.addAttribute("appointment", appointment);
             return "appointments/appointmentDetail";
         }
-
-    public static String humanReadableFormat(Duration duration) {
-        long s = duration.getSeconds();
-        return   String.format("%dh and %02dm", s / 3600, (s % 3600) / 60);
-
-    }
 
     @PostMapping("/deny")
     public String denyAppointment(@RequestParam("appointmentId") int appointmentId, @AuthenticationPrincipal CustomUserDetails currentUser, Model model) {
@@ -140,9 +135,16 @@ public class AppointmentController {
     }
 
     @PostMapping("/cancel")
-    public String cancelAppointment(@RequestParam("id") int id){
-        appointmentService.cancelById(id);
+    public String cancelAppointment(@RequestParam("appointmentId") int appointmentId, @AuthenticationPrincipal CustomUserDetails currentUser){
+        appointmentService.cancelById(appointmentId,currentUser.getId());
         return "redirect:/appointments";
+    }
+
+
+    public static String formatDuration(Duration duration) {
+        long s = duration.getSeconds();
+        return   String.format("%dh and %02dm", s / 3600, (s % 3600) / 60);
+
     }
 
 }

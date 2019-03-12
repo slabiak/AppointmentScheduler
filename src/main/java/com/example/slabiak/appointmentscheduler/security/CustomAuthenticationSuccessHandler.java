@@ -1,6 +1,7 @@
 package com.example.slabiak.appointmentscheduler.security;
 
 import com.example.slabiak.appointmentscheduler.entity.User;
+import com.example.slabiak.appointmentscheduler.service.AppointmentService;
 import com.example.slabiak.appointmentscheduler.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
@@ -17,20 +18,13 @@ import java.io.IOException;
 public class CustomAuthenticationSuccessHandler implements AuthenticationSuccessHandler {
 
     @Autowired
-    private UserService userService;
+    private AppointmentService appointmentService;
 
     @Override
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication)
             throws IOException, ServletException {
-
-        String userName = authentication.getName();
-        User user = userService.findByUserName(userName);
-
-        HttpSession session = request.getSession();
-        //session.setAttribute("user", user);
-
-        // forward to home page
-
+        CustomUserDetails currentUser = (CustomUserDetails) authentication.getPrincipal();
+        appointmentService.updateUserAppointmentsStatuses(currentUser.getId());
         response.sendRedirect(request.getContextPath() + "/");
     }
 

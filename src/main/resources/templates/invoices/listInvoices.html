@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" th:replace="~{fragments/layout :: layout (~{::body},'invoices','Available invoices')}" xmlns:sec="http://www.w3.org/1999/xhtml">
+<body>
+
+
+<div class="row align-items-center justify-content-center"   style="margin-top: 50px">
+    <div>
+        <table id="providers" class="table table-striped text-center" >
+            <thead class="thead-dark">
+            <tr>
+                <th> Number </th>
+                <th> Issued </th>
+                <th> Status </th>
+                <th> Total price </th>
+                <th> Action </th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:if="${invoices == null}">
+                <td colspan="4"> No Invoices Available </td>
+            </tr>
+            <tr th:each="invoice : ${invoices}">
+                <td><span th:text="${invoice.number}"> FV/2019/02/03 </span></td>
+                <td><span th:text="${invoice.issued}"> 2019/03/01 </span></td>
+                <td><span th:text="${invoice.status}"> paid </span></td>
+                <td><span th:text="${invoice.appointment.work.price +' PLN'}"> 60.00 PLN</span></td>
+                <td>
+                    <a class="btn btn-secondary" th:href="@{'/invoices/download/' + ${invoice.appointment.id}}" role="button">Download</a>
+                    <form th:if="${invoice.status=='issued'}" class="d-inline-block" th:action="@{'/invoices/paid/' + ${invoice.id}}" method="POST">
+                        <input type="hidden" name="invoiceId" th:value="${invoice.id}" />
+                        <button type="submit" name="submit" value="value" class="btn btn-success">Mark as paid</button>
+                    </form>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+</body>
+</html>

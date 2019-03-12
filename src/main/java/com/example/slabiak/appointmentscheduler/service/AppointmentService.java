@@ -24,7 +24,7 @@ public interface AppointmentService {
 
     void save(int workId, int providerId, int customerId, LocalDateTime start);
 
-    void cancelById(int id);
+    void cancelById(int appointmentId, int userId);
 
     void addChatMessageToAppointment(int appointmentId, int authorId, ChatMessage chatMessage);
 

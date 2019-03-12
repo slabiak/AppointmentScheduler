@@ -17,7 +17,7 @@ public interface AppointmentRepository  extends JpaRepository<Appointment, Integ
     @Query("select a from Appointment a where a.provider = :user and  a.start >=:dayStart and  a.start <=:dayEnd")
     List<Appointment> findByProviderAndDate(@Param("user") User user, @Param("dayStart") LocalDateTime dayStart, @Param("dayEnd") LocalDateTime dayEnd);
 
-    @Query("select a from Appointment a where a.customer = :user and  a.canceledAt >=:beginingOfCurrentMonth")
+    @Query("select a from Appointment a where a.customer = :user and a.canceler=:user and a.canceledAt >=:beginingOfCurrentMonth")
     List<Appointment> getAppointmentsCanceledByUserInThisMonth(@Param("user") User user,@Param("beginingOfCurrentMonth") LocalDateTime beginingOfCurrentMonth);
 
     @Query("select a from Appointment a where a.status = 'scheduled' and :now >= a.end")

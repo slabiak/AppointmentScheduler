@@ -10,6 +10,9 @@
         <li class="nav-item" th:classappend="${activeLink} == 'customers' ? 'active':''">
             <a class="nav-link" th:href="@{/customers}">Customers</a>
         </li>
+        <li class="nav-item" th:classappend="${activeLink} == 'invoices' ? 'active':''">
+            <a class="nav-link" th:href="@{/invoices}">Invoices</a>
+        </li>
     </ul>
 </div>
 </th:block>

@@ -38,7 +38,7 @@
                             <li th:each="work : ${allWorks}">
                                 <input type="checkbox" th:field="*{works}" th:value="${work.id}" />
                                 <label th:for="${#ids.prev('works')}"
-                                       th:text="${work.name}">Heating</label>
+                                       th:text="${work.name}">English</label>
                             </li>
                         </ul>
                     </div>

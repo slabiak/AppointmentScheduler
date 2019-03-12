@@ -1,19 +1,18 @@
 package com.example.slabiak.appointmentscheduler.service;
 
 import com.example.slabiak.appointmentscheduler.entity.Appointment;
+import com.example.slabiak.appointmentscheduler.entity.Invoice;
+import com.example.slabiak.appointmentscheduler.util.PdfGeneratorUtil;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.io.ClassPathResource;
-import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
-import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.Context;
 import org.thymeleaf.spring5.SpringTemplateEngine;
 
 import javax.mail.MessagingException;
 import javax.mail.internet.MimeMessage;
-import java.io.IOException;
+import java.io.File;
 import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.Map;
@@ -30,8 +29,12 @@ public class EmailServiceImpl implements EmailService {
 
     @Autowired
     private JwtTokenService jwtTokenService;
+
+    @Autowired
+    PdfGeneratorUtil pdfGenaratorUtil;
+
     @Override
-    public void sendEmail(String to, String subject,String template, Map model) {
+    public void sendEmail(String to, String subject,String template, Map model,File attachment) {
         MimeMessage message = javaMailSender.createMimeMessage();
         MimeMessageHelper helper = null;
         try {
@@ -47,6 +50,10 @@ public class EmailServiceImpl implements EmailService {
             helper.setFrom("AppointmentScheduler");
             helper.setSubject(subject);
             helper.setText(html, true);
+
+            if(attachment!=null){
+                helper.addAttachment("invoice",attachment);
+            }
 
             javaMailSender.send(message);
 
@@ -64,7 +71,20 @@ public class EmailServiceImpl implements EmailService {
         model.put("price",String.valueOf(appointment.getWork().getPrice()));
         model.put("start",appointment.getStart().toString());
         model.put("duration",String.valueOf(appointment.getWork().getDuration()));
-        model.put("url", "http://localhost:8080/appointments/deny?token="+jwtTokenService.generateDenyToken(appointment));
-        sendEmail(appointment.getCustomer().getEmail(),"Finished appointment summary","appointmentFinished",model);
+        model.put("url", "http://localhost:8080/appointments/deny?token="+jwtTokenService.generateDenyTokenForAppointment(appointment));
+        sendEmail(appointment.getCustomer().getEmail(),"Finished appointment summary","appointmentFinished",model,null);
+    }
+
+    @Override
+    public void sendInvoice(Invoice invoice) {
+        Map<String,String> model = new HashMap<>();
+        model.put("customer",invoice.getAppointment().getCustomer().getFirstName()+" "+invoice.getAppointment().getCustomer().getLastName());
+        try {
+            File invoicePdf =pdfGenaratorUtil.generatePdfFromInvoice(invoice);
+            sendEmail(invoice.getAppointment().getCustomer().getEmail(),"Appointment invoice","appointmentInvoice",model,invoicePdf);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
     }
 }

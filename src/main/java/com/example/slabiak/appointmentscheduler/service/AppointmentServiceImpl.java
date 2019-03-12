@@ -2,6 +2,7 @@ package com.example.slabiak.appointmentscheduler.service;
 
 import com.example.slabiak.appointmentscheduler.dao.AppointmentRepository;
 import com.example.slabiak.appointmentscheduler.dao.ChatMessageRepository;
+import com.example.slabiak.appointmentscheduler.dao.InvoiceRepository;
 import com.example.slabiak.appointmentscheduler.dao.WorkingPlanRepository;
 import com.example.slabiak.appointmentscheduler.entity.*;
 import com.example.slabiak.appointmentscheduler.model.AppointmentRegisterForm;
@@ -41,6 +42,9 @@ public class AppointmentServiceImpl implements AppointmentService{
 
     @Autowired
     JwtTokenService jwtTokenService;
+
+    @Autowired
+    private InvoiceService invoiceService;
 
     public AppointmentServiceImpl() {
     }
@@ -120,7 +124,7 @@ public class AppointmentServiceImpl implements AppointmentService{
         // get peroids from working hours for selected day excluding breaks
 
         availablePeroids = selectedDay.peroidsWithBreaksExcluded();
-        // exclude booked appointments for selected provider
+        // exclude provider's appointments from available peroids
         availablePeroids = excludeAppointmentsFromTimePeroids(availablePeroids,providerAppointments);
        return calculateAvailableHours(availablePeroids,workService.findById(workId));
        // return availablePeroids;
@@ -140,14 +144,6 @@ public class AppointmentServiceImpl implements AppointmentService{
     }
 
     @Override
-    public void cancelById(int id) {
-        Appointment appointment = appointmentRepository.getOne(id);
-        appointment.setStatus("canceled");
-        appointment.setCanceledAt(LocalDateTime.now());
-        appointmentRepository.save(appointment);
-    }
-
-    @Override
     public void addChatMessageToAppointment(int appointmentId, int authorId, ChatMessage chatMessage) {
         chatMessage.setAuthor(userService.findById(authorId));
         chatMessage.setAppointment(findById(appointmentId));
@@ -155,29 +151,8 @@ public class AppointmentServiceImpl implements AppointmentService{
         chatMessageRepository.save(chatMessage);
     }
 
-    @Override
-    public boolean isUserAllowedToCancelAppointment(int userId, int appointmentId) {
-        User user = userService.findById(userId);
-        Appointment appointment = findById(appointmentId);
 
-        // only scheduled appointments can be canceled
-        if(!appointment.getStatus().equals("scheduled")){
-            return false;
-        }
-        // if user is appointments provider he can cancel it without any conditions
-        else if(appointment.getProvider().equals(user)){
-            return true;
 
-        // appointments can be canceled max 24h before appointment
-        }  else if(LocalDateTime.now().plusHours(24).isAfter(appointment.getStart())){
-            return false;
-        }
-        // check if this is appointments provider, if this type of work is allowed to be cancelled by customer and if customer total amount of canncelation in this month is not greater than 1
-        else if(appointment.getCustomer().equals(user) && appointment.getWork().getEditable() && getAppointmentsCanceledByUserInThisMonth(userId).size()<=1){
-            return true;
-        }
-        return false;
-    }
 
     public List<TimePeroid> calculateAvailableHours(List<TimePeroid> availableTimePeroids, Work work){
         ArrayList<TimePeroid> availableHours = new ArrayList<TimePeroid>();
@@ -234,8 +209,8 @@ public class AppointmentServiceImpl implements AppointmentService{
          * find appointments which requires status change from finished to confirmed and change their status
          * (all appointments which have status 'finished' and their end date is more than 24 hours before current timestamp)
          * */
-        System.out.println("ssss");
         for(Appointment appointment: appointmentRepository.findUserFinishedAppointmentsWithEndBeforeDate(LocalDateTime.now().minusHours(24),userId)){
+
             appointment.setStatus("invoiced");
             update(appointment);
         }
@@ -264,10 +239,51 @@ public class AppointmentServiceImpl implements AppointmentService{
          * (all appointments which have status 'finished' and their end date is more than 24 hours before current timestamp)
          * */
         for(Appointment appointment: appointmentRepository.findAllFinishedAppointmentsWithEndBeforeDate(LocalDateTime.now().minusHours(24))){
+            Invoice invoice = new Invoice(invoiceService.generateInvoiceNumber(),"issued",LocalDateTime.now(),appointment);
+            invoiceService.save(invoice);
             appointment.setStatus("invoiced");
             update(appointment);
         }
     }
+
+    @Override
+    public boolean isUserAllowedToCancelAppointment(int userId, int appointmentId) {
+        User user = userService.findById(userId);
+        Appointment appointment = findById(appointmentId);
+
+        // only scheduled appointments can be canceled
+        if(!appointment.getStatus().equals("scheduled")){
+            return false;
+        }
+        // if user is appointment provider he can cancel it without any conditions
+        else if(appointment.getProvider().equals(user)){
+            return true;
+
+            // appointments can be canceled max 24h before appointment
+        }  else if(LocalDateTime.now().plusHours(24).isAfter(appointment.getStart())){
+            return false;
+        }
+        // check considered appointments is appointment for specified user, if this type of work is allowed to be cancelled by customer
+        else if(!appointment.getCustomer().equals(user) || !appointment.getWork().getEditable()){
+            return false;
+        }
+        //and if customer total amount of canncelation in this month is not greater than 1
+        else if(getAppointmentsCanceledByUserInThisMonth(userId).size()>=1){
+            return false;
+        }
+
+        return true;
+    }
+
+    @Override
+    public void cancelById(int appointmentId, int userId) {
+        Appointment appointment = appointmentRepository.getOne(appointmentId);
+        appointment.setStatus("canceled");
+        appointment.setCanceler(userService.findById(userId));
+        appointment.setCanceledAt(LocalDateTime.now());
+        appointmentRepository.save(appointment);
+    }
+
 
     @Override
     public boolean isUserAllowedToDenyThatAppointmentTookPlace(Integer userId, int appointmentId) {

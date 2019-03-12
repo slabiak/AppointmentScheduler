@@ -15,12 +15,8 @@ public class HomeController {
     @Autowired
     UserService userService;
 
-    @Autowired
-    AppointmentService appointmentService;
-
     @GetMapping("/")
     public String showHome(Model model,@AuthenticationPrincipal CustomUserDetails currentUser) {
-        appointmentService.updateUserAppointmentsStatuses(currentUser.getId());
         model.addAttribute("user",userService.findById(currentUser.getId()));
         return "home";
     }

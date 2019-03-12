@@ -52,7 +52,7 @@
     background: #e5e5e5;
     margin: 0;
     padding: 0 10px 10px;
-    max-height:300px;
+    height:300px;
     overflow-x:hidden;
 }
 .top-bar {
@@ -129,7 +129,6 @@ img {
 .msg_sent > time{
     float: right;
 }
-
 
 
 .msg_container_base::-webkit-scrollbar-track
