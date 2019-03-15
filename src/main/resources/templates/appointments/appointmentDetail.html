@@ -2,138 +2,149 @@
 <html xmlns:th="http://www.thymeleaf.org" th:replace="~{fragments/layout :: layout (~{::body},'appointments','Appointment detail')}" xmlns:sec="http://www.w3.org/1999/xhtml">
 
 <body>
-<div class="row align-items-center justify-content-center"   style="margin-top: 50px">
-    <div>
-        <table id="appointments" class="table table-striped text-center" >
-            <thead class="thead-dark">
-            <tr>
-                <th colspan="2"> Appointment details: </th>
-            </tr>
-            </thead>
-            <tbody>
-            <tr>
-                <td>Status </td>
-                <td><span th:text="${appointment.status}"> scheduled </span></td>
-            </tr>
-            <tr th:if="${appointment.status=='invoiced'}">
-                <td>Invoice </td>
-                <td><a th:href="@{'/invoices/'+${appointment.id}+'/download'}">Download</a> </td>
-            </tr>
-            <tr>
-                <td>Customer</td>
-                <td><span th:text="${appointment.customer.firstName+' '+appointment.customer.userName}">Name Surname</span></td>
-            </tr>
-            <tr>
-                <td>Provider</td>
-                <td><span th:text="${appointment.provider.firstName+' '+appointment.provider.userName}">Name Surname</span></td>
-            </tr>
-            <tr>
-                <td>Work </td>
-                <td><span th:text="${appointment.work.name}"> english </span></td>
-            </tr>
-            <tr>
-                <td>Cancellable </td>
-                <td><span th:text="${appointment.work.editable}"> true </span></td>
-            </tr>
-            <tr>
-                <td>Description </td>
-                <td><span th:text="${appointment.work.description}">description</span></td>
-            </tr>
-            <tr>
-                <td>Start date </td>
-                <td><span th:text="${#temporals.format(appointment.start, 'dd-MM-yyyy HH:mm')}"> 10.01.2019 13:41 </span></td>
-            </tr>
-            <tr>
-                <td>Duration </td>
-                <td><span th:text="${appointment.work.duration}"> 30 </span> min</td>
-            </tr>
-            <tr>
-                <td>Price </td>
-                <td><span th:text="${appointment.work.price}"> 50 </span> pln</td>
-            </tr>
-            </tbody>
-        </table>
-    </div>
-</div>
-<div th:if="${allowDeny}">
-    <p>You have <span th:text="${remainingTime}"></span> to deny that appointment took place.</p>
-    <p>After that time it will be invoiced automatically.</p>
+<div class="row" style="margin-top: 50px">
 
-    <form th:action="@{/appointments/deny}" method='POST'>
-        <input type="hidden" name="appointmentId" th:value="${appointment.id}">
-        <input type="submit" class="btn btn-danger" value="Deny"/>
-    </form>
-</div>
+    <link href="//maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
+    <script src="//maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <!------ Include the above in your HEAD tag ---------->
 
-<div th:if="${allowCancel}">
-    <form th:action="@{/appointments/cancel}" method='POST'>
-        <input type="hidden" name="appointmentId" th:value="${appointment.id}">
-        <input type="submit" class="btn btn-danger" value="Cancel"/>
-    </form>
-</div>
-<div th:unless="${allowCancel}">
-    <div th:switch="${denyCancelReason}">
-        <p th:case="'status'">Only appoinmtents with scheduled status can be cancelled.</p>
-        <p th:case="'limitExceed'">You can't cancel this appointment because you exceeded maximum number of cancellations in this month.</p>
-        <p th:case="'expired'">Appointments which will be in less than 24 hours cannot be canceled.</p>
-        <p th:case="'type'">This type of appointment can be cancelled only by Provider.</p>
-    </div>
-</div>
+    <div class="container">
+        <div class="row justify-content-center">
+            <div clas="col-md-1">
+            </div>
+            <div th:if="${allowDeny}" class="col-md-9 p-3 mb-2 bg-warning text-dark text-center" >
+                <p>You have <span class="font-weight-bold" th:text="${remainingTime}">3h 45m</span> to deny that this appointment took place.</p>
+                <p>After that time it will be invoiced automatically.</p>
 
-<div class="row">
-    <div class="col-sm-3">
+                <form th:action="@{/appointments/deny}" method='POST'>
+                    <input type="hidden" name="appointmentId" th:value="${appointment.id}">
+                    <input type="submit" class="btn btn-danger" value="Deny"/>
+                </form>
+            </div>
 
-    </div>
-    <div class="col-sm-6">
-        <div class="chatbody">
-            <div class="panel panel-primary">
-                <div class="panel-heading top-bar">
-                    <div class="col-md-8 col-xs-8">
-                        <h3 class="panel-title">
-                            Chat -
-                            <span sec:authorize="hasRole('ROLE_PROVIDER')" th:text="${appointment.customer.userName}"></span>
-                            <span sec:authorize="hasRole('ROLE_CUSTOMER')" th:text="${appointment.provider.userName}"></span>
-                        </h3>
-                    </div>
-                </div>
+        </div>
 
-                <div class="panel-body msg_container_base">
-                    <div th:each="chatMessage : ${appointment.chatMessages}" class="row msg_container base_receive">
-                        <div class="col-md-12 col-xs-12">
-                            <div class="messages msg_receive">
-                                <p th:text="${chatMessage.message}">messae</p>
-                                <time datetime="2009-11-13T20:00"><span th:text="${chatMessage.author.firstName}">author</span> • <span th:text="${chatMessage.createdAt}"></span></time>
+
+
+        <div class="row">
+            <div class="col-md-1">
+            </div>
+            <div class="col-md-4">
+
+                <table id="appointments" class="table" >
+                    <tr>
+                        <td><b>status</b></td>
+                        <td><span th:text="${appointment.status}"> scheduled </span></td>
+                    </tr>
+                    <tr th:if="${appointment.status=='canceled'}">
+                        <td><b>canceled by</b></td>
+                        <td><span th:text="${appointment.canceler.firstName+' '+appointment.canceler.lastName}">Canceller name</td>
+
+                    </tr>
+
+                    <tr>
+                        <td><b>date</b></td>
+                        <td><span th:text="${#temporals.format(appointment.start, 'dd-MM-yyyy')}">10-01-2019</span></td>
+                    </tr>
+                    <tr>
+                        <td><b>time</b></td>
+                        <td><span th:text="${#temporals.format(appointment.start, 'HH:mm')+' - '+ #temporals.format(appointment.end, 'HH:mm')}">14:00 - 15:00</span></td>
+                    </tr>
+                    <tr>
+                        <td><b>customer</b></td>
+                        <td><span th:text="${appointment.customer.firstName+' '+appointment.customer.lastName}">Peter Kowalski</span></td>
+                    </tr>
+                    <tr>
+                        <td><b>provider</b></td>
+                        <td><span th:text="${appointment.provider.firstName+' '+appointment.provider.lastName}">Marian Nowak</span></td>
+                    </tr>
+
+                    <tr>
+                        <td><b>work</b> </td>
+                        <td><span th:text="${appointment.work.name}"> english </span></td>
+                    </tr>
+                    <tr>
+                        <td><b>description</b> </td>
+                        <td><span th:text="${appointment.work.description}">description</span></td>
+                    </tr>
+
+
+
+                    <tr>
+                        <td><b>price</b></td>
+                        <td><span th:text="${appointment.work.price}"> 50 </span> pln</td>
+                    </tr>
+                    <tr th:if="${appointment.status=='invoiced'}">
+                        <td><b>invoice</b></td>
+                        <td><a th:href="@{'/invoices/'+${appointment.id}+'/download'}">download</a> </td>
+                    </tr>
+
+                    <tr>
+                        <td><b>cancellation</b></td>
+                        <td th:if="${allowCancel}">
+                            <form th:action="@{/appointments/cancel}" method='POST'>
+                                <input type="hidden" name="appointmentId" th:value="${appointment.id}">
+                                <input type="submit" class="btn btn-danger" value="Cancel"/>
+                            </form>
+                        </td>
+                        <td th:unless="${allowCancel}">
+                                <p th:text="${cancelNotAllowedReason}">Reason why appointment cannot be cancelled.</p>
+                        </td>
+                    </tr>
+
+                </table>
+
+            </div>
+            <div class="col-md-5">
+
+                <div class="chatbody">
+                    <div class="panel panel-primary">
+                        <div class="panel-heading top-bar">
+                            <div class="col-md-8 col-xs-8">
+                                <p>
+                                    Appointment chat with
+                                    <span sec:authorize="hasRole('ROLE_PROVIDER')" th:text="${appointment.customer.firstName}"></span>
+                                    <span sec:authorize="hasRole('ROLE_CUSTOMER')" th:text="${appointment.provider.firstName}"></span>
+                                </p>
                             </div>
                         </div>
+
+                        <div class="panel-body msg_container_base">
+                            <div th:each="chatMessage : ${appointment.chatMessages}" class="row msg_container base_receive">
+                                <div class="col-md-12 col-xs-12">
+                                    <div class="messages msg_receive">
+                                        <p th:text="${chatMessage.message}">messae</p>
+                                        <time datetime="2009-11-13T20:00"><span th:text="${chatMessage.author.firstName}">author</span> • <span th:text="${chatMessage.createdAt}"></span></time>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <form th:action="@{/appointments/messages/new}" th:object="${chatMessage}" method='POST'>
+                            <div class="input-group mb-3">
+                                <input type="hidden" name="appointmentId" th:value="${appointment.id}">
+                                <input type="text" class="form-control"  th:field="*{message}" placeholder="Write your message here..." aria-label="Recipient's username" aria-describedby="basic-addon2">
+                                <div class="input-group-append">
+                                    <button class="btn btn-outline-secondary" type="submit">Send</button>
+                                </div>
+                            </div>
+                        </form>
+
+
                     </div>
+
                 </div>
 
-                <form th:action="@{/appointments/messages/new}" th:object="${chatMessage}" method='POST'>
-                <div class="input-group mb-3">
-                        <input type="hidden" name="appointmentId" th:value="${appointment.id}">
-                    <input type="text" class="form-control"  th:field="*{message}" placeholder="Write your message here..." aria-label="Recipient's username" aria-describedby="basic-addon2">
-                    <div class="input-group-append">
-                        <button class="btn btn-outline-secondary" type="submit">Send</button>
-                    </div>
-                </div>
-                </form>
 
-
-               <!-- <div class="input-group mb-3">
-                    <input type="text" class="form-control" placeholder="Recipient's username" aria-label="Recipient's username" aria-describedby="basic-addon2">
-                    <div class="input-group-append">
-                        <button class="btn btn-outline-secondary" type="button">Button</button>
-                    </div>
-                </div>-->
 
             </div>
 
         </div>
     </div>
-    <div class="col-sm-3">
-
-    </div>
 </div>
+
+
 </div>
 </body>
 </html>

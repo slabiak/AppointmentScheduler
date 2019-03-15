@@ -2,25 +2,17 @@ package com.example.slabiak.appointmentscheduler.service;
 
 import com.example.slabiak.appointmentscheduler.dao.RoleRepository;
 import com.example.slabiak.appointmentscheduler.dao.UserRepository;
+import com.example.slabiak.appointmentscheduler.dto.UserFormDTO;
 import com.example.slabiak.appointmentscheduler.entity.Role;
 import com.example.slabiak.appointmentscheduler.entity.User;
 import com.example.slabiak.appointmentscheduler.entity.Work;
 import com.example.slabiak.appointmentscheduler.entity.WorkingPlan;
-import com.example.slabiak.appointmentscheduler.model.DayPlan;
-import com.example.slabiak.appointmentscheduler.model.TimePeroid;
 import com.example.slabiak.appointmentscheduler.model.UserRegisterForm;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalTime;
 import java.util.*;
-import java.util.stream.Collectors;
 
 @Service
 public class UserServiceImpl implements UserService {
@@ -33,60 +25,29 @@ public class UserServiceImpl implements UserService {
     private BCryptPasswordEncoder passwordEncoder;
 
     @Autowired
-    private WorkService workService;
+    private WorkingPlanService workingPlanService;
+
 
     @Override
-    public void registerCustomer(UserRegisterForm userForm) {
+    public void saveNewUser(UserFormDTO userForm) {
         User user = new User();
         user.setUserName(userForm.getUserName());
-        user.setPassword(passwordEncoder.encode(userForm.getPassword()));
+        user.setPassword(passwordEncoder.encode(userForm.getNewPassword()));
         user.setFirstName(userForm.getFirstName());
         user.setLastName(userForm.getLastName());
         user.setEmail(userForm.getEmail());
-        Role role = roleRepository.findByName("ROLE_CUSTOMER");
-        HashSet<Role> roles = new HashSet<Role>();
-        roles.add(role);
-        user.setRoles(roles);
-        userRepository.save(user);
-    }
-
-    @Override
-    public void registerProvider(UserRegisterForm userForm) {
-        User user = new User();
-        user.setUserName(userForm.getUserName());
-        user.setPassword(passwordEncoder.encode(userForm.getPassword()));
-        user.setFirstName(userForm.getFirstName());
-        user.setLastName(userForm.getLastName());
-        user.setEmail(userForm.getEmail());
-        List<Work> works = new ArrayList<Work>();
-        for(int workId : userForm.getSelectedWorks()){
-            works.add(workService.findById(workId));
+        user.setCity(userForm.getCity());
+        user.setStreet(userForm.getStreet());
+        user.setPostcode(userForm.getPostcode());
+        user.setMobile(userForm.getMobile());
+        user.setRoles(getCustomerRoles());
+        if(userForm.isProviderAccount()){
+            user.setWorks(userForm.getWorks());
+            user.setRoles(getProviderRoles());
+            WorkingPlan wp= workingPlanService.generateDefaultWorkingPlan();
+            wp.setProvider(user);
+            user.setWorkingPlan(wp);
         }
-        user.setWorks(works);
-        Role role = roleRepository.findByName("ROLE_PROVIDER");
-        HashSet<Role> roles = new HashSet<Role>();
-        roles.add(role);
-        user.setRoles(roles);
-        WorkingPlan wp= new WorkingPlan();
-        wp.setMonday(new DayPlan(new TimePeroid(LocalTime.parse("06:00"),LocalTime.parse("18:00"))));
-        wp.setTuesday(new DayPlan(new TimePeroid(LocalTime.of(06,00),LocalTime.of(18,00))));
-        wp.setWednesday(new DayPlan(new TimePeroid(LocalTime.of(06,00),LocalTime.of(18,00))));
-        wp.setThursday(new DayPlan(new TimePeroid(LocalTime.of(06,00),LocalTime.of(18,00))));
-        wp.setFriday(new DayPlan(new TimePeroid(LocalTime.of(06,00),LocalTime.of(18,00))));
-        wp.setSaturday(new DayPlan(new TimePeroid(LocalTime.of(06,00),LocalTime.of(18,00))));
-        wp.setSunday(new DayPlan(new TimePeroid(LocalTime.of(06,00),LocalTime.of(18,00))));
-        wp.setProvider(user);
-        user.setWorkingPlan(wp);
-        userRepository.save(user);
-    }
-
-    @Override
-    public void updateProvider(User userUpdateData) {
-        User user = findById(userUpdateData.getId());
-        user.setFirstName(userUpdateData.getFirstName());
-        user.setLastName(userUpdateData.getLastName());
-        user.setEmail(userUpdateData.getEmail());
-        user.setWorks(userUpdateData.getWorks());
         userRepository.save(user);
     }
 
@@ -140,6 +101,53 @@ public class UserServiceImpl implements UserService {
     @Override
     public List<User> findByWorks(Work work) {
         return userRepository.findByWorks(work);
+    }
+
+    @Override
+    public void updateUserProfile(UserFormDTO updateData) {
+        User user = findById(updateData.getId());
+        user.setFirstName(updateData.getFirstName());
+        user.setLastName(updateData.getLastName());
+        user.setEmail(updateData.getEmail());
+        user.setMobile(updateData.getMobile());
+        user.setStreet(updateData.getStreet());
+        user.setCity(updateData.getCity());
+        user.setPostcode(updateData.getPostcode());
+        user.setWorks(updateData.getWorks());
+        userRepository.save(user);
+    }
+
+    @Override
+    public boolean updateUserPassword(int userId, String currentPassword, String newPassword, String matchingPassword) {
+        User user = userRepository.getOne(userId);
+        if(!newPassword.equals(matchingPassword)){
+            System.out.println("1");
+            return false;
+        } else if(passwordEncoder.matches(currentPassword,user.getPassword())){
+            user.setPassword(passwordEncoder.encode(newPassword));
+            userRepository.save(user);
+            System.out.println("2");
+            return true;
+        }
+        System.out.println("3");
+        return false;
+
+    }
+
+    @Override
+    public Collection<Role> getCustomerRoles() {
+        Role role = roleRepository.findByName("ROLE_CUSTOMER");
+        HashSet<Role> roles = new HashSet<Role>();
+        roles.add(role);
+        return roles;
+    }
+
+    @Override
+    public Collection<Role> getProviderRoles() {
+        Role role = roleRepository.findByName("ROLE_PROVIDER");
+        HashSet<Role> roles = new HashSet<Role>();
+        roles.add(role);
+        return roles;
     }
 }
 

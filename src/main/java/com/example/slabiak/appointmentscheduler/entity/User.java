@@ -29,31 +29,37 @@ public class User extends BaseEntity {
     @Column(name = "email")
     private String email;
 
-    @JsonIgnore
+    @Column(name = "mobile")
+    private String mobile;
+
+    @Column(name = "street")
+    private String street;
+
+    @Column(name = "city")
+    private String city;
+
+    @Column(name = "postcode")
+    private String postcode;
+
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(name = "users_roles", joinColumns = @JoinColumn(name = "user_id"), inverseJoinColumns = @JoinColumn(name = "role_id"))
     private Collection<Role> roles;
 
-    @JsonIgnore
     @OneToMany(mappedBy = "customer")
     private List<Appointment> appointmentsByCustomer;
 
-    @JsonIgnore
     @OneToMany(mappedBy = "provider")
     private List<Appointment> appointmentsByProvider;
 
-    @JsonIgnore
     @ManyToMany
     @JoinTable(name="works_providers", joinColumns=@JoinColumn(name="id_user"), inverseJoinColumns=@JoinColumn(name="id_work"))
     private List<Work> works;
 
-    @JsonIgnore
     @OneToOne(mappedBy="provider", cascade = {CascadeType.ALL})
     private WorkingPlan workingPlan;
 
 
     public User(){
-
     }
 
     public User(String userName, String password, String firstName, String lastName, String email) {
@@ -145,6 +151,48 @@ public class User extends BaseEntity {
     public void setWorkingPlan(WorkingPlan workingPlan) {
         this.workingPlan = workingPlan;
     }
+
+    public String getMobile() {
+        return mobile;
+    }
+
+    public void setMobile(String mobile) {
+        this.mobile = mobile;
+    }
+
+    public String getStreet() {
+        return street;
+    }
+
+    public void setStreet(String street) {
+        this.street = street;
+    }
+
+    public String getCity() {
+        return city;
+    }
+
+    public void setCity(String city) {
+        this.city = city;
+    }
+
+    public String getPostcode() {
+        return postcode;
+    }
+
+    public void setPostcode(String postcode) {
+        this.postcode = postcode;
+    }
+
+    public boolean hasRole(String roleName){
+        for(Role role: roles){
+            if(role.getName().equals(roleName)){
+                return true;
+            }
+        }
+        return false;
+    }
+
 
     @Override
     public boolean equals(Object user) {

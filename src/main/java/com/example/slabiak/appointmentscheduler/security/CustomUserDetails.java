@@ -12,12 +12,9 @@ import java.util.stream.Collectors;
 
 public class CustomUserDetails implements UserDetails {
 
-    // required fields
     private String userName;
     private String password;
     private Collection<? extends GrantedAuthority> authorities;
-
-    // additionals fields
     private String email;
     private Integer id;
     private String firstName;
@@ -97,6 +94,15 @@ public class CustomUserDetails implements UserDetails {
 
     public String getLastName() {
         return lastName;
+    }
+
+    public boolean hasRole(String roleName){
+        for(GrantedAuthority grantedAuthority :authorities){
+            if(grantedAuthority.getAuthority().equals(roleName)){
+                return true;
+            }
+        }
+        return false;
     }
 
     public boolean equals(Object object){

@@ -124,7 +124,7 @@ public class UserServiceTests {
     public void shouldReturnUserDetails(){
         ArrayList<SimpleGrantedAuthority> authorities = new ArrayList<>();
         authorities.add(new SimpleGrantedAuthority(role.getName()));
-        UserDetails userDetails = new org.springframework.security.core.userdetails.User(user.getUserName(), user.getPassword(),authorities);
+        UserDetails userDetails = new org.springframework.security.core.userdetails.User(user.getUserName(), user.getNewPassword(),authorities);
         when(userRepository.findByUserName(userName)).thenReturn(userOptional);
         assertEquals(userDetails.getUsername(), userService.loadUserByUsername(userName).getUsername());
         verify(userRepository).findByUserName(userName);

@@ -1,8 +1,6 @@
 package com.example.slabiak.appointmentscheduler.dao;
 
-import com.example.slabiak.appointmentscheduler.entity.Appointment;
 import com.example.slabiak.appointmentscheduler.entity.Invoice;
-import com.example.slabiak.appointmentscheduler.entity.Role;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;

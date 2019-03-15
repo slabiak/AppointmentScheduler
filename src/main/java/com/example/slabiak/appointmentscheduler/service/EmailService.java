@@ -3,7 +3,6 @@ package com.example.slabiak.appointmentscheduler.service;
 import com.example.slabiak.appointmentscheduler.entity.Appointment;
 import com.example.slabiak.appointmentscheduler.entity.Invoice;
 
-import javax.mail.MessagingException;
 import java.io.File;
 import java.util.Map;
 

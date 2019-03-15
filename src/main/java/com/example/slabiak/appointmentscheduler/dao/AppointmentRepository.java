@@ -6,13 +6,23 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
 public interface AppointmentRepository  extends JpaRepository<Appointment, Integer> {
-    List<Appointment> findByCustomer(User user);
-    List<Appointment> findByProvider(User user);
+
+    @Query("select a from Appointment a where a.customer.id = :customerId")
+    List<Appointment> findByCustomerId(@Param("customerId") int customerId);
+
+    @Query("select a from Appointment a where a.provider.id = :providerId")
+    List<Appointment> findByProviderId(@Param("providerId") int providerId);
+
+    @Query("select a from Appointment a where a.canceler.id = :userId")
+    List<Appointment> findAppointmentsCanceledByUser(@Param("userId") int userId);
+
+    @Query("select a from Appointment a where  a.status='scheduled' and (a.customer.id = :userId or a.provider.id = :userId)")
+    List<Appointment> findScheduledAppointmentsForUser(@Param("userId") int userId);
+
 
     @Query("select a from Appointment a where a.provider = :user and  a.start >=:dayStart and  a.start <=:dayEnd")
     List<Appointment> findByProviderAndDate(@Param("user") User user, @Param("dayStart") LocalDateTime dayStart, @Param("dayEnd") LocalDateTime dayEnd);
@@ -20,8 +30,6 @@ public interface AppointmentRepository  extends JpaRepository<Appointment, Integ
     @Query("select a from Appointment a where a.customer = :user and a.canceler=:user and a.canceledAt >=:beginingOfCurrentMonth")
     List<Appointment> getAppointmentsCanceledByUserInThisMonth(@Param("user") User user,@Param("beginingOfCurrentMonth") LocalDateTime beginingOfCurrentMonth);
 
-    @Query("select a from Appointment a where a.status = 'scheduled' and :now >= a.end")
-    List<Appointment> findAllAppointmentsThatNeedsStatusChangeFromScheduledToFinished(@Param("now") LocalDateTime now);
 
     @Query("select a from Appointment a where a.status = 'scheduled' and :now >= a.end")
     List<Appointment> findAllScheduledAppointmentsWithEndBeforeDate(@Param("now") LocalDateTime now);

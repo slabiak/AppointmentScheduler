@@ -17,6 +17,13 @@ public class UserRegisterForm {
 
     private String email;
 
+    private String mobile;
+
+    private String street;
+    private String city;
+    private String postCode;
+
+
     private List<Integer> selectedWorks;
 
     public UserRegisterForm(){
@@ -31,6 +38,19 @@ public class UserRegisterForm {
         this.firstName = firstName;
         this.lastName = lastName;
         this.email = email;
+    }
+
+    public UserRegisterForm(String userName, String password, String matchingPassword, String firstName, String lastName, String email, String mobile, String street, String city, String postCode) {
+        this.userName = userName;
+        this.password = password;
+        this.matchingPassword = matchingPassword;
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.email = email;
+        this.mobile = mobile;
+        this.street = street;
+        this.city = city;
+        this.postCode = postCode;
     }
 
     public String getUserName() {
@@ -87,5 +107,37 @@ public class UserRegisterForm {
 
     public void setSelectedWorks(List<Integer> selectedWorks) {
         this.selectedWorks = selectedWorks;
+    }
+
+    public String getMobile() {
+        return mobile;
+    }
+
+    public void setMobile(String mobile) {
+        this.mobile = mobile;
+    }
+
+    public String getStreet() {
+        return street;
+    }
+
+    public void setStreet(String street) {
+        this.street = street;
+    }
+
+    public String getCity() {
+        return city;
+    }
+
+    public void setCity(String city) {
+        this.city = city;
+    }
+
+    public String getPostCode() {
+        return postCode;
+    }
+
+    public void setPostCode(String postCode) {
+        this.postCode = postCode;
     }
 }

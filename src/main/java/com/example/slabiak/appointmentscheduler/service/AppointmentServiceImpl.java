@@ -2,22 +2,21 @@ package com.example.slabiak.appointmentscheduler.service;
 
 import com.example.slabiak.appointmentscheduler.dao.AppointmentRepository;
 import com.example.slabiak.appointmentscheduler.dao.ChatMessageRepository;
-import com.example.slabiak.appointmentscheduler.dao.InvoiceRepository;
 import com.example.slabiak.appointmentscheduler.dao.WorkingPlanRepository;
 import com.example.slabiak.appointmentscheduler.entity.*;
 import com.example.slabiak.appointmentscheduler.model.AppointmentRegisterForm;
 import com.example.slabiak.appointmentscheduler.model.DayPlan;
 import com.example.slabiak.appointmentscheduler.model.TimePeroid;
-import io.jsonwebtoken.Jwts;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.time.Instant;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.ZoneOffset;
 import java.time.temporal.TemporalAdjusters;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Optional;
 
 @Service
 public class AppointmentServiceImpl implements AppointmentService{
@@ -94,13 +93,13 @@ public class AppointmentServiceImpl implements AppointmentService{
     }
 
     @Override
-    public List<Appointment> findByCustomer(User customer) {
-        return appointmentRepository.findByCustomer(customer);
+    public List<Appointment> findByCustomerId(int customerId) {
+        return appointmentRepository.findByCustomerId(customerId);
     }
 
     @Override
-    public List<Appointment> findByProvider(User provider) {
-        return appointmentRepository.findByCustomer(provider);
+    public List<Appointment> findByProviderId(int providerId) {
+        return appointmentRepository.findByProviderId(providerId);
     }
 
     @Override
@@ -144,7 +143,7 @@ public class AppointmentServiceImpl implements AppointmentService{
     }
 
     @Override
-    public void addChatMessageToAppointment(int appointmentId, int authorId, ChatMessage chatMessage) {
+    public void addMessageToAppointmentChat(int appointmentId, int authorId, ChatMessage chatMessage) {
         chatMessage.setAuthor(userService.findById(authorId));
         chatMessage.setAppointment(findById(appointmentId));
         chatMessage.setCreatedAt(LocalDateTime.now());
@@ -246,34 +245,6 @@ public class AppointmentServiceImpl implements AppointmentService{
         }
     }
 
-    @Override
-    public boolean isUserAllowedToCancelAppointment(int userId, int appointmentId) {
-        User user = userService.findById(userId);
-        Appointment appointment = findById(appointmentId);
-
-        // only scheduled appointments can be canceled
-        if(!appointment.getStatus().equals("scheduled")){
-            return false;
-        }
-        // if user is appointment provider he can cancel it without any conditions
-        else if(appointment.getProvider().equals(user)){
-            return true;
-
-            // appointments can be canceled max 24h before appointment
-        }  else if(LocalDateTime.now().plusHours(24).isAfter(appointment.getStart())){
-            return false;
-        }
-        // check considered appointments is appointment for specified user, if this type of work is allowed to be cancelled by customer
-        else if(!appointment.getCustomer().equals(user) || !appointment.getWork().getEditable()){
-            return false;
-        }
-        //and if customer total amount of canncelation in this month is not greater than 1
-        else if(getAppointmentsCanceledByUserInThisMonth(userId).size()>=1){
-            return false;
-        }
-
-        return true;
-    }
 
     @Override
     public void cancelById(int appointmentId, int userId) {
@@ -323,5 +294,46 @@ public class AppointmentServiceImpl implements AppointmentService{
             return denyAppointment(appointmentId,customerId);
         }
         return false;
+    }
+
+    @Override
+    public String getCancelNotAllowedReason(int userId, int appointmentId){
+        User user = userService.findById(userId);
+        Appointment appointment = findById(appointmentId);
+
+        // conditions for provider
+        if (appointment.getProvider().equals(user) || user.hasRole("ROLE_ADMIN")) {
+            if (!appointment.getStatus().equals("scheduled")) {
+                return "Only appoinmtents with scheduled status can be cancelled.";
+            } else {
+                return null;
+            }
+        }
+
+        // conditions for provider
+        if (appointment.getCustomer().equals(user)) {
+            if (!appointment.getStatus().equals("scheduled")) {
+                return "Only appoinmtents with scheduled status can be cancelled.";
+            } else if (LocalDateTime.now().plusHours(24).isAfter(appointment.getStart())) {
+                return "Appointments which will be in less than 24 hours cannot be canceled.";
+            } else if (!appointment.getWork().getEditable()) {
+                return "This type of appointment can be canceled only by Provider.";
+            } else if (getAppointmentsCanceledByUserInThisMonth(userId).size() >= 1) {
+                return "You can't cancel this appointment because you exceeded maximum number of cancellations in this month.";
+            } else {
+                return null;
+            }
+        }
+        return null;
+    }
+
+    @Override
+    public int getNumberOfCanceledAppointmentsForUser(int userId) {
+        return appointmentRepository.findAppointmentsCanceledByUser(userId).size();
+    }
+
+    @Override
+    public int getNumberOfScheduledAppointmentsForUser(int userId) {
+        return appointmentRepository.findScheduledAppointmentsForUser(userId).size();
     }
 }

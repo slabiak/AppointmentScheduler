@@ -16,8 +16,8 @@ public interface AppointmentService {
     Appointment findById(int id);
     List<Appointment> findAll();
     void deleteById(int id);
-    List<Appointment> findByCustomer(User user);
-    List<Appointment> findByProvider(User user);
+    List<Appointment> findByCustomerId(int customerId);
+    List<Appointment> findByProviderId(int providerId);
     List<Appointment> findByProviderAndDate(User user, LocalDate date);
     List<Appointment> getAvailableAppointments(int providerId, int workId, LocalDate date);
     public List<TimePeroid> getProviderAvailableTimePeroids(int providerId, int workId, LocalDate date);
@@ -26,10 +26,9 @@ public interface AppointmentService {
 
     void cancelById(int appointmentId, int userId);
 
-    void addChatMessageToAppointment(int appointmentId, int authorId, ChatMessage chatMessage);
+    void addMessageToAppointmentChat(int appointmentId, int authorId, ChatMessage chatMessage);
 
 
-    boolean isUserAllowedToCancelAppointment(int userId, int appointmentId);
     List<Appointment> getAppointmentsCanceledByUserInThisMonth(int userId);
     void updateUserAppointmentsStatuses(int userId);
     public void updateAllAppointmentsStatuses();
@@ -40,4 +39,9 @@ public interface AppointmentService {
     boolean denyAppointment(int appointmentId, int customerId);
 
     boolean denyAppointment(String token);
+    String getCancelNotAllowedReason(int userId, int appointmentId);
+
+    int getNumberOfCanceledAppointmentsForUser(int userId);
+    int getNumberOfScheduledAppointmentsForUser(int userId);
+
 }

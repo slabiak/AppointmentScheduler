@@ -11,20 +11,22 @@
             <tr>
                 <th> Work </th>
                 <th> Status </th>
-                <th> Provider </th>
+                <th sec:authorize="!hasRole('ROLE_PROVIDER')"> Provider </th>
+                <th sec:authorize="!hasRole('ROLE_CUSTOMER')"> Customer</th>
                 <th> Start </th>
                 <th> Duration </th>
                 <th> Action </th>
             </tr>
             </thead>
             <tbody>
-            <tr th:if="${user.appointmentsByCustomer == null}">
+            <tr th:if="${appointments == null}">
                 <td colspan="2"> No Appointments Available </td>
             </tr>
-            <tr th:each="appointment : ${user.appointmentsByCustomer}" th:classappend="${appointment.status == 'canceled' || appointment.status == 'finished' || appointment.status == 'invoiced' || appointment.status == 'denied'} ? table-secondary : table-primary">
+            <tr th:each="appointment : ${appointments}" th:classappend="${appointment.status == 'canceled' || appointment.status == 'finished' || appointment.status == 'invoiced' || appointment.status == 'denied'} ? table-secondary : table-primary">
                 <td><span th:text="${appointment.work.name}"> Work </span></td>
                 <td><span th:text="${appointment.status}"> scheduled </span></td>
-                <td><span th:text="${appointment.provider.firstName + ' ' + appointment.provider.lastName}"> Provider </span></td>
+                <td sec:authorize="!hasRole('ROLE_PROVIDER')"><span th:text="${appointment.provider.firstName + ' ' + appointment.provider.lastName}"> Provider </span></td>
+                <td sec:authorize="!hasRole('ROLE_CUSTOMER')"><span th:text="${appointment.customer.firstName + ' ' + appointment.customer.lastName}"> Customer </span></td>
                 <td><span th:text="${appointment.start}"> Start </span></td>
                 <td><span th:text="${appointment.work.duration + ' min'}"> 60 min </span></td>
                 <td> <a class="btn btn-secondary" th:href="@{'/appointments/' + ${appointment.id}}" role="button">Details</a></td>
@@ -35,9 +37,6 @@
 
 
 
-</div>
-<div class="row align-items-center justify-content-center"   style="margin-top: 50px">
-    <a class="btn btn-primary" th:href="@{/appointments/new}" role="button">New appointment</a>
 </div>
 <script>
 

@@ -12,8 +12,6 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.util.Iterator;
-import java.util.Map;
 import java.util.UUID;
 
 @Component
@@ -40,6 +38,7 @@ public class PdfGeneratorUtil {
             renderer.createPDF(os, false);
             renderer.finishPDF();
             System.out.println("PDF created successfully");
+            System.out.println(outputFile.getAbsolutePath());
             return outputFile;
         } catch (FileNotFoundException e){
             e.printStackTrace();
@@ -51,6 +50,7 @@ public class PdfGeneratorUtil {
             if(os !=null){
                 try{
                     os.close();
+
                 } catch (IOException e){
                     e.printStackTrace();
                 }

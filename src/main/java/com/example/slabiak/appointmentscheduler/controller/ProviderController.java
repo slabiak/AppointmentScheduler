@@ -1,17 +1,16 @@
 package com.example.slabiak.appointmentscheduler.controller;
 
-import com.example.slabiak.appointmentscheduler.dao.WorkingPlanRepository;
+import com.example.slabiak.appointmentscheduler.dto.UserFormDTO;
 import com.example.slabiak.appointmentscheduler.entity.User;
 import com.example.slabiak.appointmentscheduler.entity.WorkingPlan;
 import com.example.slabiak.appointmentscheduler.model.TimePeroid;
-import com.example.slabiak.appointmentscheduler.model.UserRegisterForm;
 import com.example.slabiak.appointmentscheduler.security.CustomUserDetails;
+import com.example.slabiak.appointmentscheduler.service.AppointmentService;
 import com.example.slabiak.appointmentscheduler.service.UserService;
 import com.example.slabiak.appointmentscheduler.service.WorkService;
+import com.example.slabiak.appointmentscheduler.service.WorkingPlanService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -27,7 +26,10 @@ public class ProviderController {
     private WorkService workService;
 
     @Autowired
-    private WorkingPlanRepository workingPlanRepository;
+    private WorkingPlanService workingPlanService;
+
+    @Autowired
+    private AppointmentService appointmentService;
 
     @GetMapping("")
     public String showAllProviders(Model model) {
@@ -38,36 +40,37 @@ public class ProviderController {
 
     @GetMapping("/new")
     public String showProviderRegistrationForm(Model model) {
-        model.addAttribute("user", new UserRegisterForm());
-        model.addAttribute("works", workService.findAll());
+        model.addAttribute("user", new UserFormDTO());
+        model.addAttribute("allWorks", workService.findAll());
         return "providers/createProviderForm";
     }
 
     @PostMapping("/new")
-    public String processProviderRegistration(@ModelAttribute("user") UserRegisterForm userForm, Model model) {
+    public String processProviderRegistration(@ModelAttribute("user") UserFormDTO userForm, Model model) {
         User existing = userService.findByUserName(userForm.getUserName());
         if (existing != null){
             model.addAttribute("user", userForm);
             model.addAttribute("registrationError", "User name already exists.");
             return "providers/createProviderForm";
         }
-        userService.registerProvider(userForm);
+        userService.saveNewUser(userForm);
         return "redirect:/providers";
     }
 
     @GetMapping("/{id}")
     public String showProviderDetails(@PathVariable("id") int id, Model model) {
         User provider = userService.findById(id);
-        model.addAttribute("provider", provider);
+        model.addAttribute("provider", new UserFormDTO(provider));
         model.addAttribute("allWorks", workService.findAll());
-        model.addAttribute("plan",provider.getWorkingPlan());
-        return "providers/updateProviderForm";
+        model.addAttribute("numberOfScheduledAppointments",appointmentService.getNumberOfScheduledAppointmentsForUser(id));
+        model.addAttribute("numberOfCanceledAppointments",appointmentService.getNumberOfCanceledAppointmentsForUser(id));
+        return "providers/providerDetails";
     }
 
-    @PostMapping("/update")
-    public String processProviderUpdate(@ModelAttribute("user") User userUpdateData, Model model) {
-        userService.updateProvider(userUpdateData);
-        return "redirect:/providers";
+    @PostMapping("/update/profile")
+    public String processProviderUpdate(@ModelAttribute("user") UserFormDTO userUpdateData, Model model) {
+        userService.updateUserProfile(userUpdateData);
+        return "redirect:/providers/"+userUpdateData.getId();
     }
 
     @PostMapping("/delete")
@@ -77,41 +80,37 @@ public class ProviderController {
     }
 
     @GetMapping("/availability")
-    public String showAvailability(Model model,@AuthenticationPrincipal CustomUserDetails currentUser){
+    public String showProviderAvailability(Model model,@AuthenticationPrincipal CustomUserDetails currentUser){
         model.addAttribute("plan",userService.findById(currentUser.getId()).getWorkingPlan());
-        model.addAttribute("break1", new TimePeroid());
-        return "providers/showOrUpdateAvailability";
+        model.addAttribute("breakModel", new TimePeroid());
+        return "providers/showOrUpdateProviderAvailability";
     }
 
     @PostMapping("/availability")
-    public String updateWorkingPlan(@ModelAttribute("plan") WorkingPlan plan){
-        WorkingPlan wp = workingPlanRepository.getOne(plan.getId());
-        wp.getMonday().setWorkingHours(plan.getMonday().getWorkingHours());
-        wp.getTuesday().setWorkingHours(plan.getTuesday().getWorkingHours());
-        wp.getWednesday().setWorkingHours(plan.getWednesday().getWorkingHours());
-        wp.getThursday().setWorkingHours(plan.getThursday().getWorkingHours());
-        wp.getFriday().setWorkingHours(plan.getFriday().getWorkingHours());
-        wp.getSaturday().setWorkingHours(plan.getSaturday().getWorkingHours());
-        wp.getSunday().setWorkingHours(plan.getSunday().getWorkingHours());
-        workingPlanRepository.save(wp);
-
+    public String processProviderWorkingPlanUpdate(@ModelAttribute("plan") WorkingPlan plan){
+        workingPlanService.update(plan);
         return "redirect:/providers/availability";
     }
 
     @PostMapping("/availability/breakes/add")
-    public String addBreak(@ModelAttribute("break1") TimePeroid break1,@RequestParam("planId") int planId,@RequestParam("day") String day ){
-        WorkingPlan wp = workingPlanRepository.getOne(planId);
-        wp.getDay(day).getBreaks().add(break1);
-        workingPlanRepository.save(wp);
+    public String processProviderAddBreak(@ModelAttribute("breakModel") TimePeroid breakToAdd,@RequestParam("planId") int planId,@RequestParam("dayOfWeek") String dayOfWeek ){
+        workingPlanService.addBreak(breakToAdd,planId,dayOfWeek);
         return "redirect:/providers/availability";
     }
 
     @PostMapping("/availability/breakes/delete")
-    public String deleteBreak(@ModelAttribute("break1") TimePeroid break1,@RequestParam("planId") int planId,@RequestParam("day") String day ){
-        WorkingPlan wp = workingPlanRepository.getOne(planId);
-        wp.getDay(day).getBreaks().remove(break1);
-        workingPlanRepository.save(wp);
+    public String processProviderDeleteBreak(@ModelAttribute("breakModel") TimePeroid breakToDelete,@RequestParam("planId") int planId,@RequestParam("dayOfWeek") String dayOfWeek ){
+        workingPlanService.deleteBreak(breakToDelete,planId,dayOfWeek);
         return "redirect:/providers/availability";
+    }
+
+    @PostMapping("/update/password")
+    public String processProviderPasswordUpate(@ModelAttribute("provider") UserFormDTO userFormDTO, @AuthenticationPrincipal CustomUserDetails currentUser, Model model) {
+        User user = userService.findById(currentUser.getId());
+        boolean passwordChanged = userService.updateUserPassword(user.getId(),userFormDTO.getCurrentPassword(),userFormDTO.getNewPassword(),userFormDTO.getMatchingPassword());
+        model.addAttribute(passwordChanged);
+        model.addAttribute("user", new UserFormDTO(user));
+        return "providers/providerDetails";
     }
 
 
