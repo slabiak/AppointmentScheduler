@@ -9,46 +9,60 @@
                 Add or update work
             </div>
             <div class="card-body">
-                <!-- Registration Form -->
-                <form th:action="@{/works/new}" th:object="${work}" method="POST" class="form-horizontal">
-                 <input type="hidden" th:field="*{id}" th:value="${work.id}">
-                    <div th:if="${registrationError != null}" class="alert alert-danger">
-                        <p th:text="${registrationError}"></p>
+
+                <form th:action="@{/works/new}" th:object="${work}" method="POST">
+                    <input type="hidden" th:field="*{id}" th:value="${work.id}">
+                    <div class="form-group row">
+                        <label for="name" class="col-md-3 col-form-label">Name</label>
+                        <div class="col-md-9">
+                            <input type="text" class="form-control" th:field="*{name}" placeholder="Name">
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label for="price" class="col-md-3 col-form-label">Price</label>
+                        <div class="col-md-9">
+                            <input type="number" class="form-control" th:field="*{price}" placeholder="Price">
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label for="duration" class="col-md-3 col-form-label">Duration</label>
+                        <div class="col-md-9">
+                            <input type="number" class="form-control" th:field="*{duration}" placeholder="Duration">
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label for="duration" class="col-md-3 col-form-label">Description</label>
+                        <div class="col-md-9">
+                            <textarea class="form-control" th:field="*{description}" rows="3" placeholder="Description"></textarea>
+                        </div>
                     </div>
 
-                    <div style="margin-bottom: 25px" class="input-group">
-                        <span class="input-group-addon"><i class="glyphicon glyphicon-user"></i></span>
-                        <input type="text" th:field="*{name}"  placeholder="Name" class="form-control">
-                    </div>
 
-                    <div style="margin-bottom: 25px" class="input-group">
-                        <span class="input-group-addon"><i class="glyphicon glyphicon-user"></i></span>
-                        <input type="number" th:field="*{price}"  placeholder="Price" class="form-control">
-                    </div>
 
-                    <div style="margin-bottom: 25px" class="input-group">
-                        <span class="input-group-addon"><i class="glyphicon glyphicon-user"></i></span>
-                        <input type="number" th:field="*{duration}"  placeholder="Last Name" class="form-control">
-                    </div>
+                    <fieldset class="form-group">
+                        <div class="row">
+                            <legend class="col-form-label col-md-3 pt-0">Cancelable by customer?</legend>
+                            <div class="col-md-9">
+                                <div class="form-check">
+                                    <input class="form-check-input" type="radio" name="editable" id="option1" value="1" checked>
+                                    <label class="form-check-label" for="gridRadios1">
+                                        Yes
+                                    </label>
+                                </div>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="radio" name="editable" id="option2" value="0">
+                                    <label class="form-check-label" for="gridRadios2">
+                                        No
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                    </fieldset>
 
-                    <div style="margin-bottom: 25px" class="input-group">
-                          <textarea class="input-group" rows="3" th:field="*{description}" />
-                    </div>
+                    <div class="form-group text-center">
 
-                    <div class="form-group">
-                        <label>Can be cancelled by customer?</label>
-                        <label class="radio-inline">
-                            <input type="radio" name="editable" id="optionsRadiosInline1" value="1"
-                                   th:checked="*{editable}"/>Yes
-                        </label>
-                        <label class="radio-inline">
-                            <input type="radio" name="editable" id="optionsRadiosInline2" value="0"
-                                   th:checked="*{editable} == false"/>No
-                        </label>
-                    </div>
+                        <button type="submit" class="btn btn-primary">Save</button>
 
-                    <div style="margin-top: 10px" class="input-group">
-                        <button type="submit" class="btn btn-success">Add work</button>
                     </div>
                 </form>
             </div>

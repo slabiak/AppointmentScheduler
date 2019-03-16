@@ -2,33 +2,20 @@
 <html xmlns:th="http://www.thymeleaf.org" th:replace="~{fragments/layout :: layout (~{::body},'','Select provider')}" xmlns:sec="http://www.w3.org/1999/xhtml">
 <body>
 <div class="row align-items-center justify-content-center"   style="margin-top: 50px">
-    <div class="row align-items-center justify-content-center d-block"   style="margin-top: 50px">
-        <div class="row align-items-center justify-content-center"   style="margin-top: 50px">
-            <div>
-                <table id="customers" class="table table-striped text-center" >
-                    <thead class="thead-dark">
-                    <tr>
-                        <th> Name </th>
 
-                        <th> Action </th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    <tr th:if="${providers == null}">
-                        <td colspan="4"> No providers available </td>
-                    </tr>
-                    <tr th:each="provider : ${providers}">
-                        <td><span th:text="${provider.firstName +' ' +provider.lastName}"> Name Lastname </span></td>
-                        <td> <a class="btn btn-primary" th:href="@{'/appointments/new/' + ${workId} +'/'+${provider.id}}" role="button">Select</a>
-                        </td>
-                    </tr>
-                    </tbody>
-                </table>
+
+    <div class="col-md-3 m-3" th:each="provider : ${providers}">
+        <div class="card" style="width: 18rem;">
+            <img class="card-img-top" src="http://ssl.gstatic.com/accounts/ui/avatar_2x.png" alt="Card image cap">
+            <div class="card-body text-center">
+                <h5 class="card-title"><span th:text="${provider.firstName +' ' +provider.lastName}"> Name Lastname</span> </h5>
+
+                <a th:href="@{'/appointments/new/' + ${workId} +'/'+${provider.id}}" class="btn btn-primary">Select</a>
+
             </div>
-
         </div>
-
     </div>
+
 </div>
 </body>
 </html>

@@ -2,16 +2,67 @@
 <html xmlns:th="http://www.thymeleaf.org" th:replace="~{fragments/layout :: layout (~{::body},'appointments','New appointment confirmation')}" xmlns:sec="http://www.w3.org/1999/xhtml">
 
 <body>
-work id: <span th:text="${workId}"></span>
-provider id: <span th:text="${providerId}"></span>
-date: <span th:text="${start}"></span>
-<form th:action="@{/appointments/new}" method="POST">
-    <input type="hidden" name="workId" th:value="${workId}">
-    <input type="hidden" name="providerId" th:value="${providerId}">
-    <input type="hidden" name="start" th:value="${start}">
+<div class="row justify-content-center">
+    <div class="col-md-6 mt-3">
 
-    <input type="submit">
-</form>
+        <table class="table" >
+            <thead>
+            <tr class="text-center">
+                <td colspan="2"><h3>Your new appointment summary</h3></td>
+            </tr>
+            </thead>
+
+            <tr>
+                <td><b>date</b></td>
+                <td><span th:text="${#temporals.format(start, 'dd-MM-yyyy')}">10-01-2019</span></td>
+            </tr>
+            <tr>
+                <td><b>time</b></td>
+                <td><span th:text="${#temporals.format(start, 'HH:mm')+' - '+ #temporals.format(end, 'HH:mm')}">14:00 - 15:00</span></td>
+            </tr>
+            <tr>
+                <td><b>provider</b></td>
+                <td><span th:text="${provider}">Marian Nowak</span></td>
+            </tr>
+
+            <tr>
+                <td><b>work</b> </td>
+                <td><span th:text="${work.name}"> english </span></td>
+            </tr>
+            <tr>
+                <td><b>description</b> </td>
+                <td><span th:text="${work.description}">description</span></td>
+            </tr>
+
+            <tr>
+                <td><b>price</b></td>
+                <td><span th:text="${work.price}"> 50 </span> pln</td>
+            </tr>
+
+            <tr>
+                <td><b>cancellable by customer?</b></td>
+                <td><p th:text="${work.editable ? 'Yes':'No, only by provider'}">Yes</p></td>
+            </tr>
+            <tr class="text-center">
+                <td colspan="2">
+                    <form th:action="@{/appointments/new}" method="POST">
+                        <input type="hidden" name="workId" th:value="${work.id}">
+                        <input type="hidden" name="providerId" th:value="${providerId}">
+                        <input type="hidden" name="start" th:value="${start}">
+
+
+                        <button type="submit" class="btn btn-primary">Book</button>
+                    </form>
+
+                </td>
+            </tr>
+        </table>
+
+
+    </div>
+
+</div>
+
 </body>
 
 

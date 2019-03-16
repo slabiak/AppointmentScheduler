@@ -21,6 +21,7 @@
         $('#calendar').fullCalendar({
             defaultView: 'listDay',
             contentHeight: "auto",
+            noEventsMessage:'Unavailable',
             validRange: function(nowDate) {
                 return {
                     start: nowDate,
@@ -59,7 +60,7 @@
                             }
                         });
                     },
-                    color: 'yellow',   // an option!
+                    color: 'white',   // an option!
                     textColor: 'black' // an option!
                 }
             ]

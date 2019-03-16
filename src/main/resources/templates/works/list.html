@@ -24,7 +24,7 @@
                  <td><span th:text="${work.price + ' PLN'}"> 50 PLN </span></td>
                  <td><span th:text="${work.duration+' min'}"> 30 min </span></td>
                  <td><span th:text="${work.providers.size()}"> 2 </span></td>
-                 <td> <a class="btn btn-secondary" th:href="@{'/works/' + ${work.id}}" role="button">Edit</a>
+                 <td> <a class="btn btn-secondary" th:href="@{'/works/' + ${work.id}}" role="button">Details</a>
                    <form class="d-inline-block" th:action="@{/works/delete}" method="POST">
                        <input type="hidden" name="workId" th:value="${work.id}" />
                        <button type="submit" name="submit" value="value" class="btn btn-danger">Delete</button>

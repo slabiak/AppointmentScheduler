@@ -129,6 +129,7 @@
                             Walerian Grabowski<br/>
                             ul. Białych Brzóz 13<br/>
                             31-410 Kraków<br/>
+                            706-425-256 <br/>
                             PL 76 9584 1034 3528 6132 8140 7826
 
                         </td>
@@ -136,8 +137,9 @@
                         <td>
                             <b>To:</b><br/>
                             <span th:text="${invoice.appointment.customer.firstName +' '+invoice.appointment.customer.lastName}">Bolesław Walczak</span><br/>
-                            ul. Pola Wincentego 7<br/>
-                            71-342 Szczecin<br/>
+                            <span th:text="${invoice.appointment.customer.street}">ul. Pola Wincentego 7</span><br/>
+                            <span th:text="${invoice.appointment.customer.postcode + ' ' + invoice.appointment.customer.city}">71-342 Szczecin</span><br/>
+                            <span th:text="${invoice.appointment.customer.mobile}">695-262-145</span><br/>
                             <span th:text="${invoice.appointment.customer.email}">email@example.com</span>
                         </td>
                     </tr>

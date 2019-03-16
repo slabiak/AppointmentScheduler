@@ -107,10 +107,12 @@ public class AppointmentController {
     }
 
     @GetMapping("/new/{workId}/{providerId}/{dateTime}")
-    public String confirm(@PathVariable("workId") int workId,@PathVariable("providerId") int providerId,@PathVariable("dateTime") String dateTime,Model model){
-        model.addAttribute(workId);
-        model.addAttribute(providerId);
-        model.addAttribute("start",dateTime);
+    public String confirm(@PathVariable("workId") int workId,@PathVariable("providerId") int providerId,@PathVariable("dateTime") String start,Model model){
+        model.addAttribute("work",workService.findById(workId));
+        model.addAttribute("provider",userService.findById(providerId).getFirstName()+" " +userService.findById(providerId).getLastName());
+        model.addAttribute("providerId",userService.findById(providerId).getId());
+        model.addAttribute("start",LocalDateTime.parse(start));
+        model.addAttribute("end",LocalDateTime.parse(start).plusMinutes(workService.findById(workId).getDuration()));
         return "appointments/confirm";
     }
 
@@ -118,7 +120,7 @@ public class AppointmentController {
     public String saveAppointment(@RequestParam("workId") int workId,@RequestParam("providerId") int providerId,@RequestParam("start") String start, @AuthenticationPrincipal CustomUserDetails currentUser){
         int customerId= currentUser.getId();
         appointmentService.save(workId,providerId,customerId,LocalDateTime.parse(start));
-        return "redirect:/customers/";
+        return "redirect:/appointments/";
     }
 
     @PostMapping("/cancel")

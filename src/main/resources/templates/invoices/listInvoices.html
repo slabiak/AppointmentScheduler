@@ -21,7 +21,7 @@
             </tr>
             <tr th:each="invoice : ${invoices}">
                 <td><span th:text="${invoice.number}"> FV/2019/02/03 </span></td>
-                <td><span th:text="${invoice.issued}"> 2019/03/01 </span></td>
+                <td><span th:text="${#temporals.format(invoice.issued, 'dd-MM-yyyy HH:mm')}"> 15-03-2019 15:00 </span></td>
                 <td><span th:text="${invoice.status}"> paid </span></td>
                 <td><span th:text="${invoice.appointment.work.price +' PLN'}"> 60.00 PLN</span></td>
                 <td>
