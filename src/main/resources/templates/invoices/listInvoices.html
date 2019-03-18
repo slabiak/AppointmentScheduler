@@ -23,9 +23,9 @@
                 <td><span th:text="${invoice.number}"> FV/2019/02/03 </span></td>
                 <td><span th:text="${#temporals.format(invoice.issued, 'dd-MM-yyyy HH:mm')}"> 15-03-2019 15:00 </span></td>
                 <td><span th:text="${invoice.status}"> paid </span></td>
-                <td><span th:text="${invoice.appointment.work.price +' PLN'}"> 60.00 PLN</span></td>
+                <td><span th:text="${invoice.totalAmount +' PLN'}"> 60.00 PLN</span></td>
                 <td>
-                    <a class="btn btn-secondary" th:href="@{'/invoices/download/' + ${invoice.appointment.id}}" role="button">Download</a>
+                    <a class="btn btn-secondary" th:href="@{'/invoices/download/' + ${invoice.id}}" role="button">Download</a>
                     <form th:if="${invoice.status=='issued'}" class="d-inline-block" th:action="@{'/invoices/paid/' + ${invoice.id}}" method="POST">
                         <input type="hidden" name="invoiceId" th:value="${invoice.id}" />
                         <button type="submit" name="submit" value="value" class="btn btn-success">Mark as paid</button>

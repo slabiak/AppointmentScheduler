@@ -77,7 +77,7 @@
                     </tr>
                     <tr th:if="${appointment.status=='invoiced'}">
                         <td><b>invoice</b></td>
-                        <td><a th:href="@{'/invoices/download/'+${appointment.id}}">download</a> </td>
+                        <td><a th:href="@{'/invoices/download/'+${appointment.invoice.id}}">download</a> </td>
                     </tr>
 
                     <tr>

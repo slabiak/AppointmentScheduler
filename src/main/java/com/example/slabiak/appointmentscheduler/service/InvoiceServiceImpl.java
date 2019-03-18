@@ -1,7 +1,9 @@
 package com.example.slabiak.appointmentscheduler.service;
 
 import com.example.slabiak.appointmentscheduler.dao.InvoiceRepository;
+import com.example.slabiak.appointmentscheduler.entity.Appointment;
 import com.example.slabiak.appointmentscheduler.entity.Invoice;
+import com.example.slabiak.appointmentscheduler.entity.User;
 import com.example.slabiak.appointmentscheduler.util.PdfGeneratorUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -21,6 +23,12 @@ public class InvoiceServiceImpl implements InvoiceService {
 
     @Autowired
     PdfGeneratorUtil pdfGeneratorUtil;
+
+    @Autowired
+    private UserService userService;
+
+    @Autowired
+    private AppointmentService appointmentService;
 
     @Override
     public String generateInvoiceNumber() {
@@ -64,6 +72,7 @@ public class InvoiceServiceImpl implements InvoiceService {
     @Override
     public File generateInvoicePdf(int invoiceId) {
         Invoice invoice = invoiceRepository.getOne(invoiceId);
+        System.out.println("total apps in invoice:" +invoice.getAppointments().size());
         File invoicePdf = pdfGeneratorUtil.generatePdfFromInvoice(invoice);
         return invoicePdf;
     }
@@ -73,5 +82,20 @@ public class InvoiceServiceImpl implements InvoiceService {
         Invoice invoice = invoiceRepository.getOne(invoiceId);
         invoice.setStatus("paid");
         invoiceRepository.save(invoice);
+    }
+
+    @Override
+    public void issueInvoicesForConfirmedAppointments() {
+        List<User> customers = userService.findByRoleName("ROLE_CUSTOMER");
+        for(User customer:customers){
+            List<Appointment> appointmentsToIssueInvoice = appointmentService.getConfirmedAppointmentsForUser(customer.getId());
+            if(appointmentsToIssueInvoice.size()>0){
+                for(Appointment a: appointmentsToIssueInvoice){
+                    a.setStatus("invoiced");
+                }
+                Invoice invoice = new Invoice(generateInvoiceNumber(),"issued",LocalDateTime.now(),appointmentsToIssueInvoice);
+                save(invoice);
+            }
+        }
     }
 }

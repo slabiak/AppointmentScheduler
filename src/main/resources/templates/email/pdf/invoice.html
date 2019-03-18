@@ -136,11 +136,11 @@
 
                         <td>
                             <b>To:</b><br/>
-                            <span th:text="${invoice.appointment.customer.firstName +' '+invoice.appointment.customer.lastName}">Bolesław Walczak</span><br/>
-                            <span th:text="${invoice.appointment.customer.street}">ul. Pola Wincentego 7</span><br/>
-                            <span th:text="${invoice.appointment.customer.postcode + ' ' + invoice.appointment.customer.city}">71-342 Szczecin</span><br/>
-                            <span th:text="${invoice.appointment.customer.mobile}">695-262-145</span><br/>
-                            <span th:text="${invoice.appointment.customer.email}">email@example.com</span>
+                            <span th:text="${invoice.appointments[0].customer.firstName +' '+invoice.appointments[0].customer.lastName}">Bolesław Walczak</span><br/>
+                            <span th:text="${invoice.appointments[0].customer.street}">ul. Pola Wincentego 7</span><br/>
+                            <span th:text="${invoice.appointments[0].customer.postcode + ' ' + invoice.appointments[0].customer.city}">71-342 Szczecin</span><br/>
+                            <span th:text="${invoice.appointments[0].customer.mobile}">695-262-145</span><br/>
+                            <span th:text="${invoice.appointments[0].customer.email}">email@example.com</span>
                         </td>
                     </tr>
                 </table>
@@ -157,13 +157,13 @@
             </td>
         </tr>
 
-        <tr class="item">
+        <tr th:each="appointment : ${invoice.appointments}" class="item">
             <td>
-               <span th:text="${invoice.appointment.work.name +' with '+invoice.appointment.provider.firstName +' '+invoice.appointment.provider.lastName +' on '+#temporals.format(invoice.appointment.start, 'dd-MM-yyyy HH:mm')}"></span>
+               <span th:text="${appointment.work.name +' with '+appointment.provider.firstName +' '+appointment.provider.lastName +' on '+#temporals.format(appointment.start, 'dd-MM-yyyy HH:mm')}"></span>
             </td>
 
             <td>
-                 <span th:text="${invoice.appointment.work.price}">50 PLN</span> PLN
+                 <span th:text="${appointment.work.price}">50 PLN</span> PLN
             </td>
         </tr>
 
@@ -171,7 +171,7 @@
             <td></td>
 
             <td>
-                Total:   <span th:text="${invoice.appointment.work.price}">50 PLN</span> PLN
+                Total:   <span th:text="${invoice.totalAmount}">50 PLN</span> PLN
             </td>
         </tr>
     </table>

@@ -43,5 +43,6 @@ public interface AppointmentService {
 
     int getNumberOfCanceledAppointmentsForUser(int userId);
     int getNumberOfScheduledAppointmentsForUser(int userId);
+    List<Appointment> getConfirmedAppointmentsForUser(int userId);
 
 }

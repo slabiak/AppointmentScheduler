@@ -10,7 +10,8 @@ import java.util.List;
 
 /*
 statuses:
-scheduled, canceled, finished, invoiced
+scheduled   =>  finished    =>  confirmed   =>  invoiced.
+            | => canceled.  |=> denied.
 */
 
 
@@ -52,6 +53,10 @@ public class Appointment extends BaseEntity implements Comparable<Appointment> {
 
     @OneToMany(mappedBy = "appointment")
     private List<ChatMessage> chatMessages;
+
+    @ManyToOne
+    @JoinColumn(name="id_invoice")
+    private Invoice invoice;
 
     public Appointment(){
 
@@ -142,5 +147,13 @@ public class Appointment extends BaseEntity implements Comparable<Appointment> {
     @Override
     public int compareTo(Appointment o) {
         return this.getStart().compareTo(o.getStart());
+    }
+
+    public Invoice getInvoice() {
+        return invoice;
+    }
+
+    public void setInvoice(Invoice invoice) {
+        this.invoice = invoice;
     }
 }

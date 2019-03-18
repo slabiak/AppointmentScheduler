@@ -238,9 +238,7 @@ public class AppointmentServiceImpl implements AppointmentService{
          * (all appointments which have status 'finished' and their end date is more than 24 hours before current timestamp)
          * */
         for(Appointment appointment: appointmentRepository.findAllFinishedAppointmentsWithEndBeforeDate(LocalDateTime.now().minusHours(24))){
-            Invoice invoice = new Invoice(invoiceService.generateInvoiceNumber(),"issued",LocalDateTime.now(),appointment);
-            invoiceService.save(invoice);
-            appointment.setStatus("invoiced");
+            appointment.setStatus("confirmed");
             update(appointment);
         }
     }
@@ -335,5 +333,10 @@ public class AppointmentServiceImpl implements AppointmentService{
     @Override
     public int getNumberOfScheduledAppointmentsForUser(int userId) {
         return appointmentRepository.findScheduledAppointmentsForUser(userId).size();
+    }
+
+    @Override
+    public List<Appointment> getConfirmedAppointmentsForUser(int userId) {
+        return appointmentRepository.findConfirmedAppointmentsForUser(userId);
     }
 }

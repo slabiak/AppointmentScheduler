@@ -38,10 +38,9 @@ public class InvoiceController {
         return "redirect:/invoices";
     }
 
-    @RequestMapping("/download/{appointmentId}")
-    public ResponseEntity<InputStreamResource> downloadInvoice(@PathVariable("appointmentId") int appointmentId) {
+    @RequestMapping("/download/{invoiceId}")
+    public ResponseEntity<InputStreamResource> downloadInvoice(@PathVariable("invoiceId") int invoiceId) {
         try {
-            int invoiceId = invoiceService.findByAppointmentId(appointmentId).getId();
             File invoicePdf = invoiceService.generateInvoicePdf(invoiceId);
             HttpHeaders respHeaders = new HttpHeaders();
             MediaType mediaType = MediaType.parseMediaType("application/pdf");

@@ -14,4 +14,6 @@ public interface InvoiceService {
     List<Invoice> findAll();
     File generateInvoicePdf(int invoiceId);
     void changeStatusToPaid(int invoiceId);
+
+    void issueInvoicesForConfirmedAppointments();
 }

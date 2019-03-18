@@ -78,10 +78,10 @@ public class EmailServiceImpl implements EmailService {
     @Override
     public void sendInvoice(Invoice invoice) {
         Map<String,String> model = new HashMap<>();
-        model.put("customer",invoice.getAppointment().getCustomer().getFirstName()+" "+invoice.getAppointment().getCustomer().getLastName());
+        model.put("customer",invoice.getAppointments().get(0).getCustomer().getFirstName()+" "+invoice.getAppointments().get(0).getCustomer().getLastName());
         try {
             File invoicePdf =pdfGenaratorUtil.generatePdfFromInvoice(invoice);
-            sendEmail(invoice.getAppointment().getCustomer().getEmail(),"Appointment invoice","appointmentInvoice",model,invoicePdf);
+            sendEmail(invoice.getAppointments().get(0).getCustomer().getEmail(),"Appointment invoice","appointmentInvoice",model,invoicePdf);
         } catch (Exception e) {
             e.printStackTrace();
         }
