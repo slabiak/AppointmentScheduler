@@ -85,28 +85,27 @@ public class AppointmentController {
         return "redirect:/appointments/"+appointmentId;
     }
 
-
     @GetMapping("/new")
-  public String selectService(Model model) {
-        model.addAttribute("works", workService.findAll());
-        return "appointments/select-service";
-    }
-
-   @GetMapping("/new/{workId}")
-    public String selectProvider(@PathVariable("workId") int workId, Model model) {
-        model.addAttribute("providers", userService.findByWorks(workService.findById(workId)));
-        model.addAttribute("workId",workId);
+    public String selectProvider(Model model) {
+        model.addAttribute("providers", userService.findByRoleName("ROLE_PROVIDER"));
         return "appointments/select-provider";
     }
 
-    @GetMapping("/new/{workId}/{providerId}")
+    @GetMapping("/new/{providerId}")
+  public String selectService(@PathVariable("providerId") int providerId, Model model) {
+        model.addAttribute("works", workService.findByProviderId(providerId));
+        model.addAttribute("providerId",providerId);
+        return "appointments/select-service";
+    }
+
+    @GetMapping("/new/{providerId}/{workId}")
     public String selectDate(@PathVariable("workId") int workId,@PathVariable("providerId") int providerId, Model model){
         model.addAttribute("providerId",providerId);
         model.addAttribute("workId",workId);
         return "appointments/select-date";
     }
 
-    @GetMapping("/new/{workId}/{providerId}/{dateTime}")
+    @GetMapping("/new/{providerId}/{workId}/{dateTime}")
     public String confirm(@PathVariable("workId") int workId,@PathVariable("providerId") int providerId,@PathVariable("dateTime") String start,Model model){
         model.addAttribute("work",workService.findById(workId));
         model.addAttribute("provider",userService.findById(providerId).getFirstName()+" " +userService.findById(providerId).getLastName());

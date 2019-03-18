@@ -57,4 +57,9 @@ public class WorkServiceImpl implements WorkService {
     public void deleteById(int id) {
         workRepository.deleteById(id);
     }
+
+    @Override
+    public List<Work> findByProviderId(int providerId) {
+        return workRepository.findByProviderId(providerId);
+    }
 }

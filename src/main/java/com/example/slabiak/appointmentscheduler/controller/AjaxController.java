@@ -52,7 +52,7 @@ public class AjaxController {
         else return null;
     }
 
-    @GetMapping("/hours/{workId}/{userId}/{date}")
+    @GetMapping("/hours/{userId}/{workId}/{date}")
     List<AppointmentRegisterForm> getAvailableHours(@PathVariable("userId") int userId, @PathVariable("workId") int workId, @PathVariable("date") String date) {
         LocalDate d = LocalDate.parse(date);
         List<TimePeroid> peroids = appointmentService.getProviderAvailableTimePeroids(userId,workId,d);

@@ -23,7 +23,7 @@
                     <td><span th:text="${work.duration }"> 30 min </span></td>
                     <td><span th:text="${work.price}"> 3 </span></td>
                     <td><span th:text="${work.providers.size()}"> 3 </span></td>
-                    <td> <a class="btn btn-primary" th:href="@{'/appointments/new/' + ${work.id}}" role="button">Select</a>
+                    <td> <a class="btn btn-primary" th:href="@{'/appointments/new/'+${providerId} +'/'+ ${work.id}}" role="button">Select</a>
                     </td>
                 </tr>
                 </tbody>

@@ -9,8 +9,8 @@
             <img class="card-img-top" src="http://ssl.gstatic.com/accounts/ui/avatar_2x.png" alt="Card image cap">
             <div class="card-body text-center">
                 <h5 class="card-title"><span th:text="${provider.firstName +' ' +provider.lastName}"> Name Lastname</span> </h5>
-
-                <a th:href="@{'/appointments/new/' + ${workId} +'/'+${provider.id}}" class="btn btn-primary">Select</a>
+                <p th:text="${'Available works: '+ provider.works.size()}">Available works: 3</p>
+                <a th:href="@{'/appointments/new/'+${provider.id}}" class="btn btn-primary">Select</a>
 
             </div>
         </div>
