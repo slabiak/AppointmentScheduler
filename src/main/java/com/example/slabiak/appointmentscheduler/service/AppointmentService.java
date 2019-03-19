@@ -37,8 +37,14 @@ public interface AppointmentService {
     boolean isUserAllowedToDenyThatAppointmentTookPlace(Integer id, int appointmentId);
 
     boolean denyAppointment(int appointmentId, int customerId);
-
     boolean denyAppointment(String token);
+
+    boolean isUserAllowedToAcceptDeny(int providerId, int appointmentId);
+
+    boolean acceptDeny(String token);
+    boolean acceptDeny(int appointmentId, int providerId);
+
+
     String getCancelNotAllowedReason(int userId, int appointmentId);
 
     int getNumberOfCanceledAppointmentsForUser(int userId);

@@ -2,13 +2,13 @@
 <html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
 <head></head>
 <body>
-<p>Hello, <span th:text="${appointment.customer.firstName}"></span></p>
-<p>This is your finished appointment summary:</p>
+<p>Hello, <span th:text="${appointment.provider}"></span></p>
+<p>You customer claims that the following appointment didn't take place: </p>
+<p>Customer: <span th:text="${appointment.customer.firstName + ' ' + appointment.customer.lastName}"></span></p>
 <p>Date: <span th:text="${appointment.start}"></span></p>
-<p>Provider: <span th:text="${appointment.provider}"></span></p>
 <p>Duration: <span th:text="${appointment.work.duration}"></span></p>
 <p>Price: <span th:text="${appointment.work.price}"></span></p>
-<p>If by some reason this appointemt didn't take place, you have 24h to report this by clicking <a th:href="${url}">here</a></p>
+<p>If you agree with that, click <a th:href="${url}">here</a></p>
 
 </body>
 </html>

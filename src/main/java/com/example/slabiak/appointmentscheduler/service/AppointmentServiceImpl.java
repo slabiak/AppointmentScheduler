@@ -274,7 +274,8 @@ public class AppointmentServiceImpl implements AppointmentService{
     public boolean denyAppointment(int appointmentId, int customerId) {
         if(isUserAllowedToDenyThatAppointmentTookPlace(customerId,appointmentId)){
             Appointment appointment = findById(appointmentId);
-            appointment.setStatus("denied");
+            appointment.setStatus("deny requested");
+            emailService.sendDeniedAppointmentNotification(appointment);
             update(appointment);
             return true;
         } else{
@@ -290,6 +291,47 @@ public class AppointmentServiceImpl implements AppointmentService{
             int appointmentId = jwtTokenService.getAppointmentIdFromJWT(token);
             int customerId = jwtTokenService.getCustomerIdFromJWT(token);
             return denyAppointment(appointmentId,customerId);
+        }
+        return false;
+    }
+
+
+
+
+    @Override
+    public boolean isUserAllowedToAcceptDeny(int providerId, int appointmentId) {
+        User user = userService.findById(providerId);
+        Appointment appointment = findById(appointmentId);
+
+        if(!appointment.getProvider().equals(user)){
+            System.out.println("1");
+            return false;
+        } else if(!appointment.getStatus().equals("deny requested")){
+            System.out.println("2");
+            return false;
+        } else{
+            return true;
+        }
+    }
+
+    @Override
+    public boolean acceptDeny(int appointmentId, int customerId) {
+        if(isUserAllowedToAcceptDeny(customerId,appointmentId)){
+            Appointment appointment = findById(appointmentId);
+            appointment.setStatus("denied");
+            update(appointment);
+            return true;
+        } else{
+            return false;
+        }
+    }
+
+    @Override
+    public boolean acceptDeny(String token) {
+        if(jwtTokenService.validateToken(token)){
+            int appointmentId = jwtTokenService.getAppointmentIdFromJWT(token);
+            int providerId = jwtTokenService.getProviderIdFromJWT(token);
+            return acceptDeny(appointmentId,providerId);
         }
         return false;
     }

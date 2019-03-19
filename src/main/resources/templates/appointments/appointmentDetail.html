@@ -22,6 +22,15 @@
                     <input type="submit" class="btn btn-danger" value="Deny"/>
                 </form>
             </div>
+            <div th:if="${allowAcceptDeny}" class="col-md-9 p-3 mb-2 bg-warning text-dark text-center" >
+                <p>Customer claims that this appointment didn't take place.</p>
+                <p>If you agree with that, click the button below:</p>
+
+                <form th:action="@{/appointments/acceptDeny}" method='POST'>
+                    <input type="hidden" name="appointmentId" th:value="${appointment.id}">
+                    <input type="submit" class="btn btn-danger" value="Agree"/>
+                </form>
+            </div>
 
         </div>
 

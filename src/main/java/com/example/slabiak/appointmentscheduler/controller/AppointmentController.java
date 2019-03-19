@@ -53,6 +53,8 @@ public class AppointmentController {
         model.addAttribute("appointment", appointment);
         model.addAttribute("chatMessage", new ChatMessage());
         boolean allowDeny = appointmentService.isUserAllowedToDenyThatAppointmentTookPlace(currentUser.getId(),appointmentId);
+        boolean allowAcceptDeny = appointmentService.isUserAllowedToAcceptDeny(currentUser.getId(),appointmentId);
+        model.addAttribute("allowAcceptDeny",allowAcceptDeny);
         model.addAttribute("allowDeny",allowDeny);
         if(allowDeny){
             model.addAttribute("remainingTime", formatDuration(Duration.between(LocalDateTime.now(),appointment.getEnd().plusHours(24))));
@@ -78,8 +80,23 @@ public class AppointmentController {
         return "appointments/denyConfirmation";
     }
 
+    @PostMapping("/acceptDeny")
+    public String acceptDenyAppointment(@RequestParam("appointmentId") int appointmentId, @AuthenticationPrincipal CustomUserDetails currentUser, Model model) {
+        int customerId = currentUser.getId();
+        appointmentService.acceptDeny(appointmentId,customerId);
+        return "redirect:/appointments/"+appointmentId;
+    }
+
+    @GetMapping("/acceptDeny")
+    public String acceptDenyAppointment(@RequestParam("token") String token, Model model) {
+        System.out.println(token);
+        boolean result = appointmentService.acceptDeny(token);
+        model.addAttribute("result",result);
+        return "appointments/denyConfirmation";
+    }
+
     @PostMapping("/messages/new")
-    public String adNewChatMessage(@ModelAttribute("chatMessage") ChatMessage chatMessage, @RequestParam("appointmentId") int appointmentId, @AuthenticationPrincipal CustomUserDetails currentUser) {
+    public String addNewChatMessage(@ModelAttribute("chatMessage") ChatMessage chatMessage, @RequestParam("appointmentId") int appointmentId, @AuthenticationPrincipal CustomUserDetails currentUser) {
         int authorId = currentUser.getId();
         appointmentService.addMessageToAppointmentChat(appointmentId,authorId, chatMessage);
         return "redirect:/appointments/"+appointmentId;

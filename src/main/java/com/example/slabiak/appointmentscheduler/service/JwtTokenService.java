@@ -21,7 +21,7 @@ public class JwtTokenService {
     private String jwtSecret;
 
 
-    public String generateDenyTokenForAppointment(Appointment appointment){
+    public String generateDenyAppointmentToken(Appointment appointment){
         ZoneId zoneId = ZoneId.of("Europe/Warsaw");
         Date expiryDate = convertLocalDateTimeToDate(appointment.getEnd().plusHours(24));
         return Jwts.builder()
@@ -31,6 +31,16 @@ public class JwtTokenService {
                 .signWith(SignatureAlgorithm.HS512, jwtSecret)
                 .compact();
     }
+
+    public String generateAcceptDenyToken(Appointment appointment){
+        return Jwts.builder()
+                .claim("appointmentId",appointment.getId())
+                .claim("providerId",appointment.getProvider().getId())
+                .signWith(SignatureAlgorithm.HS512, jwtSecret)
+                .compact();
+    }
+
+
 
     public boolean validateToken(String token){
            try {
@@ -57,6 +67,13 @@ public class JwtTokenService {
                 .parseClaimsJws(token)
                 .getBody();
         return (int) claims.get("customerId");
+    }
+    public int getProviderIdFromJWT(String token){
+        Claims claims = Jwts.parser()
+                .setSigningKey(jwtSecret)
+                .parseClaimsJws(token)
+                .getBody();
+        return (int) claims.get("providerId");
     }
 
     public Date convertLocalDateTimeToDate(LocalDateTime localDateTime){
