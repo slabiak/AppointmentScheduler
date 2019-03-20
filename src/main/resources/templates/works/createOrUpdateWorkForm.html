@@ -44,14 +44,14 @@
                             <legend class="col-form-label col-md-3 pt-0">Cancelable by customer?</legend>
                             <div class="col-md-9">
                                 <div class="form-check">
-                                    <input class="form-check-input" type="radio" name="editable" id="option1" value="1" checked>
-                                    <label class="form-check-label" for="gridRadios1">
+                                    <input class="form-check-input" type="radio" name="editable" id="option1" value="1" th:checked="*{editable}">
+                                    <label class="form-check-label" for="option1">
                                         Yes
                                     </label>
                                 </div>
                                 <div class="form-check">
-                                    <input class="form-check-input" type="radio" name="editable" id="option2" value="0">
-                                    <label class="form-check-label" for="gridRadios2">
+                                    <input class="form-check-input" type="radio" name="editable" id="option2" value="0" th:checked="*{editable == false}">
+                                    <label class="form-check-label" for="option2">
                                         No
                                     </label>
                                 </div>

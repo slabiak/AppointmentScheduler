@@ -3,7 +3,7 @@ package com.example.slabiak.appointmentscheduler.service;
 import com.example.slabiak.appointmentscheduler.dao.InvoiceRepository;
 import com.example.slabiak.appointmentscheduler.entity.Appointment;
 import com.example.slabiak.appointmentscheduler.entity.Invoice;
-import com.example.slabiak.appointmentscheduler.entity.User;
+import com.example.slabiak.appointmentscheduler.entity.user.User;
 import com.example.slabiak.appointmentscheduler.util.PdfGeneratorUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

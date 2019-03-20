@@ -1,21 +1,20 @@
-package com.example.slabiak.appointmentscheduler.entity;
+package com.example.slabiak.appointmentscheduler.entity.user;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.example.slabiak.appointmentscheduler.model.UserFormDTO;
+import com.example.slabiak.appointmentscheduler.entity.BaseEntity;
 
 import javax.persistence.*;
 import java.util.Collection;
-import java.util.List;
 
 
 @Entity
 @Table(name="users")
+@Inheritance(strategy = InheritanceType.JOINED)
 public class User extends BaseEntity {
 
-    @JsonIgnore
     @Column(name = "username")
     private String userName;
 
-    @JsonIgnore
     @Column(name = "password")
     private String password;
 
@@ -25,7 +24,6 @@ public class User extends BaseEntity {
     @Column(name = "last_name")
     private String lastName;
 
-    @JsonIgnore
     @Column(name = "email")
     private String email;
 
@@ -45,29 +43,30 @@ public class User extends BaseEntity {
     @JoinTable(name = "users_roles", joinColumns = @JoinColumn(name = "user_id"), inverseJoinColumns = @JoinColumn(name = "role_id"))
     private Collection<Role> roles;
 
-    @OneToMany(mappedBy = "customer")
-    private List<Appointment> appointmentsByCustomer;
-
-    @OneToMany(mappedBy = "provider")
-    private List<Appointment> appointmentsByProvider;
-
-    @ManyToMany
-    @JoinTable(name="works_providers", joinColumns=@JoinColumn(name="id_user"), inverseJoinColumns=@JoinColumn(name="id_work"))
-    private List<Work> works;
-
-    @OneToOne(mappedBy="provider", cascade = {CascadeType.ALL})
-    private WorkingPlan workingPlan;
-
-
     public User(){
     }
 
-    public User(String userName, String password, String firstName, String lastName, String email) {
-        this.userName = userName;
-        this.password = password;
-        this.firstName = firstName;
-        this.lastName = lastName;
-        this.email = email;
+    public User(UserFormDTO newUserForm, String encryptedPassword, Collection<Role> roles){
+        this.setUserName(newUserForm.getUserName());
+        this.setFirstName(newUserForm.getFirstName());
+        this.setLastName(newUserForm.getLastName());
+        this.setEmail(newUserForm.getEmail());
+        this.setCity(newUserForm.getCity());
+        this.setStreet(newUserForm.getStreet());
+        this.setPostcode(newUserForm.getPostcode());
+        this.setMobile(newUserForm.getMobile());
+        this.password = encryptedPassword;
+        this.roles = roles;
+    }
+
+    public void update(UserFormDTO updateData){
+        this.setEmail(updateData.getEmail());
+        this.setFirstName(updateData.getFirstName());
+        this.setLastName(updateData.getLastName());
+        this.setMobile(updateData.getMobile());
+        this.setCity(updateData.getCity());
+        this.setStreet(updateData.getStreet());
+        this.setPostcode(updateData.getPostcode());
     }
 
 
@@ -119,38 +118,6 @@ public class User extends BaseEntity {
         this.roles = roles;
     }
 
-    public List<Appointment> getAppointmentsByCustomer() {
-        return appointmentsByCustomer;
-    }
-
-    public void setAppointmentsByCustomer(List<Appointment> appointmentsByCustomer) {
-        this.appointmentsByCustomer = appointmentsByCustomer;
-    }
-
-    public List<Appointment> getAppointmentsByProvider() {
-        return appointmentsByProvider;
-    }
-
-    public void setAppointmentsByProvider(List<Appointment> appointmentsByProvider) {
-        this.appointmentsByProvider = appointmentsByProvider;
-    }
-
-    public List<Work> getWorks() {
-        return works;
-    }
-
-    public void setWorks(List<Work> works) {
-        this.works = works;
-    }
-
-
-    public WorkingPlan getWorkingPlan() {
-        return workingPlan;
-    }
-
-    public void setWorkingPlan(WorkingPlan workingPlan) {
-        this.workingPlan = workingPlan;
-    }
 
     public String getMobile() {
         return mobile;
@@ -193,16 +160,10 @@ public class User extends BaseEntity {
         return false;
     }
 
-
     @Override
     public boolean equals(Object user) {
         User compareUser = (User) user;
-        if(compareUser.getUserName().equals(this.userName) &&
-                compareUser.getPassword().equals(this.password) &&
-                compareUser.getFirstName().equals(this.firstName) &&
-                compareUser.getLastName().equals(this.lastName) &&
-                compareUser.getEmail().equals(this.email) &&
-                compareUser.getRoles().equals(this.roles))   return true;
+        if(compareUser.getId().equals(this.getId()))   return true;
 
         else return false;
 

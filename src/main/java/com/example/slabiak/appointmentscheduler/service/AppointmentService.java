@@ -2,7 +2,7 @@ package com.example.slabiak.appointmentscheduler.service;
 
 import com.example.slabiak.appointmentscheduler.entity.Appointment;
 import com.example.slabiak.appointmentscheduler.entity.ChatMessage;
-import com.example.slabiak.appointmentscheduler.entity.User;
+import com.example.slabiak.appointmentscheduler.entity.user.User;
 import com.example.slabiak.appointmentscheduler.model.AppointmentRegisterForm;
 import com.example.slabiak.appointmentscheduler.model.TimePeroid;
 
@@ -11,7 +11,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 public interface AppointmentService {
-    void save(AppointmentRegisterForm appointment);
+
     void update(Appointment appointment);
     Appointment findById(int id);
     List<Appointment> findAll();

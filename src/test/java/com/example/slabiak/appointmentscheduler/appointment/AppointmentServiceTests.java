@@ -2,19 +2,13 @@ package com.example.slabiak.appointmentscheduler.appointment;
 
 import com.example.slabiak.appointmentscheduler.dao.AppointmentRepository;
 import com.example.slabiak.appointmentscheduler.entity.Appointment;
-import com.example.slabiak.appointmentscheduler.entity.User;
-import com.example.slabiak.appointmentscheduler.entity.Work;
-import com.example.slabiak.appointmentscheduler.service.AppointmentService;
 import com.example.slabiak.appointmentscheduler.service.AppointmentServiceImpl;
-import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 
-import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -35,13 +29,13 @@ public class AppointmentServiceTests {
     private Optional<Appointment> optionalAppointment;
     private List<Appointment> appointments;
 
-    @Before
+/*    @Before
     public void initObjects(){
         appointment = new Appointment(LocalDateTime.now(),LocalDateTime.now(),new User(),new User(), new Work());
         optionalAppointment = Optional.of(appointment);
         appointments = new ArrayList<>();
         appointments.add(appointment);
-    }
+    }*/
 
     /*@Test
     public void shouldSaveAppointment(){

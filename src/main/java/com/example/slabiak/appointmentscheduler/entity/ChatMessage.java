@@ -1,5 +1,7 @@
 package com.example.slabiak.appointmentscheduler.entity;
 
+import com.example.slabiak.appointmentscheduler.entity.user.User;
+
 import javax.persistence.*;
 import java.time.LocalDateTime;
 

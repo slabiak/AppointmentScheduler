@@ -22,7 +22,7 @@
             <tr th:each="provider : ${providers}">
                 <td><span th:text="${provider.firstName +' ' + provider.lastName}"> Name Lastname </span></td>
                 <td><span th:text="${provider.email }"> email </span></td>
-                <td><span th:text="${provider.appointmentsByProvider.size() }"> 3 </span></td>
+                <td><span th:text="${provider.appointments.size() }"> 3 </span></td>
                 <td><span th:text="${provider.works.size() }"> 2 </span></td>
                 <td> <a class="btn btn-secondary" th:href="@{'/providers/' + ${provider.id}}" role="button">Details</a>
                     <form class="d-inline-block" th:action="@{/providers/delete}" method="POST">

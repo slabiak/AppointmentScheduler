@@ -41,7 +41,7 @@
             <li class="nav-item">
                 <a class="nav-link active" id="profile-tab" data-toggle="tab" href="#profile" role="tab" aria-controls="profile" aria-selected="true">Profile</a>
             </li>
-            <li sec:authorize="hasRole('ROLE_PROVIDER')" class="nav-item">
+            <li sec:authorize="hasRole('ROLE_PROVIDER') or hasRole('ROLE_CUSTOMER')" class="nav-item">
                 <a class="nav-link" id="newPassword-tab" data-toggle="tab" href="#newPassword" role="tab" aria-controls="newPassword" aria-selected="false">Password</a>
             </li>
 
@@ -50,7 +50,7 @@
 
         <div class="tab-content" id="myTabContent">
             <div class="tab-pane fade show active pt-3" id="profile" role="tabpanel" aria-labelledby="profile-tab">
-                <form th:action="@{/providers/update/profile}" th:object="${provider}" method="POST">
+                <form th:action="@{${action1}}" th:object="${user}" method="POST">
 
                     <!-- <div th:if="${registrationError != null}" class="alert alert-danger">
                             <p th:text="${registrationError}"></p>
@@ -69,6 +69,20 @@
                         </div>
 
                     </div>
+
+                    <th:block th:if="${account_type =='customer_corporate'}">
+                        <div class="form-row">
+                            <div class="form-group col-md-6">
+                                <label for="companyName">Company Name</label>
+                                <input type="text" class="form-control" th:field="*{companyName}">
+                            </div>
+                            <div class="form-group col-md-6">
+                                <label for="vatNumber">VAT number</label>
+                                <input type="text" class="form-control" th:field="*{vatNumber}">
+                            </div>
+
+                        </div>
+                    </th:block>
 
 
                     <div class="form-row">
@@ -103,7 +117,10 @@
                             <input type="text" class="form-control" th:field="*{postcode}">
                         </div>
                     </div>
-                    <label>Works:</label>
+
+                    <th:block th:if="${account_type =='provider'}">
+                        <div class="form-group">
+                            <label>Works:</label>
                             <ul>
                                 <li th:each="work : ${allWorks}">
                                     <input type="checkbox" th:field="*{works}" th:value="${work.id}" />
@@ -111,12 +128,8 @@
                                            th:text="${work.name}">Heating</label>
                                 </li>
                             </ul>
-
-
-
-
-
-
+                        </div>
+                    </th:block>
 
                     <button type="submit" class="btn btn-primary">Save</button>
                 </form>
@@ -125,33 +138,34 @@
             </div>
             <div class="tab-pane fade pt-3" id="newPassword" role="tabpanel" aria-labelledby="newPassword-tab">
 
-                <form th:action="@{/providers/update/password}" th:object="${provider}" method="POST">
+                  <form th:action="@{${action2}}" th:object="${user}" method="POST">
 
-                    <div th:if="${passwordChanged}" class="alert alert-danger">
-                        <p>newPassword changed!!!</p>
-                    </div>
-                    <div class="form-row">
-                        <div class="form-group col-md-6">
-                            <label for="currentPassword">Current password</label>
-                            <input type="password" class="form-control" th:field="*{currentPassword}">
-                        </div>
-                    </div>
+                      <input type="hidden" th:field="*{id}">
+                      <div th:if="${passwordChanged}" class="alert alert-danger">
+                          <p>newPassword changed!!!</p>
+                      </div>
+                      <div class="form-row">
+                          <div class="form-group col-md-6">
+                              <label for="currentPassword">Current password</label>
+                              <input type="password" class="form-control" th:field="*{currentPassword}">
+                          </div>
+                      </div>
 
-                    <div class="form-row">
-                        <div class="form-group col-md-6">
-                            <label for="newPassword">New password</label>
-                            <input type="password" class="form-control" th:field="*{newPassword}">
-                        </div>
-                    </div>
-                    <div class="form-row">
-                        <div class="form-group col-md-6">
-                            <label for="matchingPassword">Repeat new password</label>
-                            <input type="password" class="form-control" th:field="*{matchingPassword}" >
-                        </div>
-                    </div>
-                    <button  type="submit" class="btn btn-primary">Save</button>
-                </form>
-               </div>
+                      <div class="form-row">
+                          <div class="form-group col-md-6">
+                              <label for="password">New password</label>
+                              <input type="password" class="form-control" th:field="*{password}">
+                          </div>
+                      </div>
+                      <div class="form-row">
+                          <div class="form-group col-md-6">
+                              <label for="matchingPassword">Repeat new password</label>
+                              <input type="password" class="form-control" th:field="*{matchingPassword}" >
+                          </div>
+                      </div>
+                      <button  type="submit" class="btn btn-primary">Save</button>
+                  </form>
+            </div>
 
         </div>
 
@@ -159,6 +173,6 @@
 
 
 
-    </div>
+</div>
 </body>
 </html>

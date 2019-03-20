@@ -25,7 +25,7 @@ public class HomeController {
         if(currentUser !=null){
              return "redirect:/";
         }
-        return "login";
+        return "users/login";
     }
 
     @GetMapping("/access-denied")

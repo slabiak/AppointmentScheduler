@@ -37,7 +37,7 @@ public class AppointmentController {
 
     @GetMapping("")
     public String showAllAppointments(Model model, @AuthenticationPrincipal CustomUserDetails currentUser) {
-        if (currentUser.hasRole("ROLE_CUSTOMER")) {
+        if (currentUser.hasRole("ROLE_CUSTOMER_RETAIL") || currentUser.hasRole("ROLE_CUSTOMER_CORPORATE")) {
             model.addAttribute("appointments",appointmentService.findByCustomerId(currentUser.getId()));
         } else if(currentUser.hasRole("ROLE_PROVIDER")) {
             model.addAttribute("appointments",appointmentService.findByProviderId(currentUser.getId()));
@@ -104,7 +104,7 @@ public class AppointmentController {
 
     @GetMapping("/new")
     public String selectProvider(Model model) {
-        model.addAttribute("providers", userService.findByRoleName("ROLE_PROVIDER"));
+        model.addAttribute("providers", userService.getAllProviders());
         return "appointments/select-provider";
     }
 
@@ -126,7 +126,7 @@ public class AppointmentController {
     public String confirm(@PathVariable("workId") int workId,@PathVariable("providerId") int providerId,@PathVariable("dateTime") String start,Model model){
         model.addAttribute("work",workService.findById(workId));
         model.addAttribute("provider",userService.findById(providerId).getFirstName()+" " +userService.findById(providerId).getLastName());
-        model.addAttribute("providerId",userService.findById(providerId).getId());
+        model.addAttribute("providerId",providerId);
         model.addAttribute("start",LocalDateTime.parse(start));
         model.addAttribute("end",LocalDateTime.parse(start).plusMinutes(workService.findById(workId).getDuration()));
         return "appointments/confirm";

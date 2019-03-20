@@ -1,5 +1,6 @@
 package com.example.slabiak.appointmentscheduler.entity;
 
+import com.example.slabiak.appointmentscheduler.entity.user.User;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import javax.persistence.*;

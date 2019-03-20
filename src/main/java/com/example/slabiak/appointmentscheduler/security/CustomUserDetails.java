@@ -1,6 +1,6 @@
 package com.example.slabiak.appointmentscheduler.security;
 
-import com.example.slabiak.appointmentscheduler.entity.User;
+import com.example.slabiak.appointmentscheduler.entity.user.User;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;

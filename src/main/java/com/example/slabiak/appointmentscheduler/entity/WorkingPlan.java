@@ -1,5 +1,7 @@
 package com.example.slabiak.appointmentscheduler.entity;
 
+import com.example.slabiak.appointmentscheduler.entity.user.provider.Provider;
+import com.example.slabiak.appointmentscheduler.entity.user.User;
 import com.example.slabiak.appointmentscheduler.model.DayPlan;
 import com.vladmihalcea.hibernate.type.json.JsonStringType;
 import org.hibernate.annotations.Type;
@@ -20,7 +22,7 @@ public class WorkingPlan{
     @MapsId
     @OneToOne
     @JoinColumn(name = "id_provider")
-    private User provider;
+    private Provider provider;
 
     @Type(type = "json")
     @Column(columnDefinition = "json", name="monday")
@@ -67,7 +69,7 @@ public class WorkingPlan{
         return provider;
     }
 
-    public void setProvider(User provider) {
+    public void setProvider(Provider provider) {
         this.provider = provider;
     }
 

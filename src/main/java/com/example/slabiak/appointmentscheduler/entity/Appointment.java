@@ -1,4 +1,7 @@
 package com.example.slabiak.appointmentscheduler.entity;
+import com.example.slabiak.appointmentscheduler.entity.user.customer.Customer;
+import com.example.slabiak.appointmentscheduler.entity.user.provider.Provider;
+import com.example.slabiak.appointmentscheduler.entity.user.User;
 import com.example.slabiak.appointmentscheduler.model.AppointmentSerializer;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -41,11 +44,11 @@ public class Appointment extends BaseEntity implements Comparable<Appointment> {
 
     @ManyToOne
     @JoinColumn(name="id_customer")
-    private User customer;
+    private Customer customer;
 
     @ManyToOne
     @JoinColumn(name="id_provider")
-    private User provider;
+    private Provider provider;
 
     @ManyToOne
     @JoinColumn(name="id_work")
@@ -62,7 +65,7 @@ public class Appointment extends BaseEntity implements Comparable<Appointment> {
 
     }
 
-    public Appointment(LocalDateTime start, LocalDateTime end, User customer, User provider, Work work) {
+    public Appointment(LocalDateTime start, LocalDateTime end, Customer customer, Provider provider, Work work) {
         this.start = start;
         this.end = end;
         this.customer = customer;
@@ -86,19 +89,19 @@ public class Appointment extends BaseEntity implements Comparable<Appointment> {
         this.end = end;
     }
 
-    public User getCustomer() {
+    public Customer getCustomer() {
         return customer;
     }
 
-    public void setCustomer(User customer) {
+    public void setCustomer(Customer customer) {
         this.customer = customer;
     }
 
-    public User getProvider() {
+    public Provider getProvider() {
         return provider;
     }
 
-    public void setProvider(User provider) {
+    public void setProvider(Provider provider) {
         this.provider = provider;
     }
 

@@ -4,6 +4,9 @@ import com.example.slabiak.appointmentscheduler.dao.AppointmentRepository;
 import com.example.slabiak.appointmentscheduler.dao.ChatMessageRepository;
 import com.example.slabiak.appointmentscheduler.dao.WorkingPlanRepository;
 import com.example.slabiak.appointmentscheduler.entity.*;
+import com.example.slabiak.appointmentscheduler.entity.user.provider.Provider;
+import com.example.slabiak.appointmentscheduler.entity.user.User;
+import com.example.slabiak.appointmentscheduler.entity.WorkingPlan;
 import com.example.slabiak.appointmentscheduler.model.AppointmentRegisterForm;
 import com.example.slabiak.appointmentscheduler.model.DayPlan;
 import com.example.slabiak.appointmentscheduler.model.TimePeroid;
@@ -48,19 +51,6 @@ public class AppointmentServiceImpl implements AppointmentService{
     public AppointmentServiceImpl() {
     }
 
-
-    @Override
-    public void save(AppointmentRegisterForm appointmentRegisterForm) {
-        Appointment appointment = new Appointment();
-        appointment.setStatus("scheduled");
-        appointment.setCustomer(userService.findById(appointmentRegisterForm.getCustomerId()));
-        appointment.setProvider(userService.findById(appointmentRegisterForm.getProviderId()));
-        Work work = workService.findById(appointmentRegisterForm.getWorkId());
-        appointment.setWork(work);
-        appointment.setStart(appointmentRegisterForm.getStart());
-        appointment.setEnd(appointmentRegisterForm.getStart().plusMinutes(work.getDuration()));
-        appointmentRepository.save(appointment);
-    }
 
     @Override
     public void update(Appointment appointment) {
@@ -114,10 +104,11 @@ public class AppointmentServiceImpl implements AppointmentService{
 
     @Override
     public List<TimePeroid> getProviderAvailableTimePeroids(int providerId, int workId, LocalDate date){
-       WorkingPlan workingPlan = workingPlanRepository.getOne(1);
+        Provider p = userService.getProviderById(providerId);
+       WorkingPlan workingPlan = p.getWorkingPlan();
         DayPlan selectedDay = workingPlan.getDay(date.getDayOfWeek().toString().toLowerCase());
 
-        List<Appointment> providerAppointments = findByProviderAndDate(userService.findById(providerId),date);
+        List<Appointment> providerAppointments = findByProviderAndDate(p,date);
 
         List<TimePeroid> availablePeroids = new ArrayList<TimePeroid>();
         // get peroids from working hours for selected day excluding breaks
@@ -133,8 +124,8 @@ public class AppointmentServiceImpl implements AppointmentService{
     public void save(int workId, int providerId, int customerId, LocalDateTime start) {
         Appointment appointment = new Appointment();
         appointment.setStatus("scheduled");
-        appointment.setCustomer(userService.findById(customerId));
-        appointment.setProvider(userService.findById(providerId));
+        appointment.setCustomer(userService.getCustomerById(customerId));
+        appointment.setProvider(userService.getProviderById(providerId));
         Work work = workService.findById(workId);
         appointment.setWork(work);
         appointment.setStart(start);

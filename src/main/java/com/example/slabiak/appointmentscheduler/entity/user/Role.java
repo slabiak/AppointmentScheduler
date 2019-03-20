@@ -1,12 +1,15 @@
-package com.example.slabiak.appointmentscheduler.entity;
+package com.example.slabiak.appointmentscheduler.entity.user;
+
+import com.example.slabiak.appointmentscheduler.entity.BaseEntity;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Table;
+import java.util.Objects;
 
 @Entity
 @Table(name = "roles")
-public class Role extends BaseEntity{
+public class Role extends BaseEntity {
 
     @Column(name = "name")
     private String name;

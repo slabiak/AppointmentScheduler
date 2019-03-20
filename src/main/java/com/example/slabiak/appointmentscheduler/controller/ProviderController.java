@@ -1,7 +1,8 @@
 package com.example.slabiak.appointmentscheduler.controller;
 
-import com.example.slabiak.appointmentscheduler.dto.UserFormDTO;
-import com.example.slabiak.appointmentscheduler.entity.User;
+import com.example.slabiak.appointmentscheduler.model.UserFormDTO;
+import com.example.slabiak.appointmentscheduler.entity.user.provider.Provider;
+import com.example.slabiak.appointmentscheduler.entity.user.User;
 import com.example.slabiak.appointmentscheduler.entity.WorkingPlan;
 import com.example.slabiak.appointmentscheduler.model.TimePeroid;
 import com.example.slabiak.appointmentscheduler.security.CustomUserDetails;
@@ -33,43 +34,49 @@ public class ProviderController {
 
     @GetMapping("")
     public String showAllProviders(Model model) {
-        model.addAttribute("providers", userService.findByRoleName("ROLE_PROVIDER"));
-        return "providers/list";
+        model.addAttribute("providers", userService.getAllProviders());
+        return "users/listProviders";
     }
-
 
     @GetMapping("/new")
     public String showProviderRegistrationForm(Model model) {
+        model.addAttribute("account_type","provider");
+        model.addAttribute("action","/providers/new");
         model.addAttribute("user", new UserFormDTO());
-        model.addAttribute("allWorks", workService.findAll());
-        return "providers/createProviderForm";
+        model.addAttribute("allWorks",workService.findAll());
+        return "users/createUserForm";
     }
 
     @PostMapping("/new")
     public String processProviderRegistration(@ModelAttribute("user") UserFormDTO userForm, Model model) {
-        User existing = userService.findByUserName(userForm.getUserName());
-        if (existing != null){
+        User user = userService.findByUserName(userForm.getUserName());
+        if (user != null){
             model.addAttribute("user", userForm);
+            model.addAttribute("account_type","provider");
+            model.addAttribute("action","/providers/new");
             model.addAttribute("registrationError", "User name already exists.");
-            return "providers/createProviderForm";
+            return "users/createUserForm";
         }
-        userService.saveNewUser(userForm);
+        userService.saveNewProvider(userForm);
         return "redirect:/providers";
     }
 
     @GetMapping("/{id}")
     public String showProviderDetails(@PathVariable("id") int id, Model model) {
-        User provider = userService.findById(id);
-        model.addAttribute("provider", new UserFormDTO(provider));
+        Provider provider = userService.getProviderById(id);
+        model.addAttribute("user", new UserFormDTO(provider));
+        model.addAttribute("account_type","provider");
+        model.addAttribute("action1","/providers/update/profile");
+        model.addAttribute("action2","/providers/update/password");
         model.addAttribute("allWorks", workService.findAll());
         model.addAttribute("numberOfScheduledAppointments",appointmentService.getNumberOfScheduledAppointmentsForUser(id));
         model.addAttribute("numberOfCanceledAppointments",appointmentService.getNumberOfCanceledAppointmentsForUser(id));
-        return "providers/providerDetails";
+        return "users/updateUserForm";
     }
 
     @PostMapping("/update/profile")
     public String processProviderUpdate(@ModelAttribute("user") UserFormDTO userUpdateData, Model model) {
-        userService.updateUserProfile(userUpdateData);
+        userService.updateProviderProfile(userUpdateData);
         return "redirect:/providers/"+userUpdateData.getId();
     }
 
@@ -81,9 +88,9 @@ public class ProviderController {
 
     @GetMapping("/availability")
     public String showProviderAvailability(Model model,@AuthenticationPrincipal CustomUserDetails currentUser){
-        model.addAttribute("plan",userService.findById(currentUser.getId()).getWorkingPlan());
+        model.addAttribute("plan",userService.getProviderById(currentUser.getId()).getWorkingPlan());
         model.addAttribute("breakModel", new TimePeroid());
-        return "providers/showOrUpdateProviderAvailability";
+        return "users/showOrUpdateProviderAvailability";
     }
 
     @PostMapping("/availability")
@@ -105,12 +112,12 @@ public class ProviderController {
     }
 
     @PostMapping("/update/password")
-    public String processProviderPasswordUpate(@ModelAttribute("provider") UserFormDTO userFormDTO, @AuthenticationPrincipal CustomUserDetails currentUser, Model model) {
-        User user = userService.findById(currentUser.getId());
-        boolean passwordChanged = userService.updateUserPassword(user.getId(),userFormDTO.getCurrentPassword(),userFormDTO.getNewPassword(),userFormDTO.getMatchingPassword());
+    public String processProviderPasswordUpate(@ModelAttribute("provider") UserFormDTO userForm, @AuthenticationPrincipal CustomUserDetails currentUser, Model model) {
+        Provider provider = userService.getProviderById(currentUser.getId());
+        boolean passwordChanged = userService.updateUserPassword(userForm);
         model.addAttribute(passwordChanged);
-        model.addAttribute("user", new UserFormDTO(user));
-        return "providers/providerDetails";
+        model.addAttribute("user", new UserFormDTO(provider));
+        return "users/updateUserForm";
     }
 
 
