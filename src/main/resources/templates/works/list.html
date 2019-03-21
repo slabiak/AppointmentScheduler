@@ -5,10 +5,11 @@
 
  <div class="row align-items-center justify-content-center"   style="margin-top: 50px">
      <div>
-         <table id="works" class="table table-striped text-center" >
+         <table id="works" class="table text-center" >
              <thead class="thead-dark">
              <tr>
                  <th> Name </th>
+                 <th> Target </th>
                  <th> Price </th>
                  <th> Duration </th>
                  <th> Providers</th>
@@ -19,8 +20,10 @@
              <tr th:if="${works == null}">
                  <td colspan="4"> No Works Available </td>
              </tr>
-             <tr th:each="work : ${works}">
+
+             <tr th:each="work : ${works}" th:classappend="${work.targetCustomer=='retail'} ? table-primary : table-info">
                  <td><span th:text="${work.name}"> english </span></td>
+                 <td><span th:text="${work.targetCustomer}"> retail </span></td>
                  <td><span th:text="${work.price + ' PLN'}"> 50 PLN </span></td>
                  <td><span th:text="${work.duration+' min'}"> 30 min </span></td>
                  <td><span th:text="${work.providers.size()}"> 2 </span></td>

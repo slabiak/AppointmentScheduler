@@ -21,7 +21,8 @@ public interface UserService {
     List<User> findAll();
     List<Provider> findByWorks(Work work);
     void deleteById(int id);
-
+    List<Provider> getAllProvidersWithRetailWorks();
+    List<Provider> getAllProvidersWithCorporateWorks();
     List<Provider> getAllProviders();
     List<Customer> getAllCustomers();
     List<RetailCustomer> getAllRetailCustomers();

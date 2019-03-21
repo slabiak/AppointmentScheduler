@@ -103,14 +103,22 @@ public class AppointmentController {
     }
 
     @GetMapping("/new")
-    public String selectProvider(Model model) {
-        model.addAttribute("providers", userService.getAllProviders());
+    public String selectProvider(Model model,@AuthenticationPrincipal CustomUserDetails currentUser) {
+        if(currentUser.hasRole("ROLE_CUSTOMER_RETAIL")){
+            model.addAttribute("providers",userService.getAllProvidersWithRetailWorks());
+        } else if(currentUser.hasRole("ROLE_CUSTOMER_CORPORATE")){
+            model.addAttribute("providers",userService.getAllProvidersWithCorporateWorks());
+        }
         return "appointments/select-provider";
     }
 
     @GetMapping("/new/{providerId}")
-  public String selectService(@PathVariable("providerId") int providerId, Model model) {
-        model.addAttribute("works", workService.findByProviderId(providerId));
+  public String selectService(@PathVariable("providerId") int providerId, Model model,@AuthenticationPrincipal CustomUserDetails currentUser) {
+        if(currentUser.hasRole("ROLE_CUSTOMER_RETAIL")) {
+            model.addAttribute("works", workService.getWorksForRetailCustomer(providerId));
+        } else if(currentUser.hasRole("ROLE_CUSTOMER_CORPORATE")) {
+            model.addAttribute("works", workService.getWorksForCorporateCustomer(providerId));
+        }
         model.addAttribute("providerId",providerId);
         return "appointments/select-service";
     }

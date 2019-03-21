@@ -124,7 +124,7 @@
                             <ul>
                                 <li th:each="work : ${allWorks}">
                                     <input type="checkbox" th:field="*{works}" th:value="${work.id}" />
-                                    <label th:for="${#ids.prev('works')}"
+                                    <label th:for="${#ids.prev('works')}" th:classappend="${work.targetCustomer=='retail'} ? text-primary : text-info"
                                            th:text="${work.name}">Heating</label>
                                 </li>
                             </ul>

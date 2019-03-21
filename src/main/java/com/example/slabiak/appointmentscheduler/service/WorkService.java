@@ -11,4 +11,9 @@ public interface WorkService {
     List<Work> findAll();
     void deleteById(int id);
     List<Work> findByProviderId(int providerId);
+    List<Work> getWorksForRetailCustomer();
+    List<Work> getWorksForCorporateCustomer();
+
+    List<Work> getWorksForRetailCustomer(int providerId);
+    List<Work> getWorksForCorporateCustomer(int providerId);
 }

@@ -25,7 +25,9 @@ public class Work extends BaseEntity {
     @Column(name="editable")
     private boolean editable;
 
-    @JsonIgnore
+    @Column(name="target")
+    private String targetCustomer;
+
     @ManyToMany
     @JoinTable(name="works_providers", joinColumns=@JoinColumn(name="id_work"), inverseJoinColumns=@JoinColumn(name="id_user"))
     private List<User> providers;
@@ -77,4 +79,14 @@ public class Work extends BaseEntity {
     public void setEditable(boolean editable) {
         this.editable = editable;
     }
+
+    public String getTargetCustomer() {
+        return targetCustomer;
+    }
+
+    public void setTargetCustomer(String targetCustomer) {
+        this.targetCustomer = targetCustomer;
+    }
+
+
 }

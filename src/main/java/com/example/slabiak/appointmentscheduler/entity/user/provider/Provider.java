@@ -7,8 +7,10 @@ import com.example.slabiak.appointmentscheduler.entity.user.User;
 import com.example.slabiak.appointmentscheduler.entity.WorkingPlan;
 
 import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Objects;
 
 @Entity
 @Table(name="providers")
@@ -63,5 +65,40 @@ public class Provider extends User {
 
     public void setWorkingPlan(WorkingPlan workingPlan) {
         this.workingPlan = workingPlan;
+    }
+
+    public List<Work> getCorporateWorks(){
+        List<Work> corporateWorks = new ArrayList<>();
+        for(Work w: works){
+            if(w.getTargetCustomer().equals("corporate")){
+                corporateWorks.add(w);
+            }
+        }
+        return corporateWorks;
+    }
+
+    public List<Work> getRetailWorks(){
+        List<Work> retailWorks = new ArrayList<>();
+        for(Work w: works){
+            if(w.getTargetCustomer().equals("retail")){
+                retailWorks.add(w);
+            }
+        }
+        return retailWorks;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        if (!super.equals(o)) return false;
+        Provider provider = (Provider) o;
+        return provider.getId().equals(this.getId());
+    }
+
+    @Override
+    public int hashCode() {
+
+        return Objects.hash(appointments, works, workingPlan);
     }
 }

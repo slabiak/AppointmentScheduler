@@ -28,6 +28,7 @@ public class WorkServiceImpl implements WorkService {
         work.setDuration(workUpdateData.getDuration());
         work.setDescription(workUpdateData.getDescription());
         work.setEditable(workUpdateData.getEditable());
+        work.setTargetCustomer(workUpdateData.getTargetCustomer());
         workRepository.save(work);
     }
 
@@ -62,4 +63,26 @@ public class WorkServiceImpl implements WorkService {
     public List<Work> findByProviderId(int providerId) {
         return workRepository.findByProviderId(providerId);
     }
+
+    @Override
+    public List<Work> getWorksForRetailCustomer() {
+        return workRepository.findByTarget("retail");
+    }
+
+    @Override
+    public List<Work> getWorksForCorporateCustomer() {
+        return workRepository.findByTarget("corporate");
+    }
+
+    @Override
+    public List<Work> getWorksForRetailCustomer(int providerId) {
+        return workRepository.findByTargetAndProviderId("retail",providerId);
+    }
+
+    @Override
+    public List<Work> getWorksForCorporateCustomer(int providerId) {
+        return workRepository.findByTargetAndProviderId("corporate",providerId);
+    }
+
+
 }

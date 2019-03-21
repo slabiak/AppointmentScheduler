@@ -163,6 +163,16 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public List<Provider> getAllProvidersWithRetailWorks() {
+        return providerRepository.findAllWithRetailWorks();
+    }
+
+    @Override
+    public List<Provider> getAllProvidersWithCorporateWorks() {
+        return providerRepository.findAllWithCorporateWorks();
+    }
+
+    @Override
     public List<Provider> findByWorks(Work work) {
         return providerRepository.findByWorks(work);
     }
