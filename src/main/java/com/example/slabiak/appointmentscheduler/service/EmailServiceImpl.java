@@ -60,7 +60,7 @@ public class EmailServiceImpl implements EmailService {
     }
 
     @Override
-    public void sendFinishedAppointmentNotification(Appointment appointment) {
+    public void sendAppointmentFinishedNotification(Appointment appointment) {
         Context context = new Context();
         context.setVariable("appointment",appointment);
         context.setVariable("url", "http://localhost:8080/appointments/deny?token="+jwtTokenService.generateDenyAppointmentToken(appointment));
@@ -68,11 +68,25 @@ public class EmailServiceImpl implements EmailService {
     }
 
     @Override
-    public void sendDeniedAppointmentNotification(Appointment appointment) {
+    public void sendAppointmentDeniedNotification(Appointment appointment) {
         Context context = new Context();
         context.setVariable("appointment",appointment);
         context.setVariable("url", "http://localhost:8080/appointments/acceptDeny?token="+jwtTokenService.generateAcceptDenyToken(appointment));
         sendEmail(appointment.getProvider().getEmail(),"Denied apppointment","appointmentDenied",context,null);
+    }
+
+    @Override
+    public void sendNewAppointmentScheduledNotification(Appointment appointment) {
+        Context context = new Context();
+        context.setVariable("appointment",appointment);
+        sendEmail(appointment.getProvider().getEmail(),"New appointment booked","newAppointmentScheduled",context,null);
+    }
+
+    @Override
+    public void sendAppointmentCanceledNotification(Appointment appointment) {
+        Context context = new Context();
+        context.setVariable("appointment",appointment);
+        sendEmail(appointment.getProvider().getEmail(),"Canceled appointment","appointmentCanceled",context,null);
     }
 
 

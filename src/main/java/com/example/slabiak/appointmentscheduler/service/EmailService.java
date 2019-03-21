@@ -9,8 +9,10 @@ import java.util.Map;
 
 public interface EmailService {
 
-    public void sendEmail(String to, String subject, String template, Context context, File attachment);
-    public void sendFinishedAppointmentNotification(Appointment appointment);
-    public void sendDeniedAppointmentNotification(Appointment appointment);
+    void sendEmail(String to, String subject, String template, Context context, File attachment);
+    void sendAppointmentFinishedNotification(Appointment appointment);
+    void sendAppointmentDeniedNotification(Appointment appointment);
+    void sendNewAppointmentScheduledNotification(Appointment appointment);
+    void sendAppointmentCanceledNotification(Appointment appointment);
     void sendInvoice(Invoice invoice);
 }

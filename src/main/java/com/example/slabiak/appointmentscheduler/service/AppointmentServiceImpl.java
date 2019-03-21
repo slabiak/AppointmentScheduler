@@ -7,7 +7,6 @@ import com.example.slabiak.appointmentscheduler.entity.*;
 import com.example.slabiak.appointmentscheduler.entity.user.provider.Provider;
 import com.example.slabiak.appointmentscheduler.entity.user.User;
 import com.example.slabiak.appointmentscheduler.entity.WorkingPlan;
-import com.example.slabiak.appointmentscheduler.model.AppointmentRegisterForm;
 import com.example.slabiak.appointmentscheduler.model.DayPlan;
 import com.example.slabiak.appointmentscheduler.model.TimePeroid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -131,6 +130,7 @@ public class AppointmentServiceImpl implements AppointmentService{
         appointment.setStart(start);
         appointment.setEnd(start.plusMinutes(work.getDuration()));
         appointmentRepository.save(appointment);
+        emailService.sendNewAppointmentScheduledNotification(appointment);
     }
 
     @Override
@@ -221,7 +221,7 @@ public class AppointmentServiceImpl implements AppointmentService{
             * it it's more than 24h, dont send it cause it's to late to deny
             * */
             if(LocalDateTime.now().minusHours(24).isBefore(appointment.getEnd())) {
-                emailService.sendFinishedAppointmentNotification(appointment);
+                emailService.sendAppointmentFinishedNotification(appointment);
             }
         }
          /*
@@ -242,6 +242,7 @@ public class AppointmentServiceImpl implements AppointmentService{
         appointment.setCanceler(userService.findById(userId));
         appointment.setCanceledAt(LocalDateTime.now());
         appointmentRepository.save(appointment);
+        emailService.sendAppointmentCanceledNotification(appointment);
     }
 
 
@@ -266,7 +267,7 @@ public class AppointmentServiceImpl implements AppointmentService{
         if(isUserAllowedToDenyThatAppointmentTookPlace(customerId,appointmentId)){
             Appointment appointment = findById(appointmentId);
             appointment.setStatus("deny requested");
-            emailService.sendDeniedAppointmentNotification(appointment);
+            emailService.sendAppointmentDeniedNotification(appointment);
             update(appointment);
             return true;
         } else{

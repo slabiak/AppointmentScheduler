@@ -30,6 +30,9 @@ public class InvoiceServiceImpl implements InvoiceService {
     @Autowired
     private AppointmentService appointmentService;
 
+    @Autowired
+    private EmailService emailService;
+
     @Override
     public String generateInvoiceNumber() {
         List<Invoice> invoices = invoiceRepository.findAllIssuedInCurrentMonth(LocalDate.now().with(TemporalAdjusters.firstDayOfMonth()).atStartOfDay());
@@ -95,7 +98,9 @@ public class InvoiceServiceImpl implements InvoiceService {
                 }
                 Invoice invoice = new Invoice(generateInvoiceNumber(),"issued",LocalDateTime.now(),appointmentsToIssueInvoice);
                 save(invoice);
+                emailService.sendInvoice(invoice);
             }
+
         }
     }
 }
