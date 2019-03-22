@@ -2,7 +2,7 @@ package com.example.slabiak.appointmentscheduler.appointment;
 
 import com.example.slabiak.appointmentscheduler.dao.AppointmentRepository;
 import com.example.slabiak.appointmentscheduler.entity.Appointment;
-import com.example.slabiak.appointmentscheduler.service.AppointmentServiceImpl;
+import com.example.slabiak.appointmentscheduler.service.impl.AppointmentServiceImpl;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
@@ -39,27 +39,27 @@ public class AppointmentServiceTests {
 
     /*@Test
     public void shouldSaveAppointment(){
-        appointmentService.save(appointment);
-        verify(appointmentRepository).save(appointment);
+        appointmentService.createNewAppointment(appointment);
+        verify(appointmentRepository).createNewAppointment(appointment);
     }*/
 
     @Test
     public void shouldFindById() {
         when(appointmentRepository.findById(1)).thenReturn(optionalAppointment);
-        assertEquals(optionalAppointment.get(), appointmentService.findById(1));
+        assertEquals(optionalAppointment.get(), appointmentService.getAppointmentById(1));
         verify(appointmentRepository).findById(1);
     }
 
     @Test
     public void shouldFindAllAppointments(){
         when(appointmentRepository.findAll()).thenReturn(appointments);
-        assertEquals(appointments,appointmentService.findAll());
+        assertEquals(appointments,appointmentService.getAllAppointments());
         verify(appointmentRepository).findAll();
     }
 
     @Test
     public void shouldDeleteById() {
-        appointmentService.deleteById(1);
+        appointmentService.deleteAppointmentById(1);
         verify(appointmentRepository).deleteById(1);
     }
 

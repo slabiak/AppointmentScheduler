@@ -1,5 +1,7 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org" th:replace="~{fragments/layout :: layout (~{::body},'home','Home')}" xmlns:sec="http://www.w3.org/1999/xhtml">
+<html xmlns:th="http://www.thymeleaf.org" th:replace="~{fragments/layout :: layout (~{::body},'home','Home')}"
+      xmlns:sec="http://www.w3.org/1999/xhtml">
+
 <body>
 <div class="row mt-3">
     <div class="col-3">
@@ -17,21 +19,20 @@
 <script th:inline="javascript">
 
 
-    $(function() {
+    $(function () {
         $('#calendar').fullCalendar({
             defaultView: 'listDay',
             contentHeight: "auto",
-            noEventsMessage:'Unavailable',
-            validRange: function(nowDate) {
+            noEventsMessage: 'Unavailable',
+            validRange: function (nowDate) {
                 return {
-                    start: nowDate,
-                    end: nowDate.clone().add(7, 'days')
+                    start: nowDate.clone().add(1, 'days')
                 };
             },
             header: {
-                left:   'title',
+                left: 'title',
                 center: '',
-                right:  'today prev,next'
+                right: 'today prev,next'
             },
             allDaySlot: false,
             minTime: "06:00:00",
@@ -42,17 +43,16 @@
 
                 // your event source
                 {
-                    events: function(start, end, timezone, callback) {
-                        var url = [[${'/api/hours/'+providerId+'/'+workId+'/'}]] + start.format('YYYY-MM-DD').toString();
+                    events: function (start, end, timezone, callback) {
+                        var url = [[${ '/api/availableHours/'+providerId + '/' + workId + '/' }]] + start.format('YYYY-MM-DD').toString();
                         console.log(url);
                         $.ajax({
-                            url:  url,
-                            data: {
-                            },
-                            success: function(doc) {
+                            url: url,
+                            data: {},
+                            success: function (doc) {
 
-                                var x = doc.map(function(entry) {
-                                    var URL = [[${'/appointments/new/'+providerId+'/'+workId+'/'}]] + entry.start;
+                                var x = doc.map(function (entry) {
+                                    var URL = [[${ '/appointments/new/'+providerId + '/' + workId + '/' }]] + entry.start;
                                     entry.url = URL;
                                     return entry;
                                 });
@@ -68,8 +68,6 @@
         })
 
     });
-
-
 
 
 </script>

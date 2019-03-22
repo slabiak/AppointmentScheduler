@@ -31,8 +31,8 @@ public class CustomUserDetails implements UserDetails {
     }
 
     public static CustomUserDetails create(User user){
-        List<GrantedAuthority> authorities = user.getRoles().stream().map(role ->
-                new SimpleGrantedAuthority(role.getName())).collect(Collectors.toList());
+        List<GrantedAuthority> authorities =
+                user.getRoles().stream().map(role -> new SimpleGrantedAuthority(role.getName())).collect(Collectors.toList());
 
         return new CustomUserDetails(
                 user.getId(),

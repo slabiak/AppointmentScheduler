@@ -1,7 +1,6 @@
 package com.example.slabiak.appointmentscheduler.entity;
 
 import com.example.slabiak.appointmentscheduler.entity.user.User;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import javax.persistence.*;
 import java.util.List;
@@ -31,6 +30,10 @@ public class Work extends BaseEntity {
     @ManyToMany
     @JoinTable(name="works_providers", joinColumns=@JoinColumn(name="id_work"), inverseJoinColumns=@JoinColumn(name="id_user"))
     private List<User> providers;
+
+    public Work(){
+
+    }
 
     public String getName() {
         return name;

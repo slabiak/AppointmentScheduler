@@ -1,14 +1,19 @@
-package com.example.slabiak.appointmentscheduler.service;
+package com.example.slabiak.appointmentscheduler.service.impl;
 
 import com.example.slabiak.appointmentscheduler.dao.AppointmentRepository;
 import com.example.slabiak.appointmentscheduler.dao.ChatMessageRepository;
-import com.example.slabiak.appointmentscheduler.dao.WorkingPlanRepository;
-import com.example.slabiak.appointmentscheduler.entity.*;
-import com.example.slabiak.appointmentscheduler.entity.user.provider.Provider;
-import com.example.slabiak.appointmentscheduler.entity.user.User;
+import com.example.slabiak.appointmentscheduler.entity.Appointment;
+import com.example.slabiak.appointmentscheduler.entity.ChatMessage;
+import com.example.slabiak.appointmentscheduler.entity.Work;
 import com.example.slabiak.appointmentscheduler.entity.WorkingPlan;
+import com.example.slabiak.appointmentscheduler.entity.user.User;
+import com.example.slabiak.appointmentscheduler.entity.user.provider.Provider;
 import com.example.slabiak.appointmentscheduler.model.DayPlan;
 import com.example.slabiak.appointmentscheduler.model.TimePeroid;
+import com.example.slabiak.appointmentscheduler.service.AppointmentService;
+import com.example.slabiak.appointmentscheduler.service.EmailService;
+import com.example.slabiak.appointmentscheduler.service.UserService;
+import com.example.slabiak.appointmentscheduler.service.WorkService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -21,7 +26,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
-public class AppointmentServiceImpl implements AppointmentService{
+public class AppointmentServiceImpl implements AppointmentService {
 
     @Autowired
     private AppointmentRepository appointmentRepository;
@@ -33,31 +38,26 @@ public class AppointmentServiceImpl implements AppointmentService{
     private WorkService workService;
 
     @Autowired
-    private WorkingPlanRepository workingPlanRepository;
-
-    @Autowired
     private ChatMessageRepository chatMessageRepository;
 
     @Autowired
     EmailService emailService;
 
     @Autowired
-    JwtTokenService jwtTokenService;
+    JwtTokenServiceImpl jwtTokenService;
 
-    @Autowired
-    private InvoiceService invoiceService;
 
     public AppointmentServiceImpl() {
     }
 
 
     @Override
-    public void update(Appointment appointment) {
+    public void updateAppointment(Appointment appointment) {
         appointmentRepository.save(appointment);
     }
 
     @Override
-    public Appointment findById(int id) {
+    public Appointment getAppointmentById(int id) {
         Optional<Appointment> result = appointmentRepository.findById(id);
         Appointment appointment = null;
 
@@ -72,60 +72,55 @@ public class AppointmentServiceImpl implements AppointmentService{
     }
 
     @Override
-    public List<Appointment> findAll() {
+    public List<Appointment> getAllAppointments() {
         return appointmentRepository.findAll();
     }
 
     @Override
-    public void deleteById(int id) {
+    public void deleteAppointmentById(int id) {
         appointmentRepository.deleteById(id);
     }
 
     @Override
-    public List<Appointment> findByCustomerId(int customerId) {
+    public List<Appointment> getAppointmentByCustomerId(int customerId) {
         return appointmentRepository.findByCustomerId(customerId);
     }
 
     @Override
-    public List<Appointment> findByProviderId(int providerId) {
+    public List<Appointment> getAppointmentByProviderId(int providerId) {
         return appointmentRepository.findByProviderId(providerId);
     }
 
     @Override
-    public List<Appointment> findByProviderAndDate(User user, LocalDate date) {
-        return appointmentRepository.findByProviderAndDate(user,date.atStartOfDay(), date.atStartOfDay().plusHours(24));
+    public List<Appointment> getAppointmentsByProviderAtDay(int providerId, LocalDate day) {
+        return appointmentRepository.findByProviderIdWithStartInPeroid(providerId,day.atStartOfDay(), day.atStartOfDay().plusHours(24));
     }
 
     @Override
-    public List<Appointment> getAvailableAppointments(int providerId, int workId, LocalDate date) {
-        return null;
-    }
-
-    @Override
-    public List<TimePeroid> getProviderAvailableTimePeroids(int providerId, int workId, LocalDate date){
+    public List<TimePeroid> getAvailableTimePeroidsForProvider(int providerId, int workId, LocalDate date){
         Provider p = userService.getProviderById(providerId);
        WorkingPlan workingPlan = p.getWorkingPlan();
         DayPlan selectedDay = workingPlan.getDay(date.getDayOfWeek().toString().toLowerCase());
 
-        List<Appointment> providerAppointments = findByProviderAndDate(p,date);
+        List<Appointment> providerAppointments = getAppointmentsByProviderAtDay(p.getId(),date);
 
         List<TimePeroid> availablePeroids = new ArrayList<TimePeroid>();
         // get peroids from working hours for selected day excluding breaks
 
-        availablePeroids = selectedDay.peroidsWithBreaksExcluded();
+        availablePeroids = selectedDay.getTimePeroidsWithBreaksExcluded();
         // exclude provider's appointments from available peroids
         availablePeroids = excludeAppointmentsFromTimePeroids(availablePeroids,providerAppointments);
-       return calculateAvailableHours(availablePeroids,workService.findById(workId));
+       return calculateAvailableHours(availablePeroids,workService.getWorkById(workId));
        // return availablePeroids;
     }
 
     @Override
-    public void save(int workId, int providerId, int customerId, LocalDateTime start) {
+    public void createNewAppointment(int workId, int providerId, int customerId, LocalDateTime start) {
         Appointment appointment = new Appointment();
         appointment.setStatus("scheduled");
         appointment.setCustomer(userService.getCustomerById(customerId));
         appointment.setProvider(userService.getProviderById(providerId));
-        Work work = workService.findById(workId);
+        Work work = workService.getWorkById(workId);
         appointment.setWork(work);
         appointment.setStart(start);
         appointment.setEnd(start.plusMinutes(work.getDuration()));
@@ -135,15 +130,15 @@ public class AppointmentServiceImpl implements AppointmentService{
 
     @Override
     public void addMessageToAppointmentChat(int appointmentId, int authorId, ChatMessage chatMessage) {
-        chatMessage.setAuthor(userService.findById(authorId));
-        chatMessage.setAppointment(findById(appointmentId));
+        chatMessage.setAuthor(userService.getUserById(authorId));
+        chatMessage.setAppointment(getAppointmentById(appointmentId));
         chatMessage.setCreatedAt(LocalDateTime.now());
         chatMessageRepository.save(chatMessage);
     }
 
 
 
-
+    @Override
     public List<TimePeroid> calculateAvailableHours(List<TimePeroid> availableTimePeroids, Work work){
         ArrayList<TimePeroid> availableHours = new ArrayList<TimePeroid>();
         for(TimePeroid peroid: availableTimePeroids){
@@ -157,6 +152,7 @@ public class AppointmentServiceImpl implements AppointmentService{
         return availableHours;
     }
 
+    @Override
     public List<TimePeroid> excludeAppointmentsFromTimePeroids(List<TimePeroid> peroids, List<Appointment> appointments){
 
             List<TimePeroid> toAdd = new ArrayList<TimePeroid>();
@@ -180,9 +176,9 @@ public class AppointmentServiceImpl implements AppointmentService{
         return peroids;
     }
 
-    public List<Appointment> getAppointmentsCanceledByUserInThisMonth(int userId){
-        User user = userService.findById(userId);
-        return appointmentRepository.getAppointmentsCanceledByUserInThisMonth(user, LocalDate.now().with(TemporalAdjusters.firstDayOfMonth()).atStartOfDay());
+    @Override
+    public List<Appointment> getCanceledAppointmentsByCustomerIdForCurrentMonth(int customerId){
+        return appointmentRepository.findByCustomerIdCanceledAfterDate(customerId, LocalDate.now().with(TemporalAdjusters.firstDayOfMonth()).atStartOfDay());
     }
 
     @Override
@@ -191,18 +187,18 @@ public class AppointmentServiceImpl implements AppointmentService{
          * find appointments which requires status change from scheudled to finished and change their status
          * (all appointments which have status 'scheduled' and their end date is before current timestamp)
          * */
-        for(Appointment appointment: appointmentRepository.findUserScheduledAppointmentsWithEndBeforeDate(LocalDateTime.now(),userId)){
+        for(Appointment appointment: appointmentRepository.findScheduledByUserIdWithEndBeforeDate(LocalDateTime.now(),userId)){
             appointment.setStatus("finished");
-            update(appointment);
+            updateAppointment(appointment);
         }
          /*
          * find appointments which requires status change from finished to confirmed and change their status
          * (all appointments which have status 'finished' and their end date is more than 24 hours before current timestamp)
          * */
-        for(Appointment appointment: appointmentRepository.findUserFinishedAppointmentsWithEndBeforeDate(LocalDateTime.now().minusHours(24),userId)){
+        for(Appointment appointment: appointmentRepository.findFinishedByUserIdWithEndBeforeDate(LocalDateTime.now().minusHours(24),userId)){
 
             appointment.setStatus("invoiced");
-            update(appointment);
+            updateAppointment(appointment);
         }
     }
 
@@ -212,9 +208,9 @@ public class AppointmentServiceImpl implements AppointmentService{
          * find appointments which requires status change from scheudled to finished and change their status
          * (all appointments which have status 'scheduled' and their end date is before current timestamp)
          * */
-        for(Appointment appointment: appointmentRepository.findAllScheduledAppointmentsWithEndBeforeDate(LocalDateTime.now())){
+        for(Appointment appointment: appointmentRepository.findScheduledWithEndBeforeDate(LocalDateTime.now())){
             appointment.setStatus("finished");
-            update(appointment);
+            updateAppointment(appointment);
             /*
             * user have 24h after appointment finished to deny that appointment took place
             * if it's less than 24h since the appointment finished, send him a link with a token that allows to deny that appointment took place
@@ -228,28 +224,34 @@ public class AppointmentServiceImpl implements AppointmentService{
          * find appointments which requires status change from finished to confirmed and change their status
          * (all appointments which have status 'finished' and their end date is more than 24 hours before current timestamp)
          * */
-        for(Appointment appointment: appointmentRepository.findAllFinishedAppointmentsWithEndBeforeDate(LocalDateTime.now().minusHours(24))){
+        for(Appointment appointment: appointmentRepository.findFinishedWithEndBeforeDate(LocalDateTime.now().minusHours(24))){
             appointment.setStatus("confirmed");
-            update(appointment);
+            updateAppointment(appointment);
         }
     }
 
 
     @Override
-    public void cancelById(int appointmentId, int userId) {
+    public void cancelUserAppointmentById(int appointmentId, int userId) {
         Appointment appointment = appointmentRepository.getOne(appointmentId);
         appointment.setStatus("canceled");
-        appointment.setCanceler(userService.findById(userId));
+        User canceler = userService.getUserById(userId);
+        appointment.setCanceler(canceler);
         appointment.setCanceledAt(LocalDateTime.now());
         appointmentRepository.save(appointment);
-        emailService.sendAppointmentCanceledNotification(appointment);
+        if(canceler.equals(appointment.getCustomer())){
+            emailService.sendAppointmentCanceledByCustomerNotification(appointment);
+        } else if(canceler.equals(appointment.getProvider())){
+            emailService.sendAppointmentCanceledByProviderNotification(appointment);
+        }
+
     }
 
 
     @Override
-    public boolean isUserAllowedToDenyThatAppointmentTookPlace(Integer userId, int appointmentId) {
-        User user = userService.findById(userId);
-        Appointment appointment = findById(appointmentId);
+    public boolean isCustomerAllowedToRejectAppointment(int userId, int appointmentId) {
+        User user = userService.getUserById(userId);
+        Appointment appointment = getAppointmentById(appointmentId);
 
         if(!appointment.getCustomer().equals(user)){
             return false;
@@ -263,12 +265,12 @@ public class AppointmentServiceImpl implements AppointmentService{
     }
 
     @Override
-    public boolean denyAppointment(int appointmentId, int customerId) {
-        if(isUserAllowedToDenyThatAppointmentTookPlace(customerId,appointmentId)){
-            Appointment appointment = findById(appointmentId);
-            appointment.setStatus("deny requested");
-            emailService.sendAppointmentDeniedNotification(appointment);
-            update(appointment);
+    public boolean requestAppointmentRejection(int appointmentId, int customerId) {
+        if(isCustomerAllowedToRejectAppointment(customerId,appointmentId)){
+            Appointment appointment = getAppointmentById(appointmentId);
+            appointment.setStatus("rejection requested");
+            emailService.sendAppointmentRejectionRequestedNotification(appointment);
+            updateAppointment(appointment);
             return true;
         } else{
             return false;
@@ -278,11 +280,11 @@ public class AppointmentServiceImpl implements AppointmentService{
 
 
     @Override
-    public boolean denyAppointment(String token) {
+    public boolean requestAppointmentRejection(String token) {
         if(jwtTokenService.validateToken(token)){
-            int appointmentId = jwtTokenService.getAppointmentIdFromJWT(token);
-            int customerId = jwtTokenService.getCustomerIdFromJWT(token);
-            return denyAppointment(appointmentId,customerId);
+            int appointmentId = jwtTokenService.getAppointmentIdFromToken(token);
+            int customerId = jwtTokenService.getCustomerIdFromToken(token);
+            return requestAppointmentRejection(appointmentId,customerId);
         }
         return false;
     }
@@ -291,15 +293,13 @@ public class AppointmentServiceImpl implements AppointmentService{
 
 
     @Override
-    public boolean isUserAllowedToAcceptDeny(int providerId, int appointmentId) {
-        User user = userService.findById(providerId);
-        Appointment appointment = findById(appointmentId);
+    public boolean isProviderAllowedToAcceptRejection(int providerId, int appointmentId) {
+        User user = userService.getUserById(providerId);
+        Appointment appointment = getAppointmentById(appointmentId);
 
         if(!appointment.getProvider().equals(user)){
-            System.out.println("1");
             return false;
-        } else if(!appointment.getStatus().equals("deny requested")){
-            System.out.println("2");
+        } else if(!appointment.getStatus().equals("rejection requested")){
             return false;
         } else{
             return true;
@@ -307,11 +307,12 @@ public class AppointmentServiceImpl implements AppointmentService{
     }
 
     @Override
-    public boolean acceptDeny(int appointmentId, int customerId) {
-        if(isUserAllowedToAcceptDeny(customerId,appointmentId)){
-            Appointment appointment = findById(appointmentId);
-            appointment.setStatus("denied");
-            update(appointment);
+    public boolean acceptRejection(int appointmentId, int customerId) {
+        if(isProviderAllowedToAcceptRejection(customerId,appointmentId)){
+            Appointment appointment = getAppointmentById(appointmentId);
+            appointment.setStatus("rejected");
+            updateAppointment(appointment);
+            emailService.sendAppointmentRejectionAcceptedNotification(appointment);
             return true;
         } else{
             return false;
@@ -319,19 +320,19 @@ public class AppointmentServiceImpl implements AppointmentService{
     }
 
     @Override
-    public boolean acceptDeny(String token) {
+    public boolean acceptRejection(String token) {
         if(jwtTokenService.validateToken(token)){
-            int appointmentId = jwtTokenService.getAppointmentIdFromJWT(token);
-            int providerId = jwtTokenService.getProviderIdFromJWT(token);
-            return acceptDeny(appointmentId,providerId);
+            int appointmentId = jwtTokenService.getAppointmentIdFromToken(token);
+            int providerId = jwtTokenService.getProviderIdFromToken(token);
+            return acceptRejection(appointmentId,providerId);
         }
         return false;
     }
 
     @Override
     public String getCancelNotAllowedReason(int userId, int appointmentId){
-        User user = userService.findById(userId);
-        Appointment appointment = findById(appointmentId);
+        User user = userService.getUserById(userId);
+        Appointment appointment = getAppointmentById(appointmentId);
 
         // conditions for provider
         if (appointment.getProvider().equals(user) || user.hasRole("ROLE_ADMIN")) {
@@ -350,7 +351,7 @@ public class AppointmentServiceImpl implements AppointmentService{
                 return "Appointments which will be in less than 24 hours cannot be canceled.";
             } else if (!appointment.getWork().getEditable()) {
                 return "This type of appointment can be canceled only by Provider.";
-            } else if (getAppointmentsCanceledByUserInThisMonth(userId).size() >= 1) {
+            } else if (getCanceledAppointmentsByCustomerIdForCurrentMonth(userId).size() >= 1) {
                 return "You can't cancel this appointment because you exceeded maximum number of cancellations in this month.";
             } else {
                 return null;
@@ -361,16 +362,16 @@ public class AppointmentServiceImpl implements AppointmentService{
 
     @Override
     public int getNumberOfCanceledAppointmentsForUser(int userId) {
-        return appointmentRepository.findAppointmentsCanceledByUser(userId).size();
+        return appointmentRepository.findCanceledByUser(userId).size();
     }
 
     @Override
     public int getNumberOfScheduledAppointmentsForUser(int userId) {
-        return appointmentRepository.findScheduledAppointmentsForUser(userId).size();
+        return appointmentRepository.findScheduledByUserId(userId).size();
     }
 
     @Override
-    public List<Appointment> getConfirmedAppointmentsForUser(int userId) {
-        return appointmentRepository.findConfirmedAppointmentsForUser(userId);
+    public List<Appointment> getConfirmedAppointmentsByCustomerId(int customerId) {
+        return appointmentRepository.findConfirmedByCustomerId(customerId);
     }
 }

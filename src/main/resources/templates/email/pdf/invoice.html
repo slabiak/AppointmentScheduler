@@ -1,4 +1,5 @@
 <html>
+
 <head>
 
     <style>
@@ -53,7 +54,7 @@
             padding-bottom: 20px;
         }
 
-        .invoice-box table tr.item td{
+        .invoice-box table tr.item td {
             border-bottom: 1px solid #eee;
         }
 
@@ -108,12 +109,12 @@
                 <table>
                     <tr>
                         <td class="title">
-                            <img src="/img/logo.jpg" style="width:100%; max-width:300px;"/>
+                            <img src="/img/logo.jpg" style="width:100%; max-width:300px;" />
                         </td>
 
                         <td>
-                            <span th:text="${invoice.number}" id="number">FV/2019/03/42</span><br/>
-                            Issued: <span th:text="${#temporals.format(invoice.issued, 'dd-MM-yyyy HH:mm')}">Issued: 01-03-2019 16:15</span><br/>
+                            <span th:text="${invoice.number}" id="number">FV/2019/03/42</span><br />
+                            Issued: <span th:text="${#temporals.format(invoice.issued, 'dd-MM-yyyy')}">Issued: 01-03-2019</span><br/>
                         </td>
                     </tr>
                 </table>
@@ -136,7 +137,9 @@
 
                         <td>
                             <b>To:</b><br/>
-                            <span th:text="${invoice.appointments[0].customer.firstName +' '+invoice.appointments[0].customer.lastName}">Bolesław Walczak</span><br/>
+                            <span th:if="${invoice.appointments[0].customer.hasRole('ROLE_CUSTOMER_RETAIL')}" th:utext="${invoice.appointments[0].customer.firstName +' '+invoice.appointments[0].customer.lastName}+ '&lt;br /&gt;'">Bolesław Walczak</span>
+                            <span th:if="${invoice.appointments[0].customer.hasRole('ROLE_CUSTOMER_CORPORATE')}" th:utext="${invoice.appointments[0].customer.companyName} +'&lt;br /&gt;'">Company name</span>
+                            <span th:if="${invoice.appointments[0].customer.hasRole('ROLE_CUSTOMER_CORPORATE')}" th:utext="${'VAT: ' + invoice.appointments[0].customer.vatNumber}+'&lt;br /&gt;'">VAT: 697-134-42-81</span>
                             <span th:text="${invoice.appointments[0].customer.street}">ul. Pola Wincentego 7</span><br/>
                             <span th:text="${invoice.appointments[0].customer.postcode + ' ' + invoice.appointments[0].customer.city}">71-342 Szczecin</span><br/>
                             <span th:text="${invoice.appointments[0].customer.mobile}">695-262-145</span><br/>
@@ -159,11 +162,11 @@
 
         <tr th:each="appointment : ${invoice.appointments}" class="item">
             <td>
-               <span th:text="${appointment.work.name +' with '+appointment.provider.firstName +' '+appointment.provider.lastName +' on '+#temporals.format(appointment.start, 'dd-MM-yyyy HH:mm')}"></span>
+                <span th:text="${appointment.work.name +' with '+appointment.provider.firstName +' '+appointment.provider.lastName +' on '+#temporals.format(appointment.start, 'dd-MM-yyyy HH:mm')}"></span>
             </td>
 
             <td>
-                 <span th:text="${appointment.work.price}">50 PLN</span> PLN
+                <span th:text="${appointment.work.price}">50 PLN</span> PLN
             </td>
         </tr>
 
@@ -171,7 +174,7 @@
             <td></td>
 
             <td>
-                Total:   <span th:text="${invoice.totalAmount}">50 PLN</span> PLN
+                Total: <span th:text="${invoice.totalAmount}">50 PLN</span> PLN
             </td>
         </tr>
     </table>

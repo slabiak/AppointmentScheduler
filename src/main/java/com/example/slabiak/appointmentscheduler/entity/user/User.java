@@ -1,7 +1,7 @@
 package com.example.slabiak.appointmentscheduler.entity.user;
 
-import com.example.slabiak.appointmentscheduler.model.UserFormDTO;
 import com.example.slabiak.appointmentscheduler.entity.BaseEntity;
+import com.example.slabiak.appointmentscheduler.model.UserFormDTO;
 
 import javax.persistence.*;
 import java.util.Collection;

@@ -1,5 +1,7 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org" th:replace="~{fragments/layout :: layout (~{::body},'home','Home')}" xmlns:sec="http://www.w3.org/1999/xhtml">
+<html xmlns:th="http://www.thymeleaf.org" th:replace="~{fragments/layout :: layout (~{::body},'home','Home')}"
+      xmlns:sec="http://www.w3.org/1999/xhtml">
+
 <body>
 <div class="row mt-3">
     <div class="col">
@@ -15,7 +17,7 @@
 </div>
 
 <script th:inline="javascript">
-    $(function() {
+    $(function () {
         $('#calendar').fullCalendar({
             defaultView: 'agendaWeek',
             header: {
@@ -25,7 +27,8 @@
             },
             allDaySlot: false,
             minTime: "06:00:00",
-            maxTime: "21:00:00",
+            maxTime: "22:00:00",
+            timeFormat: 'H:mm', // uppercase H for 24-hour clock,
             firstDay: 1,
             eventSources: [
 

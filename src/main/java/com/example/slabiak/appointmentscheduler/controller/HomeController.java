@@ -12,11 +12,11 @@ import org.springframework.web.bind.annotation.GetMapping;
 public class HomeController {
 
     @Autowired
-    UserService userService;
+    private UserService userService;
 
     @GetMapping("/")
     public String showHome(Model model,@AuthenticationPrincipal CustomUserDetails currentUser) {
-        model.addAttribute("user",userService.findById(currentUser.getId()));
+        model.addAttribute("user",userService.getUserById(currentUser.getId()));
         return "home";
     }
 
@@ -29,7 +29,7 @@ public class HomeController {
     }
 
     @GetMapping("/access-denied")
-    public String showAccessDenied() {
+    public String showAccessDeniedPage() {
         return "access-denied";
     }
 

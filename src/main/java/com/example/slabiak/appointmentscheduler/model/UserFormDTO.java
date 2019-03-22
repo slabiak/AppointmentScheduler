@@ -1,10 +1,10 @@
 package com.example.slabiak.appointmentscheduler.model;
 
-import com.example.slabiak.appointmentscheduler.entity.*;
-import com.example.slabiak.appointmentscheduler.entity.user.customer.CorporateCustomer;
-import com.example.slabiak.appointmentscheduler.entity.user.provider.Provider;
-import com.example.slabiak.appointmentscheduler.entity.user.customer.RetailCustomer;
+import com.example.slabiak.appointmentscheduler.entity.Work;
 import com.example.slabiak.appointmentscheduler.entity.user.User;
+import com.example.slabiak.appointmentscheduler.entity.user.customer.CorporateCustomer;
+import com.example.slabiak.appointmentscheduler.entity.user.customer.RetailCustomer;
+import com.example.slabiak.appointmentscheduler.entity.user.provider.Provider;
 
 import java.util.List;
 

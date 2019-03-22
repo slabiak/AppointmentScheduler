@@ -1,20 +1,30 @@
-package com.example.slabiak.appointmentscheduler.service;
+package com.example.slabiak.appointmentscheduler.service.impl;
 
-import com.example.slabiak.appointmentscheduler.dao.*;
-import com.example.slabiak.appointmentscheduler.dao.user.*;
-import com.example.slabiak.appointmentscheduler.model.UserFormDTO;
-import com.example.slabiak.appointmentscheduler.entity.*;
-import com.example.slabiak.appointmentscheduler.entity.user.*;
+import com.example.slabiak.appointmentscheduler.dao.RoleRepository;
+import com.example.slabiak.appointmentscheduler.dao.user.UserRepository;
+import com.example.slabiak.appointmentscheduler.dao.user.customer.CorporateCustomerRepository;
+import com.example.slabiak.appointmentscheduler.dao.user.customer.CustomerRepository;
+import com.example.slabiak.appointmentscheduler.dao.user.customer.RetailCustomerRepository;
+import com.example.slabiak.appointmentscheduler.dao.user.provider.ProviderRepository;
+import com.example.slabiak.appointmentscheduler.entity.Work;
+import com.example.slabiak.appointmentscheduler.entity.WorkingPlan;
+import com.example.slabiak.appointmentscheduler.entity.user.Role;
+import com.example.slabiak.appointmentscheduler.entity.user.User;
 import com.example.slabiak.appointmentscheduler.entity.user.customer.CorporateCustomer;
 import com.example.slabiak.appointmentscheduler.entity.user.customer.Customer;
 import com.example.slabiak.appointmentscheduler.entity.user.customer.RetailCustomer;
 import com.example.slabiak.appointmentscheduler.entity.user.provider.Provider;
-import com.example.slabiak.appointmentscheduler.entity.WorkingPlan;
+import com.example.slabiak.appointmentscheduler.model.UserFormDTO;
+import com.example.slabiak.appointmentscheduler.service.UserService;
+import com.example.slabiak.appointmentscheduler.service.WorkingPlanService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.util.*;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Optional;
 
 @Service
 public class UserServiceImpl implements UserService {
@@ -116,24 +126,9 @@ public class UserServiceImpl implements UserService {
         return retailCustomerRepository.findAll();
     }
 
-    @Override
-    public User findById(int id) {
-        Optional<User> result = userRepository.findById(id);
-
-        User user = null;
-
-        if (result.isPresent()) {
-            user = result.get();
-        }
-        else {
-            // todo throw new excep
-        }
-
-        return user;
-    }
 
     @Override
-    public User findByUserName(String userName) {
+    public User getUserByUsername(String userName) {
         Optional<User> result = userRepository.findByUserName(userName);
 
         User user = null;
@@ -148,32 +143,32 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public List<User> findByRoleName(String roleName) {
+    public List<User> getUsersByRoleName(String roleName) {
         return userRepository.findByRoleName(roleName);
     }
 
     @Override
-    public List<User> findAll() {
+    public List<User> getAllUsers() {
         return userRepository.findAll();
     }
 
     @Override
-    public void deleteById(int id) {
-        userRepository.deleteById(id);
+    public void deleteUserById(int userId) {
+        userRepository.deleteById(userId);
     }
 
     @Override
-    public List<Provider> getAllProvidersWithRetailWorks() {
+    public List<Provider> getProvidersWithRetailWorks() {
         return providerRepository.findAllWithRetailWorks();
     }
 
     @Override
-    public List<Provider> getAllProvidersWithCorporateWorks() {
+    public List<Provider> getProvidersWithCorporateWorks() {
         return providerRepository.findAllWithCorporateWorks();
     }
 
     @Override
-    public List<Provider> findByWorks(Work work) {
+    public List<Provider> getProvidersByWork(Work work) {
         return providerRepository.findByWorks(work);
     }
 
@@ -215,25 +210,25 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public void saveNewRetailCustomer(UserFormDTO userForm) {
-        RetailCustomer retailCustomer = new RetailCustomer(userForm,passwordEncoder.encode(userForm.getPassword()),getRetailCustomerRoles());
+        RetailCustomer retailCustomer = new RetailCustomer(userForm,passwordEncoder.encode(userForm.getPassword()), getRolesForRetailCustomer());
         retailCustomerRepository.save(retailCustomer);
     }
 
     @Override
     public void saveNewCorporateCustomer(UserFormDTO userForm) {
-        CorporateCustomer corporateCustomer = new CorporateCustomer(userForm,passwordEncoder.encode(userForm.getPassword()),getCorporateCustomerRoles());
+        CorporateCustomer corporateCustomer = new CorporateCustomer(userForm,passwordEncoder.encode(userForm.getPassword()), getRoleForCorporateCustomers());
         corporateCustomerRepository.save(corporateCustomer);
     }
 
     @Override
     public void saveNewProvider(UserFormDTO userForm) {
         WorkingPlan workingPlan = workingPlanService.generateDefaultWorkingPlan();
-        Provider provider = new Provider(userForm,passwordEncoder.encode(userForm.getPassword()),getProviderRoles(),workingPlan);
+        Provider provider = new Provider(userForm,passwordEncoder.encode(userForm.getPassword()), getRolesForProvider(),workingPlan);
         providerRepository.save(provider);
     }
 
     @Override
-    public Collection<Role> getRetailCustomerRoles() {
+    public Collection<Role> getRolesForRetailCustomer() {
         HashSet<Role> roles = new HashSet<Role>();
         roles.add(roleRepository.findByName("ROLE_CUSTOMER_RETAIL"));
         roles.add(roleRepository.findByName("ROLE_CUSTOMER"));
@@ -242,7 +237,7 @@ public class UserServiceImpl implements UserService {
 
 
     @Override
-    public Collection<Role> getCorporateCustomerRoles() {
+    public Collection<Role> getRoleForCorporateCustomers() {
         HashSet<Role> roles = new HashSet<Role>();
         roles.add(roleRepository.findByName("ROLE_CUSTOMER_CORPORATE"));
         roles.add(roleRepository.findByName("ROLE_CUSTOMER"));
@@ -250,7 +245,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public Collection<Role> getProviderRoles() {
+    public Collection<Role> getRolesForProvider() {
         HashSet<Role> roles = new HashSet<Role>();
         roles.add(roleRepository.findByName("ROLE_PROVIDER"));
         return roles;

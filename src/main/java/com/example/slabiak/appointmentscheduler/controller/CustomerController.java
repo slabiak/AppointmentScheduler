@@ -1,10 +1,10 @@
 package com.example.slabiak.appointmentscheduler.controller;
 
-import com.example.slabiak.appointmentscheduler.model.UserFormDTO;
+import com.example.slabiak.appointmentscheduler.entity.user.User;
 import com.example.slabiak.appointmentscheduler.entity.user.customer.CorporateCustomer;
 import com.example.slabiak.appointmentscheduler.entity.user.customer.Customer;
 import com.example.slabiak.appointmentscheduler.entity.user.customer.RetailCustomer;
-import com.example.slabiak.appointmentscheduler.entity.user.User;
+import com.example.slabiak.appointmentscheduler.model.UserFormDTO;
 import com.example.slabiak.appointmentscheduler.security.CustomUserDetails;
 import com.example.slabiak.appointmentscheduler.service.AppointmentService;
 import com.example.slabiak.appointmentscheduler.service.UserService;
@@ -19,10 +19,10 @@ import org.springframework.web.bind.annotation.*;
 public class CustomerController {
 
     @Autowired
-    UserService userService;
+    private UserService userService;
 
     @Autowired
-    AppointmentService appointmentService;
+    private AppointmentService appointmentService;
 
     @GetMapping("")
     public String showAllCustomers(Model model) {
@@ -80,7 +80,7 @@ public class CustomerController {
 
     @PostMapping("/new/{customer_type}")
     public String processCustomerRegistration(@PathVariable("customer_type")String customerType, @ModelAttribute("user") UserFormDTO userForm, Model model) {
-        User user = userService.findByUserName(userForm.getUserName());
+        User user = userService.getUserByUsername(userForm.getUserName());
         if (user != null){
             model.addAttribute("user", userForm);
             model.addAttribute("account_type","customer_" + customerType);
@@ -106,8 +106,8 @@ public class CustomerController {
     }
 
     @PostMapping("/delete")
-    public String processCustomerDeletion(@RequestParam("customerId") int customerId) {
-        userService.deleteById(customerId);
+    public String processDeleteCustomerRequest(@RequestParam("customerId") int customerId) {
+        userService.deleteUserById(customerId);
         return "redirect:/customers";
     }
 

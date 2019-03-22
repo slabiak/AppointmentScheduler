@@ -1,19 +1,21 @@
 <th:block th:fragment="navlinks(activeLink)">
-<div class="collapse navbar-collapse" id="navbarResponsive">
-    <ul class="navbar-nav mr-auto">
-        <li class="nav-item">
-            <a class="nav-link" th:href="@{/}" th:classappend="${activeLink} == 'home' ? 'active':''">Home
-            </a>
-        </li>
-        <li class="nav-item">
-            <a class="nav-link" th:href="@{/appointments}" th:classappend="${activeLink} == 'appointments' ? 'active':''">Appointments</a>
-        </li>
-          <li class="nav-item">
-                    <a class="nav-link" th:href="@{/providers/availability}" th:classappend="${activeLink} == 'availability' ? 'active':''">Availability</a>
-                </li>
-        <li class="nav-item" th:classappend="${activeLink} == 'account' ? 'active':''">
-            <a class="nav-link" th:href="@{'/providers/' + ${#authentication.principal.id}}">My account</a>
-        </li>
-    </ul>
-</div>
+    <div class="collapse navbar-collapse" id="navbarResponsive">
+        <ul class="navbar-nav mr-auto">
+            <li class="nav-item">
+                <a class="nav-link" th:href="@{/}" th:classappend="${activeLink} == 'home' ? 'active':''">Home
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" th:href="@{/appointments}"
+                   th:classappend="${activeLink} == 'appointments' ? 'active':''">Appointments</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" th:href="@{/providers/availability}"
+                   th:classappend="${activeLink} == 'availability' ? 'active':''">Availability</a>
+            </li>
+            <li class="nav-item" th:classappend="${activeLink} == 'account' ? 'active':''">
+                <a class="nav-link" th:href="@{'/providers/' + ${#authentication.principal.id}}">My account</a>
+            </li>
+        </ul>
+    </div>
 </th:block>

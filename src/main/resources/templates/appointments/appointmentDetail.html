@@ -1,54 +1,52 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org" th:replace="~{fragments/layout :: layout (~{::body},'appointments','Appointment detail')}" xmlns:sec="http://www.w3.org/1999/xhtml">
+<html xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{fragments/layout :: layout (~{::body},'appointments','Appointment detail')}"
+      xmlns:sec="http://www.w3.org/1999/xhtml">
 
 <body>
 <div class="row" style="margin-top: 50px">
-
-    <link href="//maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
-    <script src="//maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
-    <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
-    <!------ Include the above in your HEAD tag ---------->
 
     <div class="container">
         <div class="row justify-content-center">
             <div clas="col-md-1">
             </div>
-            <div th:if="${allowDeny}" class="col-md-9 p-3 mb-2 bg-warning text-dark text-center" >
-                <p>You have <span class="font-weight-bold" th:text="${remainingTime}">3h 45m</span> to deny that this appointment took place.</p>
+            <div th:if="${allowedToRequestRejection}" class="col-md-9 p-3 mb-2 bg-warning text-dark text-center">
+                <p>You have <span class="font-weight-bold" th:text="${remainingTime}">3h 45m</span> to deny that
+                    this appointment took place.</p>
                 <p>After that time it will be invoiced automatically.</p>
 
-                <form th:action="@{/appointments/deny}" method='POST'>
+                <form th:action="@{/appointments/reject}" method='POST'>
                     <input type="hidden" name="appointmentId" th:value="${appointment.id}">
-                    <input type="submit" class="btn btn-danger" value="Deny"/>
+                    <input type="submit" class="btn btn-danger" value="Reject" />
                 </form>
             </div>
-            <div th:if="${allowAcceptDeny}" class="col-md-9 p-3 mb-2 bg-warning text-dark text-center" >
+            <div th:if="${allowedToAcceptRejection}" class="col-md-9 p-3 mb-2 bg-warning text-dark text-center">
                 <p>Customer claims that this appointment didn't take place.</p>
                 <p>If you agree with that, click the button below:</p>
 
-                <form th:action="@{/appointments/acceptDeny}" method='POST'>
+                <form th:action="@{/appointments/acceptRejection}" method='POST'>
                     <input type="hidden" name="appointmentId" th:value="${appointment.id}">
-                    <input type="submit" class="btn btn-danger" value="Agree"/>
-                </form>
+                    <input type="submit" class="btn btn-danger" value="Accept" /></form>
             </div>
 
         </div>
-
-
 
         <div class="row">
             <div class="col-md-1">
             </div>
             <div class="col-md-4">
 
-                <table id="appointments" class="table" >
+                <table id="appointments" class="table">
                     <tr>
                         <td><b>status</b></td>
                         <td><span th:text="${appointment.status}"> scheduled </span></td>
                     </tr>
                     <tr th:if="${appointment.status=='canceled'}">
                         <td><b>canceled by</b></td>
-                        <td><span th:text="${appointment.canceler.firstName+' '+appointment.canceler.lastName}">Canceller name</td>
+                        <td><span
+                                th:text="${appointment.canceler.firstName+' '+appointment.canceler.lastName}">Canceller
+                                    name
+                        </td>
 
                     </tr>
 
@@ -58,26 +56,28 @@
                     </tr>
                     <tr>
                         <td><b>time</b></td>
-                        <td><span th:text="${#temporals.format(appointment.start, 'HH:mm')+' - '+ #temporals.format(appointment.end, 'HH:mm')}">14:00 - 15:00</span></td>
+                        <td><span th:text="${#temporals.format(appointment.start, 'HH:mm')+' - '+ #temporals.format(appointment.end, 'HH:mm')}">14:00 - 15:00</span>
+                        </td>
                     </tr>
                     <tr>
                         <td><b>customer</b></td>
-                        <td><span th:text="${appointment.customer.firstName+' '+appointment.customer.lastName}">Peter Kowalski</span></td>
+                        <td><span th:text="${appointment.customer.firstName+' '+appointment.customer.lastName}">Peter Kowalski</span>
+                        </td>
                     </tr>
                     <tr>
                         <td><b>provider</b></td>
-                        <td><span th:text="${appointment.provider.firstName+' '+appointment.provider.lastName}">Marian Nowak</span></td>
+                        <td><span th:text="${appointment.provider.firstName+' '+appointment.provider.lastName}">Marian Nowak</span>
+                        </td>
                     </tr>
 
                     <tr>
-                        <td><b>work</b> </td>
+                        <td><b>work</b></td>
                         <td><span th:text="${appointment.work.name}"> english </span></td>
                     </tr>
                     <tr>
-                        <td><b>description</b> </td>
+                        <td><b>description</b></td>
                         <td><span th:text="${appointment.work.description}">description</span></td>
                     </tr>
-
 
 
                     <tr>
@@ -86,19 +86,19 @@
                     </tr>
                     <tr th:if="${appointment.status=='invoiced'}">
                         <td><b>invoice</b></td>
-                        <td><a th:href="@{'/invoices/download/'+${appointment.invoice.id}}">download</a> </td>
+                        <td><a th:href="@{'/invoices/download/'+${appointment.invoice.id}}">download</a></td>
                     </tr>
 
                     <tr>
                         <td><b>cancellation</b></td>
-                        <td th:if="${allowCancel}">
+                        <td th:if="${allowedToCancel}">
                             <form th:action="@{/appointments/cancel}" method='POST'>
                                 <input type="hidden" name="appointmentId" th:value="${appointment.id}">
-                                <input type="submit" class="btn btn-danger" value="Cancel"/>
+                                <input type="submit" class="btn btn-danger" value="Cancel" />
                             </form>
                         </td>
-                        <td th:unless="${allowCancel}">
-                                <p th:text="${cancelNotAllowedReason}">Reason why appointment cannot be cancelled.</p>
+                        <td th:unless="${allowedToCancel}">
+                            <p th:text="${cancelNotAllowedReason}">Reason why appointment cannot be cancelled.</p>
                         </td>
                     </tr>
 
@@ -124,7 +124,9 @@
                                 <div class="col-md-12 col-xs-12">
                                     <div class="messages msg_receive">
                                         <p th:text="${chatMessage.message}">messae</p>
-                                        <time datetime="2009-11-13T20:00"><span th:text="${chatMessage.author.firstName}">author</span> • <span th:text="${chatMessage.createdAt}"></span></time>
+                                        <time datetime="2009-11-13T20:00"><span
+                                                th:text="${chatMessage.author.firstName}">author</span> • <span
+                                                th:text="${#temporals.format(chatMessage.createdAt, 'dd-MM-yyyy HH:mm')}"></span></time>
                                     </div>
                                 </div>
                             </div>
@@ -133,7 +135,7 @@
                         <form th:action="@{/appointments/messages/new}" th:object="${chatMessage}" method='POST'>
                             <div class="input-group mb-3">
                                 <input type="hidden" name="appointmentId" th:value="${appointment.id}">
-                                <input type="text" class="form-control"  th:field="*{message}" placeholder="Write your message here..." aria-label="Recipient's username" aria-describedby="basic-addon2">
+                                <input type="text" class="form-control" th:field="*{message}" placeholder="Write your message here..." aria-label="Recipient's username" aria-describedby="basic-addon2">
                                 <div class="input-group-append">
                                     <button class="btn btn-outline-secondary" type="submit">Send</button>
                                 </div>
@@ -146,14 +148,12 @@
                 </div>
 
 
-
             </div>
 
         </div>
     </div>
 </div>
-
-
 </div>
 </body>
+
 </html>

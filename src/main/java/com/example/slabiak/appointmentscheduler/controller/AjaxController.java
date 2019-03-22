@@ -1,18 +1,17 @@
 package com.example.slabiak.appointmentscheduler.controller;
 
-import com.example.slabiak.appointmentscheduler.dao.*;
-import com.example.slabiak.appointmentscheduler.entity.*;
+import com.example.slabiak.appointmentscheduler.entity.Appointment;
 import com.example.slabiak.appointmentscheduler.model.AppointmentRegisterForm;
 import com.example.slabiak.appointmentscheduler.model.TimePeroid;
 import com.example.slabiak.appointmentscheduler.security.CustomUserDetails;
-import com.example.slabiak.appointmentscheduler.service.*;
+import com.example.slabiak.appointmentscheduler.service.AppointmentService;
+import com.example.slabiak.appointmentscheduler.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
@@ -22,10 +21,10 @@ import java.util.List;
 public class AjaxController {
 
     @Autowired
-    UserService userService;
+    private UserService userService;
 
     @Autowired
-    AppointmentService appointmentService;
+    private AppointmentService appointmentService;
 
 
     @GetMapping("/user/{userId}/appointments")
@@ -37,17 +36,17 @@ public class AjaxController {
         else if(currentUser.hasRole("ROLE_PROVIDER"))
             return userService.getProviderById(userId).getAppointments();
         else if(currentUser.hasRole("ROLE_ADMIN"))
-            return appointmentService.findAll();
+            return appointmentService.getAllAppointments();
         else return null;
     }
 
-    @GetMapping("/hours/{userId}/{workId}/{date}")
-    List<AppointmentRegisterForm> getAvailableHours(@PathVariable("userId") int userId, @PathVariable("workId") int workId, @PathVariable("date") String date) {
-        LocalDate d = LocalDate.parse(date);
-        List<TimePeroid> peroids = appointmentService.getProviderAvailableTimePeroids(userId,workId,d);
+    @GetMapping("/availableHours/{providerId}/{workId}/{date}")
+    List<AppointmentRegisterForm> getAvailableHours(@PathVariable("providerId") int providerId, @PathVariable("workId") int workId, @PathVariable("date") String date) {
+        LocalDate localDate = LocalDate.parse(date);
+        List<TimePeroid> peroids = appointmentService.getAvailableTimePeroidsForProvider(providerId,workId,localDate);
         List<AppointmentRegisterForm> appointments = new ArrayList<>();
         for(TimePeroid peroid:peroids){
-            appointments.add(new AppointmentRegisterForm(workId,userId,peroid.getStart().atDate(d),peroid.getEnd().atDate(d)));
+            appointments.add(new AppointmentRegisterForm(workId,providerId,peroid.getStart().atDate(localDate),peroid.getEnd().atDate(localDate)));
         }
         return appointments;
     }

@@ -1,15 +1,18 @@
 <!DOCTYPE html>
 <html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+
 <head></head>
+
 <body>
-<p>Hello, <span th:text="${appointment.provider.firstName}"></span></p>
-<p>One of your customers booked an appointment with you, here are the details:</p>
+<p>Hello, <span th:text="${appointment.customer.firstName}"></span></p>
+<p>You provider confirmed that this appointment didn't take place: </p>
 <p>Start date: <span th:text="${#temporals.format(appointment.start, 'dd-MM-yyyy HH:mm')}"></span></p>
 <p>Work: <span th:text="${appointment.work.name}"></span></p>
-<p>Customer: <span th:text="${appointment.customer.firstName +' '+ appointment.customer.lastName}"></span></p>
-<p>Contact phone: <span th:text="${appointment.customer.mobile}"></span></p>
 <p>Duration: <span th:text="${appointment.work.duration}"></span></p>
 <p>Price: <span th:text="${appointment.work.price}"></span></p>
 
+<p><strong>It's status is set to rejected and it will be not invoiced.</strong></p>
+
 </body>
+
 </html>

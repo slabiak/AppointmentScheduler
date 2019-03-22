@@ -2,8 +2,7 @@ package com.example.slabiak.appointmentscheduler.service;
 
 import com.example.slabiak.appointmentscheduler.entity.Appointment;
 import com.example.slabiak.appointmentscheduler.entity.ChatMessage;
-import com.example.slabiak.appointmentscheduler.entity.user.User;
-import com.example.slabiak.appointmentscheduler.model.AppointmentRegisterForm;
+import com.example.slabiak.appointmentscheduler.entity.Work;
 import com.example.slabiak.appointmentscheduler.model.TimePeroid;
 
 import java.time.LocalDate;
@@ -11,44 +10,43 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 public interface AppointmentService {
-
-    void update(Appointment appointment);
-    Appointment findById(int id);
-    List<Appointment> findAll();
-    void deleteById(int id);
-    List<Appointment> findByCustomerId(int customerId);
-    List<Appointment> findByProviderId(int providerId);
-    List<Appointment> findByProviderAndDate(User user, LocalDate date);
-    List<Appointment> getAvailableAppointments(int providerId, int workId, LocalDate date);
-    public List<TimePeroid> getProviderAvailableTimePeroids(int providerId, int workId, LocalDate date);
-
-    void save(int workId, int providerId, int customerId, LocalDateTime start);
-
-    void cancelById(int appointmentId, int userId);
-
-    void addMessageToAppointmentChat(int appointmentId, int authorId, ChatMessage chatMessage);
-
-
-    List<Appointment> getAppointmentsCanceledByUserInThisMonth(int userId);
+    void createNewAppointment(int workId, int providerId, int customerId, LocalDateTime start);
+    void updateAppointment(Appointment appointment);
     void updateUserAppointmentsStatuses(int userId);
-    public void updateAllAppointmentsStatuses();
+    void updateAllAppointmentsStatuses();
+    void deleteAppointmentById(int appointmentId);
 
+    Appointment getAppointmentById(int id);
+    List<Appointment> getAllAppointments();
+    List<Appointment> getAppointmentByCustomerId(int customerId);
+    List<Appointment> getAppointmentByProviderId(int providerId);
+    List<Appointment> getAppointmentsByProviderAtDay(int providerId, LocalDate day);
+    List<Appointment> getConfirmedAppointmentsByCustomerId(int customerId);
+    List<Appointment> getCanceledAppointmentsByCustomerIdForCurrentMonth(int userId);
 
-    boolean isUserAllowedToDenyThatAppointmentTookPlace(Integer id, int appointmentId);
-
-    boolean denyAppointment(int appointmentId, int customerId);
-    boolean denyAppointment(String token);
-
-    boolean isUserAllowedToAcceptDeny(int providerId, int appointmentId);
-
-    boolean acceptDeny(String token);
-    boolean acceptDeny(int appointmentId, int providerId);
-
+    List<TimePeroid> getAvailableTimePeroidsForProvider(int providerId, int workId, LocalDate date);
+    List<TimePeroid> calculateAvailableHours(List<TimePeroid> availableTimePeroids, Work work);
+    List<TimePeroid> excludeAppointmentsFromTimePeroids(List<TimePeroid> peroids, List<Appointment> appointments);
 
     String getCancelNotAllowedReason(int userId, int appointmentId);
+    void cancelUserAppointmentById(int appointmentId, int userId);
 
+    boolean isCustomerAllowedToRejectAppointment(int customerId, int appointmentId);
+    boolean requestAppointmentRejection(int appointmentId, int customerId);
+    boolean requestAppointmentRejection(String token);
+
+    boolean isProviderAllowedToAcceptRejection(int providerId, int appointmentId);
+    boolean acceptRejection(int appointmentId, int providerId);
+    boolean acceptRejection(String token);
+
+    void addMessageToAppointmentChat(int appointmentId, int authorId, ChatMessage chatMessage);
+    
     int getNumberOfCanceledAppointmentsForUser(int userId);
     int getNumberOfScheduledAppointmentsForUser(int userId);
-    List<Appointment> getConfirmedAppointmentsForUser(int userId);
+
+
+
+
+
 
 }

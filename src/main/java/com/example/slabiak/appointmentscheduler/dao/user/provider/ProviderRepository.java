@@ -1,8 +1,8 @@
-package com.example.slabiak.appointmentscheduler.dao.user;
+package com.example.slabiak.appointmentscheduler.dao.user.provider;
 
 import com.example.slabiak.appointmentscheduler.dao.user.CommonUserRepository;
-import com.example.slabiak.appointmentscheduler.entity.user.provider.Provider;
 import com.example.slabiak.appointmentscheduler.entity.Work;
+import com.example.slabiak.appointmentscheduler.entity.user.provider.Provider;
 import org.springframework.data.jpa.repository.Query;
 
 import java.util.List;

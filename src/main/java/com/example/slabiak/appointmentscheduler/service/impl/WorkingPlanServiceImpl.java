@@ -1,9 +1,10 @@
-package com.example.slabiak.appointmentscheduler.service;
+package com.example.slabiak.appointmentscheduler.service.impl;
 
 import com.example.slabiak.appointmentscheduler.dao.WorkingPlanRepository;
 import com.example.slabiak.appointmentscheduler.entity.WorkingPlan;
 import com.example.slabiak.appointmentscheduler.model.DayPlan;
 import com.example.slabiak.appointmentscheduler.model.TimePeroid;
+import com.example.slabiak.appointmentscheduler.service.WorkingPlanService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -16,7 +17,7 @@ public class WorkingPlanServiceImpl implements WorkingPlanService {
     private WorkingPlanRepository workingPlanRepository;
 
     @Override
-    public void update(WorkingPlan updateData) {
+    public void updateWorkingPlan(WorkingPlan updateData) {
         WorkingPlan workingPlan = workingPlanRepository.getOne(updateData.getId());
         workingPlan.getMonday().setWorkingHours(updateData.getMonday().getWorkingHours());
         workingPlan.getTuesday().setWorkingHours(updateData.getTuesday().getWorkingHours());
@@ -29,14 +30,14 @@ public class WorkingPlanServiceImpl implements WorkingPlanService {
     }
 
     @Override
-    public void addBreak(TimePeroid breakToAdd, int planId, String dayOfWeek) {
+    public void addBreakToWorkingPlan(TimePeroid breakToAdd, int planId, String dayOfWeek) {
         WorkingPlan workingPlan = workingPlanRepository.getOne(planId);
         workingPlan.getDay(dayOfWeek).getBreaks().add(breakToAdd);
         workingPlanRepository.save(workingPlan);
     }
 
     @Override
-    public void deleteBreak(TimePeroid breakToDelete, int planId, String dayOfWeek) {
+    public void deleteBreakFromWorkingPlan(TimePeroid breakToDelete, int planId, String dayOfWeek) {
         WorkingPlan workingPlan = workingPlanRepository.getOne(planId);
         workingPlan.getDay(dayOfWeek).getBreaks().remove(breakToDelete);
         workingPlanRepository.save(workingPlan);

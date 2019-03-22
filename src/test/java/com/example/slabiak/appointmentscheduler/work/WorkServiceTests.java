@@ -2,7 +2,7 @@ package com.example.slabiak.appointmentscheduler.work;
 
 import com.example.slabiak.appointmentscheduler.dao.WorkRepository;
 import com.example.slabiak.appointmentscheduler.entity.Work;
-import com.example.slabiak.appointmentscheduler.service.WorkServiceImpl;
+import com.example.slabiak.appointmentscheduler.service.impl.WorkServiceImpl;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -38,27 +38,27 @@ public class WorkServiceTests {
 
     @Test
     public void shouldSaveWork(){
-        workService.save(work);
+        workService.createNewWork(work);
         verify(workRepository).save(work);
     }
 
     @Test
     public void shouldFindById() {
         when(workRepository.findById(1)).thenReturn(workOptional);
-        assertEquals(workOptional.get(), workService.findById(1));
+        assertEquals(workOptional.get(), workService.getWorkById(1));
         verify(workRepository).findById(1);
     }
 
     @Test
     public void shouldFindAllAppointments(){
         when(workRepository.findAll()).thenReturn(works);
-        assertEquals(works,workService.findAll());
+        assertEquals(works,workService.getAllWorks());
         verify(workRepository).findAll();
     }
 
     @Test
     public void shouldDeleteById() {
-        workService.deleteById(1);
+        workService.deleteWorkById(1);
         verify(workRepository).deleteById(1);
     }
 }

@@ -1,9 +1,9 @@
 package com.example.slabiak.appointmentscheduler.entity.user.customer;
 
-import com.example.slabiak.appointmentscheduler.model.UserFormDTO;
 import com.example.slabiak.appointmentscheduler.entity.Appointment;
 import com.example.slabiak.appointmentscheduler.entity.user.Role;
 import com.example.slabiak.appointmentscheduler.entity.user.User;
+import com.example.slabiak.appointmentscheduler.model.UserFormDTO;
 
 import javax.persistence.Entity;
 import javax.persistence.OneToMany;
@@ -23,8 +23,8 @@ public class Customer extends User {
     public Customer(){
     }
 
-    public Customer(UserFormDTO newUserForm, String encryptedPassword, Collection<Role> roles){
-        super(newUserForm,encryptedPassword,roles);
+    public Customer(UserFormDTO userFormDTO, String encryptedPassword, Collection<Role> roles){
+        super(userFormDTO,encryptedPassword,roles);
     }
 
 

@@ -1,7 +1,8 @@
 package com.example.slabiak.appointmentscheduler.entity;
+
+import com.example.slabiak.appointmentscheduler.entity.user.User;
 import com.example.slabiak.appointmentscheduler.entity.user.customer.Customer;
 import com.example.slabiak.appointmentscheduler.entity.user.provider.Provider;
-import com.example.slabiak.appointmentscheduler.entity.user.User;
 import com.example.slabiak.appointmentscheduler.model.AppointmentSerializer;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -62,7 +63,6 @@ public class Appointment extends BaseEntity implements Comparable<Appointment> {
     private Invoice invoice;
 
     public Appointment(){
-
     }
 
     public Appointment(LocalDateTime start, LocalDateTime end, Customer customer, Provider provider, Work work) {
@@ -122,7 +122,6 @@ public class Appointment extends BaseEntity implements Comparable<Appointment> {
     }
 
     public List<ChatMessage> getChatMessages() {
-
         Collections.sort(chatMessages);
         return chatMessages;
     }

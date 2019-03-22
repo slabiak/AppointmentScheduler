@@ -1,32 +1,34 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org" th:replace="~{fragments/layout :: layout (~{::body},'providers','Available providers')}" xmlns:sec="http://www.w3.org/1999/xhtml">
+<html xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{fragments/layout :: layout (~{::body},'providers','Available providers')}"
+      xmlns:sec="http://www.w3.org/1999/xhtml">
 <body>
 
 
-<div class="row align-items-center justify-content-center"   style="margin-top: 50px">
+<div class="row align-items-center justify-content-center" style="margin-top: 50px">
     <div>
-        <table id="providers" class="table table-striped text-center" >
+        <table id="providers" class="table table-striped text-center">
             <thead class="thead-dark">
             <tr>
-                <th> Name </th>
-                <th> E-mail </th>
-                <th> Appointments </th>
-                <th> Works </th>
-                <th> Action </th>
+                <th> Name</th>
+                <th> E-mail</th>
+                <th> Appointments</th>
+                <th> Works</th>
+                <th> Action</th>
             </tr>
             </thead>
             <tbody>
             <tr th:if="${providers == null}">
-                <td colspan="4"> No Providers Available </td>
+                <td colspan="4"> No Providers Available</td>
             </tr>
             <tr th:each="provider : ${providers}">
                 <td><span th:text="${provider.firstName +' ' + provider.lastName}"> Name Lastname </span></td>
                 <td><span th:text="${provider.email }"> email </span></td>
                 <td><span th:text="${provider.appointments.size() }"> 3 </span></td>
                 <td><span th:text="${provider.works.size() }"> 2 </span></td>
-                <td> <a class="btn btn-secondary" th:href="@{'/providers/' + ${provider.id}}" role="button">Details</a>
+                <td><a class="btn btn-secondary" th:href="@{'/providers/' + ${provider.id}}" role="button">Details</a>
                     <form class="d-inline-block" th:action="@{/providers/delete}" method="POST">
-                        <input type="hidden" name="providerId" th:value="${provider.id}" />
+                        <input type="hidden" name="providerId" th:value="${provider.id}"/>
                         <button type="submit" name="submit" value="value" class="btn btn-danger">Delete</button>
                     </form>
                 </td>
@@ -36,10 +38,9 @@
     </div>
 
 </div>
-<div class="row align-items-center justify-content-center"   style="margin-top: 50px">
+<div class="row align-items-center justify-content-center" style="margin-top: 50px">
     <a class="btn btn-primary" th:href="@{/providers/new}" role="button">New provider</a>
 </div>
-
 
 
 </body>

@@ -1,64 +1,70 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org" th:replace="~{fragments/layout :: layout (~{::body},'appointments','Customer appointments')}" xmlns:sec="http://www.w3.org/1999/xhtml">
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.w3.org/1999/xhtml"
+      th:replace="~{fragments/layout :: layout (~{::body},'appointments','Customer appointments')}">
 
 <body>
 
 <!-- Page Content -->
-<div class="row align-items-center justify-content-center"   style="margin-top: 50px">
+<div class="row align-items-center justify-content-center" style="margin-top: 50px">
     <div th:fragment="customerAppointments">
 
 
-
-        <table id="appointments" class="table text-center" >
+        <table id="appointments" class="table text-center">
             <thead class="thead-dark">
             <tr>
-                <th> Work </th>
-                <th> Status </th>
-                <th sec:authorize="!hasRole('ROLE_PROVIDER')"> Provider </th>
+                <th> Work</th>
+                <th> Status</th>
+                <th> Start</th>
+                <th sec:authorize="!hasRole('ROLE_PROVIDER')"> Provider</th>
                 <th sec:authorize="!hasRole('ROLE_CUSTOMER')"> Customer</th>
-                <th> Start </th>
-                <th> Duration </th>
-                <th> Action </th>
+                <th> Duration</th>
+                <th> Action</th>
             </tr>
             </thead>
             <tbody>
             <tr th:if="${appointments == null}">
-                <td colspan="2"> No Appointments Available </td>
+                <td colspan="2"> No Appointments Available</td>
             </tr>
-            <tr th:each="appointment : ${appointments}" th:classappend="${appointment.status == 'canceled' || appointment.status == 'finished' || appointment.status == 'invoiced' || appointment.status == 'denied'} ? table-secondary : table-success">
+            <tr th:each="appointment : ${appointments}"
+                th:classappend="${appointment.status == 'canceled' || appointment.status == 'finished' || appointment.status == 'invoiced' || appointment.status == 'rejection requested' || appointment.status == 'rejected'} ? table-secondary : table-success">
                 <td><span th:text="${appointment.work.name}"> Work </span></td>
                 <td><span th:text="${appointment.status}"> scheduled </span></td>
-                <td sec:authorize="!hasRole('ROLE_PROVIDER')"><span th:text="${appointment.provider.firstName + ' ' + appointment.provider.lastName}"> Provider </span></td>
-                <td sec:authorize="!hasRole('ROLE_CUSTOMER')"><span th:text="${appointment.customer.firstName + ' ' + appointment.customer.lastName}"> Customer </span></td>
-                <td><span th:text="${#temporals.format(appointment.start, 'dd-MM-yyyy HH:mm')}"> 21-01-2019 15:00</span></td>
+                <td><span th:text="${#temporals.format(appointment.start, 'dd-MM-yyyy HH:mm')}"> 21-01-2019 15:00</span>
+                </td>
+                <td sec:authorize="!hasRole('ROLE_PROVIDER')"><span
+                        th:text="${appointment.provider.firstName + ' ' + appointment.provider.lastName}">
+                                Provider </span>
+                </td>
+                <td sec:authorize="!hasRole('ROLE_CUSTOMER')"><span
+                        th:text="${appointment.customer.firstName + ' ' + appointment.customer.lastName}">
+                                Customer </span>
+                </td>
                 <td><span th:text="${appointment.work.duration + ' min'}"> 60 min </span></td>
-                <td> <a class="btn btn-secondary" th:href="@{'/appointments/' + ${appointment.id}}" role="button">Details</a></td>
+                <td><a class="btn btn-secondary" th:href="@{'/appointments/' + ${appointment.id}}"
+                       role="button">Details</a></td>
             </tr>
             </tbody>
         </table>
         <div sec:authorize="hasRole('ROLE_CUSTOMER')" class="text-center">
-        <a class="btn btn-primary mt-2" th:href="@{/appointments/new}" role="button">New appointment</a>
+            <a class="btn btn-primary mt-2" th:href="@{/appointments/new}" role="button">New appointment</a>
         </div>
 
     </div>
 
 
-
 </div>
 <script>
-    $(document).ready(function() {
-        $('#appointments').DataTable( {
+    $(document).ready(function () {
+        $('#appointments').DataTable({
             "order": [
-                [ 3, "desc" ]
+                [2, "desc"]
             ]
-        } );
-    } );
+        });
+    });
 </script>
 
 
 </body>
-
-
 
 
 </html>

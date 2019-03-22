@@ -1,9 +1,14 @@
-package com.example.slabiak.appointmentscheduler.service;
+package com.example.slabiak.appointmentscheduler.service.impl;
 
 import com.example.slabiak.appointmentscheduler.dao.InvoiceRepository;
 import com.example.slabiak.appointmentscheduler.entity.Appointment;
 import com.example.slabiak.appointmentscheduler.entity.Invoice;
 import com.example.slabiak.appointmentscheduler.entity.user.User;
+import com.example.slabiak.appointmentscheduler.entity.user.customer.Customer;
+import com.example.slabiak.appointmentscheduler.service.AppointmentService;
+import com.example.slabiak.appointmentscheduler.service.EmailService;
+import com.example.slabiak.appointmentscheduler.service.InvoiceService;
+import com.example.slabiak.appointmentscheduler.service.UserService;
 import com.example.slabiak.appointmentscheduler.util.PdfGeneratorUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -43,17 +48,17 @@ public class InvoiceServiceImpl implements InvoiceService {
     }
 
     @Override
-    public void save(Invoice invoice) {
+    public void createNewInvoice(Invoice invoice) {
         invoiceRepository.save(invoice);
     }
 
     @Override
-    public Invoice findByAppointmentId(int appointmentId) {
+    public Invoice getInvoiceByAppointmentId(int appointmentId) {
         return invoiceRepository.findByAppointmentId(appointmentId);
     }
 
     @Override
-    public Invoice findByInvoiceId(int invoiceId) {
+    public Invoice getInvoiceById(int invoiceId) {
         Optional<Invoice> result = invoiceRepository.findById(invoiceId);
        Invoice invoice = null;
 
@@ -68,20 +73,19 @@ public class InvoiceServiceImpl implements InvoiceService {
     }
 
     @Override
-    public List<Invoice> findAll() {
+    public List<Invoice> getAllInvoices() {
         return invoiceRepository.findAll();
     }
 
     @Override
-    public File generateInvoicePdf(int invoiceId) {
+    public File generatePdfForInvoice(int invoiceId) {
         Invoice invoice = invoiceRepository.getOne(invoiceId);
-        System.out.println("total apps in invoice:" +invoice.getAppointments().size());
         File invoicePdf = pdfGeneratorUtil.generatePdfFromInvoice(invoice);
         return invoicePdf;
     }
 
     @Override
-    public void changeStatusToPaid(int invoiceId) {
+    public void changeInvoiceStatusToPaid(int invoiceId) {
         Invoice invoice = invoiceRepository.getOne(invoiceId);
         invoice.setStatus("paid");
         invoiceRepository.save(invoice);
@@ -89,15 +93,16 @@ public class InvoiceServiceImpl implements InvoiceService {
 
     @Override
     public void issueInvoicesForConfirmedAppointments() {
-        List<User> customers = userService.findByRoleName("ROLE_CUSTOMER");
-        for(User customer:customers){
-            List<Appointment> appointmentsToIssueInvoice = appointmentService.getConfirmedAppointmentsForUser(customer.getId());
+        List<Customer> customers = userService.getAllCustomers();
+        for(Customer customer:customers){
+            List<Appointment> appointmentsToIssueInvoice = appointmentService.getConfirmedAppointmentsByCustomerId(customer.getId());
             if(appointmentsToIssueInvoice.size()>0){
                 for(Appointment a: appointmentsToIssueInvoice){
                     a.setStatus("invoiced");
+                    appointmentService.updateAppointment(a);
                 }
                 Invoice invoice = new Invoice(generateInvoiceNumber(),"issued",LocalDateTime.now(),appointmentsToIssueInvoice);
-                save(invoice);
+                createNewInvoice(invoice);
                 emailService.sendInvoice(invoice);
             }
 

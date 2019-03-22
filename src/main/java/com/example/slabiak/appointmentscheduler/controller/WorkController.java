@@ -16,13 +16,13 @@ public class WorkController {
 
     @GetMapping("")
     public String showAllWorks(Model model) {
-        model.addAttribute("works", workService.findAll());
+        model.addAttribute("works", workService.getAllWorks());
         return "works/list";
     }
 
     @GetMapping("/{workId}")
     public String showFormForUpdateWork(@PathVariable("workId") int workId, Model model) {
-        model.addAttribute("work", workService.findById(workId));
+        model.addAttribute("work", workService.getWorkById(workId));
         return "works/createOrUpdateWorkForm";
     }
 
@@ -35,16 +35,16 @@ public class WorkController {
     @PostMapping("/new")
     public String saveWork(@ModelAttribute("work") Work work) {
         if(work.getId()!=null){
-            workService.update(work);
+            workService.updateWork(work);
         }else {
-            workService.save(work);
+            workService.createNewWork(work);
         }
         return "redirect:/works";
     }
 
     @PostMapping("/delete")
     public String deleteWork(@RequestParam("workId") int workId){
-        workService.deleteById(workId);
+        workService.deleteWorkById(workId);
         return "redirect:/works";
     }
 }

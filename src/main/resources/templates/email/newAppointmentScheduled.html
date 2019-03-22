@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+
+<head></head>
+
+<body>
+<p>Hello, <span th:text="${appointment.provider.firstName}"></span></p>
+<p>One of your customers booked an appointment with you, here are the details:</p>
+<p>Start date: <span th:text="${#temporals.format(appointment.start, 'dd-MM-yyyy HH:mm')}"></span></p>
+<p>Customer: <span th:text="${appointment.customer.firstName +' '+ appointment.customer.lastName}"></span></p>
+<p>Work: <span th:text="${appointment.work.name}"></span></p>
+<p>Duration: <span th:text="${appointment.work.duration}"></span> min</p>
+<p>Price: <span th:text="${appointment.work.price}"></span> PLN</p>
+
+<p>Contact phone: <span th:text="${appointment.customer.mobile}"></span></p>
+
+
+</body>
+</html>

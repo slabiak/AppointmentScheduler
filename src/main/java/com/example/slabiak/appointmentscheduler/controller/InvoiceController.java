@@ -22,26 +22,25 @@ import java.io.FileNotFoundException;
 public class InvoiceController {
 
     @Autowired
-    InvoiceService invoiceService;
+    private InvoiceService invoiceService;
 
 
     @GetMapping("")
     public String showAllInvoices(Model model) {
-        model.addAttribute("invoices",invoiceService.findAll());
+        model.addAttribute("invoices",invoiceService.getAllInvoices());
         return "invoices/listInvoices";
-
     }
 
     @RequestMapping("/paid/{invoiceId}")
     public String changeStatusToPaid(@PathVariable("invoiceId") int invoiceId){
-        invoiceService.changeStatusToPaid(invoiceId);
+        invoiceService.changeInvoiceStatusToPaid(invoiceId);
         return "redirect:/invoices";
     }
 
     @RequestMapping("/download/{invoiceId}")
     public ResponseEntity<InputStreamResource> downloadInvoice(@PathVariable("invoiceId") int invoiceId) {
         try {
-            File invoicePdf = invoiceService.generateInvoicePdf(invoiceId);
+            File invoicePdf = invoiceService.generatePdfForInvoice(invoiceId);
             HttpHeaders respHeaders = new HttpHeaders();
             MediaType mediaType = MediaType.parseMediaType("application/pdf");
             respHeaders.setContentType(mediaType);

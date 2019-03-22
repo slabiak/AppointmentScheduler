@@ -37,8 +37,6 @@ public class PdfGeneratorUtil {
             os = new FileOutputStream(outputFile);
             renderer.createPDF(os, false);
             renderer.finishPDF();
-            System.out.println("PDF created successfully");
-            System.out.println(outputFile.getAbsolutePath());
             return outputFile;
         } catch (FileNotFoundException e){
             e.printStackTrace();

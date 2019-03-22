@@ -5,15 +5,14 @@ import com.example.slabiak.appointmentscheduler.entity.Work;
 import java.util.List;
 
 public interface WorkService {
-    void save(Work work);
-    void update(Work work);
-    Work findById(int id);
-    List<Work> findAll();
-    void deleteById(int id);
-    List<Work> findByProviderId(int providerId);
-    List<Work> getWorksForRetailCustomer();
-    List<Work> getWorksForCorporateCustomer();
-
-    List<Work> getWorksForRetailCustomer(int providerId);
-    List<Work> getWorksForCorporateCustomer(int providerId);
+    void createNewWork(Work work);
+    Work getWorkById(int workId);
+    List<Work> getAllWorks();
+    List<Work> getWorksByProviderId(int providerId);
+    List<Work> getRetailCustomerWorks();
+    List<Work> getCorporateCustomerWorks();
+    List<Work> getRetailCustomerWorksByProviderId(int providerId);
+    List<Work> getCorporateCustomerWorksByProviderId(int providerId);
+    void updateWork(Work work);
+    void deleteWorkById(int workId);
 }

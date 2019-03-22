@@ -1,10 +1,11 @@
 package com.example.slabiak.appointmentscheduler.entity.user.provider;
 
-import com.example.slabiak.appointmentscheduler.model.UserFormDTO;
-import com.example.slabiak.appointmentscheduler.entity.*;
+import com.example.slabiak.appointmentscheduler.entity.Appointment;
+import com.example.slabiak.appointmentscheduler.entity.Work;
+import com.example.slabiak.appointmentscheduler.entity.WorkingPlan;
 import com.example.slabiak.appointmentscheduler.entity.user.Role;
 import com.example.slabiak.appointmentscheduler.entity.user.User;
-import com.example.slabiak.appointmentscheduler.entity.WorkingPlan;
+import com.example.slabiak.appointmentscheduler.model.UserFormDTO;
 
 import javax.persistence.*;
 import java.util.ArrayList;
@@ -30,11 +31,11 @@ public class Provider extends User {
     public Provider(){
     }
 
-    public Provider(UserFormDTO userForm, String encryptedPassword, Collection<Role> roles, WorkingPlan workingPlan) {
-        super(userForm,encryptedPassword,roles);
+    public Provider(UserFormDTO userFormDTO, String encryptedPassword, Collection<Role> roles, WorkingPlan workingPlan) {
+        super(userFormDTO,encryptedPassword,roles);
         this.workingPlan = workingPlan;
         workingPlan.setProvider(this);
-        this.works = userForm.getWorks();
+        this.works = userFormDTO.getWorks();
     }
 
     @Override

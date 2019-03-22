@@ -1,7 +1,9 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org" th:replace="~{fragments/layout :: layout (~{::body},'','Registration form')}" xmlns:sec="http://www.w3.org/1999/xhtml">
+<html xmlns:th="http://www.thymeleaf.org" th:replace="~{fragments/layout :: layout (~{::body},'','Registration form')}"
+      xmlns:sec="http://www.w3.org/1999/xhtml">
+
 <body>
-<div class="row" style="margin-top: 50px";>
+<div class="row" style="margin-top: 50px" ;>
     <div class="col-lg-3 text-center"></div>
     <div class="col-lg-6">
         <div class="card">
@@ -13,8 +15,7 @@
                 <form th:action="@{${action}}" th:object="${user}" method="POST">
 
 
-
-                     <div th:if="${registrationError != null}" class="alert alert-danger">
+                    <div th:if="${registrationError != null}" class="alert alert-danger">
                         <p th:text="${registrationError}"></p>
                     </div>
 
@@ -36,7 +37,8 @@
                     <div class="form-group">
                         <label for="matchingPassword">Repeat</label>
 
-                        <input type="password" class="form-control" th:field="*{matchingPassword}" placeholder="reapeat password">
+                        <input type="password" class="form-control" th:field="*{matchingPassword}"
+                               placeholder="reapeat password">
 
                     </div>
 
@@ -44,29 +46,37 @@
                         <div class="form-group">
                             <label for="companyName">Company Name</label>
 
-                            <input type="text" class="form-control" th:field="*{companyName}" placeholder="company name">
+                            <input type="text" class="form-control" th:field="*{companyName}"
+                                   placeholder="company name">
 
                         </div>
 
                         <div class="form-group">
                             <label for="vatNumber">VAT number</label>
 
-                            <input type="text" class="form-control" th:field="*{vatNumber}" placeholder="vat number">
+                            <input type="text" class="form-control" th:field="*{vatNumber}"
+                                   placeholder="vat number">
 
                         </div>
 
                     </th:block>
 
                     <div class="form-group">
-                        <label th:if="${account_type =='customer_corporate'}" for="firstName">Contact person first name</label>
-                        <label th:if="${account_type =='customer_retail' or account_type =='provider'}" for="firstName">First name</label>
+                        <label th:if="${account_type =='customer_corporate'}" for="firstName">Contact person first
+                            name</label>
+                        <label th:if="${account_type =='customer_retail' or account_type =='provider'}"
+                               for="firstName">First
+                            name</label>
                         <input type="text" class="form-control" th:field="*{firstName}" placeholder="First name">
 
                     </div>
 
                     <div class="form-group">
-                        <label th:if="${account_type =='customer_corporate'}" for="lastName">Contact person last name</label>
-                        <label th:if="${account_type =='customer_retail' or account_type =='provider'}" for="lastName">Last name</label>
+                        <label th:if="${account_type =='customer_corporate'}" for="lastName">Contact person last
+                            name</label>
+                        <label th:if="${account_type =='customer_retail' or account_type =='provider'}"
+                               for="lastName">Last
+                            name</label>
                         <input type="text" class="form-control" th:field="*{lastName}" placeholder="Last name">
 
                     </div>
@@ -81,7 +91,8 @@
                     <div class="form-group">
                         <label for="mobile">mobile</label>
 
-                        <input type="text" class="form-control" th:field="*{mobile}" placeholder="mobile phone muber">
+                        <input type="text" class="form-control" th:field="*{mobile}"
+                               placeholder="mobile phone muber">
 
                     </div>
 
@@ -117,9 +128,6 @@
                     </th:block>
 
                     <button type="submit" class="btn btn-success">Register</button>
-
-
-
 
 
             </div>

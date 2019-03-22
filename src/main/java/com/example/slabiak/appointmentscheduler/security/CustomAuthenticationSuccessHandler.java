@@ -23,9 +23,9 @@ public class CustomAuthenticationSuccessHandler implements AuthenticationSuccess
             throws IOException, ServletException {
         CustomUserDetails currentUser = (CustomUserDetails) authentication.getPrincipal();
         /*
-        * if admin logged in, update all appointments statuses, otherwise update only user related statuses
+        * if admin logged in, updateAppointment all appointments statuses, otherwise update only user related appointments statuses
         * */
-        if(currentUser.getAuthorities().contains(new SimpleGrantedAuthority("ROLE_ADMIN"))){
+        if(currentUser.hasRole("ROLE_ADMIN")){
             appointmentService.updateAllAppointmentsStatuses();
         }else {
             appointmentService.updateUserAppointmentsStatuses(currentUser.getId());

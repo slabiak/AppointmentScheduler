@@ -4,12 +4,10 @@ import com.example.slabiak.appointmentscheduler.entity.Appointment;
 import com.example.slabiak.appointmentscheduler.entity.ChatMessage;
 import com.example.slabiak.appointmentscheduler.security.CustomUserDetails;
 import com.example.slabiak.appointmentscheduler.service.AppointmentService;
-import com.example.slabiak.appointmentscheduler.service.EmailService;
 import com.example.slabiak.appointmentscheduler.service.UserService;
 import com.example.slabiak.appointmentscheduler.service.WorkService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -22,77 +20,74 @@ import java.time.LocalDateTime;
 public class AppointmentController {
 
     @Autowired
-    WorkService workService;
+    private WorkService workService;
 
     @Autowired
-    UserService userService;
+    private UserService userService;
 
     @Autowired
-    AppointmentService appointmentService;
-
-    @Autowired
-    EmailService emailService;
-
+    private AppointmentService appointmentService;
 
 
     @GetMapping("")
     public String showAllAppointments(Model model, @AuthenticationPrincipal CustomUserDetails currentUser) {
         if (currentUser.hasRole("ROLE_CUSTOMER_RETAIL") || currentUser.hasRole("ROLE_CUSTOMER_CORPORATE")) {
-            model.addAttribute("appointments",appointmentService.findByCustomerId(currentUser.getId()));
+            model.addAttribute("appointments",appointmentService.getAppointmentByCustomerId(currentUser.getId()));
         } else if(currentUser.hasRole("ROLE_PROVIDER")) {
-            model.addAttribute("appointments",appointmentService.findByProviderId(currentUser.getId()));
+            model.addAttribute("appointments",appointmentService.getAppointmentByProviderId(currentUser.getId()));
         } else if(currentUser.hasRole("ROLE_ADMIN")) {
-            model.addAttribute("appointments",appointmentService.findAll());
+            model.addAttribute("appointments",appointmentService.getAllAppointments());
         }
         return "appointments/listAppointments";
     }
 
     @GetMapping("/{id}")
     public String showAppointmentDetail(@PathVariable("id") int appointmentId, Model model,@AuthenticationPrincipal CustomUserDetails currentUser) {
-        Appointment appointment = appointmentService.findById(appointmentId);
+        Appointment appointment = appointmentService.getAppointmentById(appointmentId);
         model.addAttribute("appointment", appointment);
         model.addAttribute("chatMessage", new ChatMessage());
-        boolean allowDeny = appointmentService.isUserAllowedToDenyThatAppointmentTookPlace(currentUser.getId(),appointmentId);
-        boolean allowAcceptDeny = appointmentService.isUserAllowedToAcceptDeny(currentUser.getId(),appointmentId);
-        model.addAttribute("allowAcceptDeny",allowAcceptDeny);
-        model.addAttribute("allowDeny",allowDeny);
-        if(allowDeny){
+        boolean allowedToRequestRejection = appointmentService.isCustomerAllowedToRejectAppointment(currentUser.getId(),appointmentId);
+        boolean allowedToAcceptRejection = appointmentService.isProviderAllowedToAcceptRejection(currentUser.getId(),appointmentId);
+        model.addAttribute("allowedToRequestRejection",allowedToRequestRejection);
+        model.addAttribute("allowedToAcceptRejection",allowedToAcceptRejection);
+        if(allowedToRequestRejection){
             model.addAttribute("remainingTime", formatDuration(Duration.between(LocalDateTime.now(),appointment.getEnd().plusHours(24))));
         }
         String cancelNotAllowedReason = appointmentService.getCancelNotAllowedReason(currentUser.getId(), appointmentId);
-        model.addAttribute("allowCancel", cancelNotAllowedReason == null);
+        model.addAttribute("allowedToCancel", cancelNotAllowedReason == null);
         model.addAttribute("cancelNotAllowedReason", cancelNotAllowedReason);
         return "appointments/appointmentDetail";
         }
 
 
-    @PostMapping("/deny")
-    public String denyAppointment(@RequestParam("appointmentId") int appointmentId, @AuthenticationPrincipal CustomUserDetails currentUser, Model model) {
+    @PostMapping("/reject")
+    public String processAppointmentRejectionRequest(@RequestParam("appointmentId") int appointmentId, @AuthenticationPrincipal CustomUserDetails currentUser, Model model) {
         int customerId = currentUser.getId();
-        appointmentService.denyAppointment(appointmentId,customerId);
+        appointmentService.requestAppointmentRejection(appointmentId,customerId);
         return "redirect:/appointments/"+appointmentId;
     }
 
-    @GetMapping("/deny")
-    public String denyAppointment(@RequestParam("token") String token, Model model) {
-        boolean result = appointmentService.denyAppointment(token);
+    @GetMapping("/reject")
+    public String processAppointmentRejectionRequest(@RequestParam("token") String token, Model model) {
+        boolean result = appointmentService.requestAppointmentRejection(token);
         model.addAttribute("result",result);
-        return "appointments/denyConfirmation";
+        model.addAttribute("type","request");
+        return "appointments/rejectionConfirmation";
     }
 
-    @PostMapping("/acceptDeny")
-    public String acceptDenyAppointment(@RequestParam("appointmentId") int appointmentId, @AuthenticationPrincipal CustomUserDetails currentUser, Model model) {
-        int customerId = currentUser.getId();
-        appointmentService.acceptDeny(appointmentId,customerId);
+    @PostMapping("/acceptRejection")
+    public String acceptAppointmentRejectionRequest(@RequestParam("appointmentId") int appointmentId, @AuthenticationPrincipal CustomUserDetails currentUser, Model model) {
+        int providerId = currentUser.getId();
+        appointmentService.acceptRejection(appointmentId,providerId);
         return "redirect:/appointments/"+appointmentId;
     }
 
-    @GetMapping("/acceptDeny")
-    public String acceptDenyAppointment(@RequestParam("token") String token, Model model) {
-        System.out.println(token);
-        boolean result = appointmentService.acceptDeny(token);
+    @GetMapping("/acceptRejection")
+    public String acceptAppointmentRejectionRequest(@RequestParam("token") String token, Model model) {
+        boolean result = appointmentService.acceptRejection(token);
         model.addAttribute("result",result);
-        return "appointments/denyConfirmation";
+        model.addAttribute("type","accept");
+        return "appointments/rejectionConfirmation";
     }
 
     @PostMapping("/messages/new")
@@ -105,51 +100,51 @@ public class AppointmentController {
     @GetMapping("/new")
     public String selectProvider(Model model,@AuthenticationPrincipal CustomUserDetails currentUser) {
         if(currentUser.hasRole("ROLE_CUSTOMER_RETAIL")){
-            model.addAttribute("providers",userService.getAllProvidersWithRetailWorks());
+            model.addAttribute("providers",userService.getProvidersWithRetailWorks());
         } else if(currentUser.hasRole("ROLE_CUSTOMER_CORPORATE")){
-            model.addAttribute("providers",userService.getAllProvidersWithCorporateWorks());
+            model.addAttribute("providers",userService.getProvidersWithCorporateWorks());
         }
-        return "appointments/select-provider";
+        return "appointments/selectProvider";
     }
 
     @GetMapping("/new/{providerId}")
   public String selectService(@PathVariable("providerId") int providerId, Model model,@AuthenticationPrincipal CustomUserDetails currentUser) {
         if(currentUser.hasRole("ROLE_CUSTOMER_RETAIL")) {
-            model.addAttribute("works", workService.getWorksForRetailCustomer(providerId));
+            model.addAttribute("works", workService.getRetailCustomerWorksByProviderId(providerId));
         } else if(currentUser.hasRole("ROLE_CUSTOMER_CORPORATE")) {
-            model.addAttribute("works", workService.getWorksForCorporateCustomer(providerId));
+            model.addAttribute("works", workService.getCorporateCustomerWorksByProviderId(providerId));
         }
         model.addAttribute("providerId",providerId);
-        return "appointments/select-service";
+        return "appointments/selectService";
     }
 
     @GetMapping("/new/{providerId}/{workId}")
     public String selectDate(@PathVariable("workId") int workId,@PathVariable("providerId") int providerId, Model model){
         model.addAttribute("providerId",providerId);
         model.addAttribute("workId",workId);
-        return "appointments/select-date";
+        return "appointments/selectDate";
     }
 
     @GetMapping("/new/{providerId}/{workId}/{dateTime}")
-    public String confirm(@PathVariable("workId") int workId,@PathVariable("providerId") int providerId,@PathVariable("dateTime") String start,Model model){
-        model.addAttribute("work",workService.findById(workId));
-        model.addAttribute("provider",userService.findById(providerId).getFirstName()+" " +userService.findById(providerId).getLastName());
+    public String showNewAppointmentSummary(@PathVariable("workId") int workId,@PathVariable("providerId") int providerId,@PathVariable("dateTime") String start,Model model){
+        model.addAttribute("work",workService.getWorkById(workId));
+        model.addAttribute("provider",userService.getProviderById(providerId).getFirstName()+" " +userService.getProviderById(providerId).getLastName());
         model.addAttribute("providerId",providerId);
         model.addAttribute("start",LocalDateTime.parse(start));
-        model.addAttribute("end",LocalDateTime.parse(start).plusMinutes(workService.findById(workId).getDuration()));
-        return "appointments/confirm";
+        model.addAttribute("end",LocalDateTime.parse(start).plusMinutes(workService.getWorkById(workId).getDuration()));
+        return "appointments/newAppointmentSummary";
     }
 
     @PostMapping("/new")
-    public String saveAppointment(@RequestParam("workId") int workId,@RequestParam("providerId") int providerId,@RequestParam("start") String start, @AuthenticationPrincipal CustomUserDetails currentUser){
+    public String bookAppointment(@RequestParam("workId") int workId,@RequestParam("providerId") int providerId,@RequestParam("start") String start, @AuthenticationPrincipal CustomUserDetails currentUser){
         int customerId= currentUser.getId();
-        appointmentService.save(workId,providerId,customerId,LocalDateTime.parse(start));
+        appointmentService.createNewAppointment(workId,providerId,customerId,LocalDateTime.parse(start));
         return "redirect:/appointments/";
     }
 
     @PostMapping("/cancel")
     public String cancelAppointment(@RequestParam("appointmentId") int appointmentId, @AuthenticationPrincipal CustomUserDetails currentUser){
-        appointmentService.cancelById(appointmentId,currentUser.getId());
+        appointmentService.cancelUserAppointmentById(appointmentId,currentUser.getId());
         return "redirect:/appointments";
     }
 

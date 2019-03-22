@@ -1,17 +1,21 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org" th:replace="~{fragments/layout :: layout (~{::body},'account','My account')}" xmlns:sec="http://www.w3.org/1999/xhtml">
+<html xmlns:th="http://www.thymeleaf.org" th:replace="~{fragments/layout :: layout (~{::body},'account','My account')}"
+      xmlns:sec="http://www.w3.org/1999/xhtml">
 
 
 <body>
 
 
 <div class="row p-3">
-    <div class="col-sm-3"><!--left col-->
+    <div class="col-sm-3">
+        <!--left col-->
 
         <div class="text-center">
-            <img src="http://ssl.gstatic.com/accounts/ui/avatar_2x.png" class="avatar img-circle img-thumbnail" alt="avatar">
+            <img src="http://ssl.gstatic.com/accounts/ui/avatar_2x.png" class="avatar img-circle img-thumbnail"
+                 alt="avatar">
 
-        </div></hr><br>
+        </div>
+        </hr><br>
 
 
         <div class="card text-center">
@@ -22,11 +26,13 @@
                 <ul class="list-group">
                     <li class="list-group-item d-flex justify-content-between align-items-center">
                         Scheduled
-                        <span class="badge badge-primary badge-pill" th:text="${numberOfScheduledAppointments}">2</span>
+                        <span class="badge badge-primary badge-pill"
+                              th:text="${numberOfScheduledAppointments}">2</span>
                     </li>
                     <li class="list-group-item d-flex justify-content-between align-items-center">
                         Canceled this month
-                        <span class="badge badge-danger badge-pill" th:text="${numberOfCanceledAppointments}">1</span>
+                        <span class="badge badge-danger badge-pill"
+                              th:text="${numberOfCanceledAppointments}">1</span>
                     </li>
                 </ul>
             </div>
@@ -34,15 +40,17 @@
         </div>
 
 
-
-    </div><!--/col-3-->
+    </div>
+    <!--/col-3-->
     <div class="col-sm-9">
         <ul class="nav nav-tabs" id="myTab" role="tablist">
             <li class="nav-item">
-                <a class="nav-link active" id="profile-tab" data-toggle="tab" href="#profile" role="tab" aria-controls="profile" aria-selected="true">Profile</a>
+                <a class="nav-link active" id="profile-tab" data-toggle="tab" href="#profile" role="tab"
+                   aria-controls="profile" aria-selected="true">Profile</a>
             </li>
             <li sec:authorize="hasRole('ROLE_PROVIDER') or hasRole('ROLE_CUSTOMER')" class="nav-item">
-                <a class="nav-link" id="newPassword-tab" data-toggle="tab" href="#newPassword" role="tab" aria-controls="newPassword" aria-selected="false">Password</a>
+                <a class="nav-link" id="newPassword-tab" data-toggle="tab" href="#newPassword" role="tab"
+                   aria-controls="newPassword" aria-selected="false">Password</a>
             </li>
 
         </ul>
@@ -53,8 +61,8 @@
                 <form th:action="@{${action1}}" th:object="${user}" method="POST">
 
                     <!-- <div th:if="${registrationError != null}" class="alert alert-danger">
-                            <p th:text="${registrationError}"></p>
-                        </div>  -->
+                        <p th:text="${registrationError}"></p>
+                    </div>  -->
                     <input type="hidden" class="form-control" th:field="*{id}">
 
 
@@ -124,7 +132,8 @@
                             <ul>
                                 <li th:each="work : ${allWorks}">
                                     <input type="checkbox" th:field="*{works}" th:value="${work.id}" />
-                                    <label th:for="${#ids.prev('works')}" th:classappend="${work.targetCustomer=='retail'} ? text-primary : text-info"
+                                    <label th:for="${#ids.prev('works')}"
+                                           th:classappend="${work.targetCustomer=='retail'} ? text-primary : text-info"
                                            th:text="${work.name}">Heating</label>
                                 </li>
                             </ul>
@@ -138,39 +147,38 @@
             </div>
             <div class="tab-pane fade pt-3" id="newPassword" role="tabpanel" aria-labelledby="newPassword-tab">
 
-                  <form th:action="@{${action2}}" th:object="${user}" method="POST">
+                <form th:action="@{${action2}}" th:object="${user}" method="POST">
 
-                      <input type="hidden" th:field="*{id}">
-                      <div th:if="${passwordChanged}" class="alert alert-danger">
-                          <p>newPassword changed!!!</p>
-                      </div>
-                      <div class="form-row">
-                          <div class="form-group col-md-6">
-                              <label for="currentPassword">Current password</label>
-                              <input type="password" class="form-control" th:field="*{currentPassword}">
-                          </div>
-                      </div>
+                    <input type="hidden" th:field="*{id}">
+                    <div th:if="${passwordChanged}" class="alert alert-danger">
+                        <p>newPassword changed!!!</p>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group col-md-6">
+                            <label for="currentPassword">Current password</label>
+                            <input type="password" class="form-control" th:field="*{currentPassword}">
+                        </div>
+                    </div>
 
-                      <div class="form-row">
-                          <div class="form-group col-md-6">
-                              <label for="password">New password</label>
-                              <input type="password" class="form-control" th:field="*{password}">
-                          </div>
-                      </div>
-                      <div class="form-row">
-                          <div class="form-group col-md-6">
-                              <label for="matchingPassword">Repeat new password</label>
-                              <input type="password" class="form-control" th:field="*{matchingPassword}" >
-                          </div>
-                      </div>
-                      <button  type="submit" class="btn btn-primary">Save</button>
-                  </form>
+                    <div class="form-row">
+                        <div class="form-group col-md-6">
+                            <label for="password">New password</label>
+                            <input type="password" class="form-control" th:field="*{password}">
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group col-md-6">
+                            <label for="matchingPassword">Repeat new password</label>
+                            <input type="password" class="form-control" th:field="*{matchingPassword}">
+                        </div>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Save</button>
+                </form>
             </div>
 
         </div>
 
     </div>
-
 
 
 </div>

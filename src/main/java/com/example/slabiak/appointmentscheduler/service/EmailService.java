@@ -5,14 +5,14 @@ import com.example.slabiak.appointmentscheduler.entity.Invoice;
 import org.thymeleaf.context.Context;
 
 import java.io.File;
-import java.util.Map;
 
 public interface EmailService {
-
-    void sendEmail(String to, String subject, String template, Context context, File attachment);
+    void sendEmail(String to, String subject, String templateName, Context templateContext, File attachment);
     void sendAppointmentFinishedNotification(Appointment appointment);
-    void sendAppointmentDeniedNotification(Appointment appointment);
+    void sendAppointmentRejectionRequestedNotification(Appointment appointment);
     void sendNewAppointmentScheduledNotification(Appointment appointment);
-    void sendAppointmentCanceledNotification(Appointment appointment);
+    void sendAppointmentCanceledByCustomerNotification(Appointment appointment);
+    void sendAppointmentCanceledByProviderNotification(Appointment appointment);
     void sendInvoice(Invoice invoice);
+    void sendAppointmentRejectionAcceptedNotification(Appointment appointment);
 }

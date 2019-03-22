@@ -1,14 +1,18 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org" th:replace="~{fragments/layout :: layout (~{::body},'appointments','New appointment confirmation')}" xmlns:sec="http://www.w3.org/1999/xhtml">
+<html xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{fragments/layout :: layout (~{::body},'appointments','New appointment confirmation')}"
+      xmlns:sec="http://www.w3.org/1999/xhtml">
 
 <body>
 <div class="row justify-content-center">
     <div class="col-md-6 mt-3">
 
-        <table class="table" >
+        <table class="table">
             <thead>
             <tr class="text-center">
-                <td colspan="2"><h3>Your new appointment summary</h3></td>
+                <td colspan="2">
+                    <h3>Your new appointment summary</h3>
+                </td>
             </tr>
             </thead>
 
@@ -18,7 +22,8 @@
             </tr>
             <tr>
                 <td><b>time</b></td>
-                <td><span th:text="${#temporals.format(start, 'HH:mm')+' - '+ #temporals.format(end, 'HH:mm')}">14:00 - 15:00</span></td>
+                <td><span th:text="${#temporals.format(start, 'HH:mm')+' - '+ #temporals.format(end, 'HH:mm')}">14:00 - 15:00</span>
+                </td>
             </tr>
             <tr>
                 <td><b>provider</b></td>
@@ -26,11 +31,11 @@
             </tr>
 
             <tr>
-                <td><b>work</b> </td>
+                <td><b>work</b></td>
                 <td><span th:text="${work.name}"> english </span></td>
             </tr>
             <tr>
-                <td><b>description</b> </td>
+                <td><b>description</b></td>
                 <td><span th:text="${work.description}">description</span></td>
             </tr>
 

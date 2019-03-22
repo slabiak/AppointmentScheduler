@@ -18,9 +18,9 @@ public class DayPlan {
         this.breaks = new ArrayList<TimePeroid>();
     }
 
-    public ArrayList<TimePeroid> peroidsWithBreaksExcluded(){
-        ArrayList<TimePeroid> breaksExcluded = new ArrayList<>();
-        breaksExcluded.add(getWorkingHours());
+    public ArrayList<TimePeroid> getTimePeroidsWithBreaksExcluded(){
+        ArrayList<TimePeroid> timePeroidsWithBreaksExcluded = new ArrayList<>();
+        timePeroidsWithBreaksExcluded.add(getWorkingHours());
         List<TimePeroid> breaks = getBreaks();
 
         if(breaks.size()>0) {
@@ -32,7 +32,7 @@ public class DayPlan {
                 if(break1.getEnd().isAfter(workingHours.getEnd())){
                     break1.setEnd(workingHours.getEnd());
                 }
-                for (TimePeroid peroid : breaksExcluded) {
+                for (TimePeroid peroid : timePeroidsWithBreaksExcluded) {
                     if (break1.getStart().equals(peroid.getStart()) && break1.getEnd().isAfter(peroid.getStart()) && break1.getEnd().isBefore(peroid.getEnd())) {
                         peroid.setStart(break1.getEnd());
                     }
@@ -45,12 +45,12 @@ public class DayPlan {
                     }
                 }
             }
-            breaksExcluded.addAll(toAdd);
-            Collections.sort(breaksExcluded);
+            timePeroidsWithBreaksExcluded.addAll(toAdd);
+            Collections.sort(timePeroidsWithBreaksExcluded);
         }
 
 
-        return breaksExcluded;
+        return timePeroidsWithBreaksExcluded;
     }
 
     public TimePeroid getWorkingHours() {
@@ -70,7 +70,6 @@ public class DayPlan {
     }
 
     public void removeBreak(TimePeroid breakToRemove){
-        System.out.println("usuwam:"+ breakToRemove.getStart());
         breaks.remove(breakToRemove);
     }
 

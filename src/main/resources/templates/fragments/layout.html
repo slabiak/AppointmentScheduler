@@ -1,82 +1,86 @@
 <!DOCTYPE html>
 <html th:fragment="layout (content, activeLink, pageTitle)" xmlns:th="http://www.w3.org/1999/html">
 
-    <head>
-        <meta charset="utf-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-        <title th:text="${pageTitle}">Page title</title>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title th:text="${pageTitle}">Page title</title>
 
-        <link rel="stylesheet" th:href="@{/css/vendor/chat.css}" />
-        <!-- Bootstrap core CSS -->
-        <link rel="stylesheet" href="/webjars/bootstrap/4.3.1/css/bootstrap.min.css" />
+    <!-- Appointment Chat CSS -->
+    <link rel="stylesheet" th:href="@{/css/vendor/chat.css}"/>
+    <!-- Bootstrap core CSS -->
+    <link rel="stylesheet" href="/webjars/bootstrap/4.3.1/css/bootstrap.min.css"/>
+    <!-- Fullcalendar CSS -->
+    <link rel="stylesheet" th:href="@{/css/vendor/fullcalendar.css}"/>
+    <!-- Site CSS -->
+    <link rel="stylesheet" th:href="@{/css/style.css}"/>
+    <!--DataTables CSS-->
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.19/css/jquery.dataTables.css">
+
+    <!--jQuery-->
+    <script src="/webjars/jquery/3.3.1-2/jquery.min.js"></script>
+    <!-- Bootstrap core JavaScript -->
+    <script src="/webjars/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+    <!--Moment-->
+    <script type="text/javascript" th:src="@{/js/vendor/moment.js}"></script>
+    <!--FullCalendar-->
+    <script type="text/javascript" th:src="@{/js/vendor/fullcalendar.js}"></script>
+    <!--DataTables-->
+    <script type="text/javascript" charset="utf8"
+            src="https://cdn.datatables.net/1.10.19/js/jquery.dataTables.js"></script>
 
 
+</head>
 
+<body>
 
-
-        <link rel="stylesheet" th:href="@{/css/vendor/fullcalendar.css}" />
-        <link rel="stylesheet" th:href="@{/css/style.css}" />
-
-        <!--jQuery-->
-        <script src="/webjars/jquery/3.3.1-2/jquery.min.js"></script>
-        <!-- Bootstrap core JavaScript -->
-        <script src="/webjars/bootstrap/4.3.1/js/bootstrap.min.js"></script>
-        <!--Moment-->
-        <script type="text/javascript" th:src="@{/js/vendor/moment.js}"></script>
-        <script type="text/javascript" th:src="@{/js/vendor/fullcalendar.js}"></script>
-
-        <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.19/css/jquery.dataTables.css">
-
-        <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.10.19/js/jquery.dataTables.js"></script>
-
-
-    </head>
-
-    <body>
-        <!-- Navigation -->
-        <div sec:authorize="isAuthenticated()">
-            <nav class="navbar navbar-expand-lg navbar-dark bg-dark static-top">
-                <div class="container">
-                    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
-                        <span class="navbar-toggler-icon"></span>
-                    </button>
-
-                    <th:block sec:authorize="hasRole('ROLE_CUSTOMER')">
-                        <!-- menu for customer-->
-                        <div th:replace="fragments/customer-nav.html :: navlinks(${activeLink})"></div>
-                    </th:block>
-
-                    <th:block sec:authorize="hasRole('ROLE_PROVIDER')">
-                        <!-- menu for provider-->
-                        <div th:replace="fragments/provider-nav.html :: navlinks(${activeLink})"></div>
-                    </th:block>
-
-                    <th:block sec:authorize="hasRole('ROLE_ADMIN')">
-                        <!-- menu for admin-->
-                        <div th:replace="fragments/admin-nav.html :: navlinks(${activeLink})"></div>
-                    </th:block>
-
-                    <div class="collapse navbar-collapse">
-                        <ul class="navbar-nav ml-auto">
-                            <li>
-                                <p class="navbar-nav ml-auto navbar-text"> Logged as: <span sec:authentication="name">username</span> | </p>
-                            </li>
-                            <li>
-                                <form th:action="@{/perform_logout}" id="logout" method="POST">
-                                    <a class="nav-link" href="#" onclick="document.getElementById('logout').submit(); return false;">Log out</a>
-                                </form>
-                            </li>
-                        </ul>
-                    </div>
-                </div>
-            </nav>
-        </div>
-
-        <!-- Page Content -->
+<!-- Navigation -->
+<div sec:authorize="isAuthenticated()">
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark static-top">
         <div class="container">
-            <th:block th:include="${content}"/>
-        </div>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarResponsive"
+                    aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
 
-    </body>
+            <th:block sec:authorize="hasRole('ROLE_CUSTOMER')">
+                <!-- menu for customer-->
+                <div th:replace="fragments/customer-nav.html :: navlinks(${activeLink})"></div>
+            </th:block>
+
+            <th:block sec:authorize="hasRole('ROLE_PROVIDER')">
+                <!-- menu for provider-->
+                <div th:replace="fragments/provider-nav.html :: navlinks(${activeLink})"></div>
+            </th:block>
+
+            <th:block sec:authorize="hasRole('ROLE_ADMIN')">
+                <!-- menu for admin-->
+                <div th:replace="fragments/admin-nav.html :: navlinks(${activeLink})"></div>
+            </th:block>
+
+            <div class="collapse navbar-collapse">
+                <ul class="navbar-nav ml-auto">
+                    <li>
+                        <p class="navbar-nav ml-auto navbar-text"> Logged as:
+                            <span sec:authentication="name">username</span> | </p>
+                    </li>
+                    <li>
+                        <form th:action="@{/perform_logout}" id="logout" method="POST">
+                            <a class="nav-link" href="#"
+                               onclick="document.getElementById('logout').submit(); return false;">Log out</a>
+                        </form>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+</div>
+
+<!-- Page Content -->
+<div class="container">
+    <th:block th:include="${content}"/>
+</div>
+
+</body>
 
 </html>

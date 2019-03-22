@@ -5,7 +5,7 @@ import com.example.slabiak.appointmentscheduler.dao.user.CommonUserRepository;
 import com.example.slabiak.appointmentscheduler.entity.user.Role;
 import com.example.slabiak.appointmentscheduler.entity.user.User;
 import com.example.slabiak.appointmentscheduler.entity.Work;
-import com.example.slabiak.appointmentscheduler.service.UserServiceImpl;
+import com.example.slabiak.appointmentscheduler.service.impl.UserServiceImpl;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -81,36 +81,38 @@ public class UserServiceTests {
         when(roleRepository.findByName(roleName)).thenReturn(role);
         ArgumentCaptor<User> argumentCaptor = ArgumentCaptor.forClass(User.class);
         userService.register(userRegisterForm);
-        verify(userRepository).save(argumentCaptor.capture());
+        verify(userRepository).createNewAppointment(argumentCaptor.capture());
         assertEquals(argumentCaptor.getValue(),user);
     }*/
 
+/*
     @Test
     public void shouldFindById() {
         when(userRepository.findById(1)).thenReturn(userOptional);
-        assertEquals(userOptional.get(), userService.findById(1));
+        assertEquals(userOptional.get(), userService.findUserById(1));
         verify(userRepository).findById(1);
     }
+*/
 
     @Test
     public void shouldFindByName(){
         when(userRepository.findByUserName(userName)).thenReturn(userOptional);
-        assertEquals(userOptional.get(),userService.findByUserName(userName));
+        assertEquals(userOptional.get(),userService.getUserByUsername(userName));
         verify(userRepository).findByUserName(userName);
     }
 
     @Test
     public void shouldFindAllUsers(){
         when(userRepository.findAll()).thenReturn(users);
-        assertEquals(users,userService.findAll());
+        assertEquals(users,userService.getAllUsers());
         verify(userRepository).findAll();
     }
 
 /*    @Test
     public void shouldFindByWork(){
-        when(userRepository.findByWorks(work)).thenReturn(users);
-        assertEquals(user,userService.findByWorks(work).get(0));
-        verify(userRepository).findByWorks(work);
+        when(userRepository.getProviderByWorks(work)).thenReturn(users);
+        assertEquals(user,userService.getProviderByWorks(work).get(0));
+        verify(userRepository).getProviderByWorks(work);
     }*/
 
 /*    @Test
@@ -118,14 +120,14 @@ public class UserServiceTests {
         ArrayList<SimpleGrantedAuthority> authorities = new ArrayList<>();
         authorities.add(new SimpleGrantedAuthority(role.getName()));
         UserDetails userDetails = new org.springframework.security.core.userdetails.User(user.getUserName(), user.getNewPassword(),authorities);
-        when(userRepository.findByUserName(userName)).thenReturn(userOptional);
+        when(userRepository.getUserByUsername(userName)).thenReturn(userOptional);
         assertEquals(userDetails.getUsername(), userService.loadUserByUsername(userName).getUsername());
-        verify(userRepository).findByUserName(userName);
+        verify(userRepository).getUserByUsername(userName);
     }*/
 
     @Test
     public void shouldDeleteById() {
-        userService.deleteById(1);
+        userService.deleteUserById(1);
         verify(userRepository).deleteById(1);
     }
 }
