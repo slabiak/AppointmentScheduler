@@ -12,7 +12,7 @@
             <div class="card-body">
                 <form th:action="@{/perform_login}" method='POST' class="form-horizontal">
                     <div th:if="${param.error != null}" class="alert alert-danger">
-                        Invalid username or newPassword.
+                        Invalid username or password.
                     </div>
                     <div th:if="${createdUserName != null}" class="alert alert-success">
                         <p>User <span th:text="${createdUserName}"></span> added!</p>
@@ -33,7 +33,8 @@
                     </div>
                     <div style="margin-top: 10px" class="input-group">
 
-                        <p>Need account? <a th:href="@{/customers/new}">Create new</a></p>
+                        <p>Need account? </p>
+                        <p>Create new <a th:href="@{/customers/retail/new}">Retail</a> or <a th:href="@{/customers/corporate/new}">Corporate</a> account</p>
                     </div>
                 </form>
             </div>

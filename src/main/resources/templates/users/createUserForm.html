@@ -7,55 +7,66 @@
     <div class="col-lg-3 text-center"></div>
     <div class="col-lg-6">
         <div class="card">
-            <div class="card-header">
-                Register new user
+            <div class="card-header text-center">
+                <th:block th:if="${account_type =='customer_corporate'}">Register new Corporate Customer Account</th:block>
+                <th:block th:if="${account_type =='customer_retail'}">Register new Retail Customer Account</th:block>
+                <th:block th:if="${account_type =='provider'}">Register new Provider Account</th:block>
             </div>
             <div class="card-body">
 
-                <form th:action="@{${action}}" th:object="${user}" method="POST">
-
+                <form th:action="@{${registerAction}}" th:object="${user}" method="POST">
 
                     <div th:if="${registrationError != null}" class="alert alert-danger">
                         <p th:text="${registrationError}"></p>
                     </div>
 
-
                     <div class="form-group">
                         <label for="userName">Username</label>
 
-                        <input type="text" class="form-control" th:field="*{userName}" placeholder="username">
+                        <input type="text" class="form-control" th:classappend="${#fields.hasErrors('userName') ? 'is-invalid' :''}" th:field="*{userName}" placeholder="jkwowalski">
+                        <div th:if="${#fields.hasErrors('userName')}" class="invalid-feedback">
+                           <p th:errors="*{userName}"></p>
+                        </div>
 
                     </div>
 
                     <div class="form-group">
                         <label for="password">Password</label>
-
-                        <input type="password" class="form-control" th:field="*{password}" placeholder="password">
-
+                        <input type="password" class="form-control" th:classappend="${#fields.hasErrors('password') ? 'is-invalid' :''}" th:field="*{password}" placeholder="password">
+                        <div th:if="${#fields.hasErrors('password')}" class="invalid-feedback">
+                            <p th:errors="*{password}"></p>
+                        </div>
                     </div>
 
                     <div class="form-group">
                         <label for="matchingPassword">Repeat</label>
-
-                        <input type="password" class="form-control" th:field="*{matchingPassword}"
+                        <input type="password" class="form-control" th:classappend="${#fields.hasErrors('matchingPassword') ? 'is-invalid' :''}" th:field="*{matchingPassword}"
                                placeholder="reapeat password">
+                        <div th:if="${#fields.hasErrors('matchingPassword')}" class="invalid-feedback">
+                            <p th:errors="*{matchingPassword}"></p>
+                        </div>
 
                     </div>
 
                     <th:block th:if="${account_type =='customer_corporate'}">
                         <div class="form-group">
                             <label for="companyName">Company Name</label>
-
-                            <input type="text" class="form-control" th:field="*{companyName}"
+                            <input type="text" class="form-control" th:classappend="${#fields.hasErrors('companyName') ? 'is-invalid' :''}" th:field="*{companyName}"
                                    placeholder="company name">
+                            <div th:if="${#fields.hasErrors('companyName')}" class="invalid-feedback">
+                                <p th:errors="*{companyName}"></p>
+                            </div>
 
                         </div>
 
                         <div class="form-group">
                             <label for="vatNumber">VAT number</label>
 
-                            <input type="text" class="form-control" th:field="*{vatNumber}"
+                            <input type="text" class="form-control" th:classappend="${#fields.hasErrors('vatNumber') ? 'is-invalid' :''}" th:field="*{vatNumber}"
                                    placeholder="vat number">
+                            <div th:if="${#fields.hasErrors('vatNumber')}" class="invalid-feedback">
+                                <p th:errors="*{vatNumber}"></p>
+                            </div>
 
                         </div>
 
@@ -67,7 +78,10 @@
                         <label th:if="${account_type =='customer_retail' or account_type =='provider'}"
                                for="firstName">First
                             name</label>
-                        <input type="text" class="form-control" th:field="*{firstName}" placeholder="First name">
+                        <input type="text" class="form-control" th:classappend="${#fields.hasErrors('firstName') ? 'is-invalid' :''}" th:field="*{firstName}"  placeholder="Jan">
+                        <div th:if="${#fields.hasErrors('firstName')}" class="invalid-feedback">
+                            <p th:errors="*{firstName}"></p>
+                        </div>
 
                     </div>
 
@@ -77,40 +91,55 @@
                         <label th:if="${account_type =='customer_retail' or account_type =='provider'}"
                                for="lastName">Last
                             name</label>
-                        <input type="text" class="form-control" th:field="*{lastName}" placeholder="Last name">
-
+                        <input type="text" class="form-control" th:classappend="${#fields.hasErrors('lastName') ? 'is-invalid' :''}" th:field="*{lastName}" placeholder="Kowalski">
+                        <div th:if="${#fields.hasErrors('lastName')}" class="invalid-feedback">
+                            <p th:errors="*{lastName}"></p>
+                        </div>
                     </div>
 
                     <div class="form-group">
                         <label for="email">E-mail</label>
 
-                        <input type="text" class="form-control" th:field="*{email}" placeholder="Email">
-
+                        <input type="text" class="form-control" th:classappend="${#fields.hasErrors('email') ? 'is-invalid' :''}" th:field="*{email}" placeholder="jkowalski@example.com">
+                        <div th:if="${#fields.hasErrors('email')}" class="invalid-feedback">
+                            <p th:errors="*{email}"></p>
+                        </div>
                     </div>
 
                     <div class="form-group">
                         <label for="mobile">mobile</label>
 
-                        <input type="text" class="form-control" th:field="*{mobile}"
-                               placeholder="mobile phone muber">
+                        <input type="text" class="form-control" th:classappend="${#fields.hasErrors('mobile') ? 'is-invalid' :''}" th:field="*{mobile}"
+                               placeholder="505162073">
+                        <div th:if="${#fields.hasErrors('mobile')}" class="invalid-feedback">
+                            <p th:errors="*{mobile}"></p>
+                        </div>
 
                     </div>
 
                     <div class="form-group">
                         <label for="street">street</label>
 
-                        <input type="text" class="form-control" th:field="*{street}" placeholder="Street">
-
+                        <input type="text" class="form-control" th:classappend="${#fields.hasErrors('street') ? 'is-invalid' :''}" th:field="*{street}" placeholder="ul. Adama Mickiewicza 1">
+                        <div th:if="${#fields.hasErrors('street')}" class="invalid-feedback">
+                            <p th:errors="*{street}"></p>
+                        </div>
                     </div>
 
                     <div class="form-row">
                         <div class="form-group col-md-4">
                             <label for="postcode">Postocode</label>
-                            <input type="text" class="form-control" th:field="*{postcode}" placeholder="Postcode">
+                            <input type="text" class="form-control" th:classappend="${#fields.hasErrors('postcode') ? 'is-invalid' :''}" th:field="*{postcode}" placeholder="24-199">
+                            <div th:if="${#fields.hasErrors('postcode')}" class="invalid-feedback">
+                                <p th:errors="*{postcode}"></p>
+                            </div>
                         </div>
                         <div class="form-group col-md-8">
                             <label for="city">City</label>
-                            <input type="text" class="form-control" th:field="*{city}" placeholder="City">
+                            <input type="text" class="form-control" th:classappend="${#fields.hasErrors('city') ? 'is-invalid' :''}" th:field="*{city}" placeholder="Poznan">
+                            <div th:if="${#fields.hasErrors('city')}" class="invalid-feedback">
+                                <p th:errors="*{city}"></p>
+                            </div>
                         </div>
                     </div>
 

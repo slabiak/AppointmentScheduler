@@ -32,7 +32,6 @@ public class Work extends BaseEntity {
     private List<User> providers;
 
     public Work(){
-
     }
 
     public String getName() {
@@ -91,5 +90,12 @@ public class Work extends BaseEntity {
         this.targetCustomer = targetCustomer;
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Work)) return false;
+        Work work = (Work) o;
+        return super.getId()==work.getId();
+    }
 
 }

@@ -3,7 +3,6 @@ package com.example.slabiak.appointmentscheduler.service.impl;
 import com.example.slabiak.appointmentscheduler.dao.InvoiceRepository;
 import com.example.slabiak.appointmentscheduler.entity.Appointment;
 import com.example.slabiak.appointmentscheduler.entity.Invoice;
-import com.example.slabiak.appointmentscheduler.entity.user.User;
 import com.example.slabiak.appointmentscheduler.entity.user.customer.Customer;
 import com.example.slabiak.appointmentscheduler.service.AppointmentService;
 import com.example.slabiak.appointmentscheduler.service.EmailService;
@@ -12,6 +11,7 @@ import com.example.slabiak.appointmentscheduler.service.UserService;
 import com.example.slabiak.appointmentscheduler.util.PdfGeneratorUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.io.File;
 import java.time.LocalDate;
@@ -91,6 +91,7 @@ public class InvoiceServiceImpl implements InvoiceService {
         invoiceRepository.save(invoice);
     }
 
+    @Transactional
     @Override
     public void issueInvoicesForConfirmedAppointments() {
         List<Customer> customers = userService.getAllCustomers();
@@ -102,7 +103,8 @@ public class InvoiceServiceImpl implements InvoiceService {
                     appointmentService.updateAppointment(a);
                 }
                 Invoice invoice = new Invoice(generateInvoiceNumber(),"issued",LocalDateTime.now(),appointmentsToIssueInvoice);
-                createNewInvoice(invoice);
+                invoiceRepository.save(invoice);
+                //createNewInvoice(invoice);
                 emailService.sendInvoice(invoice);
             }
 

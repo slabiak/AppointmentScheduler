@@ -1,7 +1,7 @@
 package com.example.slabiak.appointmentscheduler.entity.user.customer;
 
 import com.example.slabiak.appointmentscheduler.entity.user.Role;
-import com.example.slabiak.appointmentscheduler.model.UserFormDTO;
+import com.example.slabiak.appointmentscheduler.model.UserForm;
 
 import javax.persistence.Entity;
 import javax.persistence.PrimaryKeyJoinColumn;
@@ -16,7 +16,7 @@ public class RetailCustomer extends Customer {
     public RetailCustomer(){
     }
 
-    public RetailCustomer(UserFormDTO userFormDTO, String encryptedPassword, Collection<Role> roles){
+    public RetailCustomer(UserForm userFormDTO, String encryptedPassword, Collection<Role> roles){
         super(userFormDTO,encryptedPassword,roles);
     }
 

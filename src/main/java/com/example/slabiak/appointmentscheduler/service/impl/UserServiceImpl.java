@@ -14,7 +14,8 @@ import com.example.slabiak.appointmentscheduler.entity.user.customer.CorporateCu
 import com.example.slabiak.appointmentscheduler.entity.user.customer.Customer;
 import com.example.slabiak.appointmentscheduler.entity.user.customer.RetailCustomer;
 import com.example.slabiak.appointmentscheduler.entity.user.provider.Provider;
-import com.example.slabiak.appointmentscheduler.model.UserFormDTO;
+import com.example.slabiak.appointmentscheduler.model.ChangePasswordForm;
+import com.example.slabiak.appointmentscheduler.model.UserForm;
 import com.example.slabiak.appointmentscheduler.service.UserService;
 import com.example.slabiak.appointmentscheduler.service.WorkingPlanService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -173,27 +174,22 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public boolean updateUserPassword(UserFormDTO userForm) {
-        User user = userRepository.getOne(userForm.getId());
-        if(!userForm.getPassword().equals(userForm.getMatchingPassword())){
-            return false;
-        } else if(passwordEncoder.matches(userForm.getCurrentPassword(),user.getPassword())){
-            user.setPassword(passwordEncoder.encode(userForm.getPassword()));
+    public boolean updateUserPassword(ChangePasswordForm passwordChangeForm) {
+        User user = userRepository.getOne(passwordChangeForm.getId());
+            user.setPassword(passwordEncoder.encode(passwordChangeForm.getPassword()));
             userRepository.save(user);
             return true;
-        }
-        return false;
     }
 
     @Override
-    public void updateProviderProfile(UserFormDTO updateData) {
+    public void updateProviderProfile(UserForm updateData) {
      Provider provider = providerRepository.getOne(updateData.getId());
      provider.update(updateData);
      providerRepository.save(provider);
     }
 
     @Override
-    public void updateRetailCustomerProfile(UserFormDTO updateData) {
+    public void updateRetailCustomerProfile(UserForm updateData) {
         RetailCustomer retailCustomer = retailCustomerRepository.getOne(updateData.getId());
         retailCustomer.update(updateData);
         retailCustomerRepository.save(retailCustomer);
@@ -201,7 +197,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void updateCorporateCustomerProfile(UserFormDTO updateData) {
+    public void updateCorporateCustomerProfile(UserForm updateData) {
         CorporateCustomer corporateCustomer = corporateCustomerRepository.getOne(updateData.getId());
         corporateCustomer.update(updateData);
         corporateCustomerRepository.save(corporateCustomer);
@@ -209,19 +205,19 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void saveNewRetailCustomer(UserFormDTO userForm) {
+    public void saveNewRetailCustomer(UserForm userForm) {
         RetailCustomer retailCustomer = new RetailCustomer(userForm,passwordEncoder.encode(userForm.getPassword()), getRolesForRetailCustomer());
         retailCustomerRepository.save(retailCustomer);
     }
 
     @Override
-    public void saveNewCorporateCustomer(UserFormDTO userForm) {
+    public void saveNewCorporateCustomer(UserForm userForm) {
         CorporateCustomer corporateCustomer = new CorporateCustomer(userForm,passwordEncoder.encode(userForm.getPassword()), getRoleForCorporateCustomers());
         corporateCustomerRepository.save(corporateCustomer);
     }
 
     @Override
-    public void saveNewProvider(UserFormDTO userForm) {
+    public void saveNewProvider(UserForm userForm) {
         WorkingPlan workingPlan = workingPlanService.generateDefaultWorkingPlan();
         Provider provider = new Provider(userForm,passwordEncoder.encode(userForm.getPassword()), getRolesForProvider(),workingPlan);
         providerRepository.save(provider);

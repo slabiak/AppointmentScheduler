@@ -1,7 +1,7 @@
 package com.example.slabiak.appointmentscheduler.entity.user;
 
 import com.example.slabiak.appointmentscheduler.entity.BaseEntity;
-import com.example.slabiak.appointmentscheduler.model.UserFormDTO;
+import com.example.slabiak.appointmentscheduler.model.UserForm;
 
 import javax.persistence.*;
 import java.util.Collection;
@@ -46,7 +46,7 @@ public class User extends BaseEntity {
     public User(){
     }
 
-    public User(UserFormDTO newUserForm, String encryptedPassword, Collection<Role> roles){
+    public User(UserForm newUserForm, String encryptedPassword, Collection<Role> roles){
         this.setUserName(newUserForm.getUserName());
         this.setFirstName(newUserForm.getFirstName());
         this.setLastName(newUserForm.getLastName());
@@ -59,7 +59,7 @@ public class User extends BaseEntity {
         this.roles = roles;
     }
 
-    public void update(UserFormDTO updateData){
+    public void update(UserForm updateData){
         this.setEmail(updateData.getEmail());
         this.setFirstName(updateData.getFirstName());
         this.setLastName(updateData.getLastName());

@@ -58,22 +58,24 @@
 
         <div class="tab-content" id="myTabContent">
             <div class="tab-pane fade show active pt-3" id="profile" role="tabpanel" aria-labelledby="profile-tab">
-                <form th:action="@{${action1}}" th:object="${user}" method="POST">
+                <form th:action="@{${formActionProfile}}" th:object="${user}" method="POST">
 
-                    <!-- <div th:if="${registrationError != null}" class="alert alert-danger">
-                        <p th:text="${registrationError}"></p>
-                    </div>  -->
                     <input type="hidden" class="form-control" th:field="*{id}">
-
 
                     <div class="form-row">
                         <div class="form-group col-md-6">
                             <label for="userName">Username</label>
-                            <input type="text" class="form-control" th:field="*{userName}" disabled>
+                            <input type="text" class="form-control" th:classappend="${#fields.hasErrors('userName') ? 'is-invalid' :''}" th:field="*{userName}" readonly>
+                            <div th:if="${#fields.hasErrors('userName')}" class="invalid-feedback">
+                                <p th:errors="*{userName}"></p>
+                            </div>
                         </div>
                         <div class="form-group col-md-6">
                             <label for="email">Email</label>
-                            <input type="text" class="form-control" th:field="*{email}">
+                            <input type="text" class="form-control" th:classappend="${#fields.hasErrors('email') ? 'is-invalid' :''}" th:field="*{email}">
+                            <div th:if="${#fields.hasErrors('email')}" class="invalid-feedback">
+                                <p th:errors="*{email}"></p>
+                            </div>
                         </div>
 
                     </div>
@@ -82,11 +84,17 @@
                         <div class="form-row">
                             <div class="form-group col-md-6">
                                 <label for="companyName">Company Name</label>
-                                <input type="text" class="form-control" th:field="*{companyName}">
+                                <input type="text" class="form-control" th:classappend="${#fields.hasErrors('companyName') ? 'is-invalid' :''}" th:field="*{companyName}">
+                                <div th:if="${#fields.hasErrors('companyName')}" class="invalid-feedback">
+                                    <p th:errors="*{companyName}"></p>
+                                </div>
                             </div>
                             <div class="form-group col-md-6">
                                 <label for="vatNumber">VAT number</label>
-                                <input type="text" class="form-control" th:field="*{vatNumber}">
+                                <input type="text" class="form-control" th:classappend="${#fields.hasErrors('vatNumber') ? 'is-invalid' :''}" th:field="*{vatNumber}">
+                                <div th:if="${#fields.hasErrors('vatNumber')}" class="invalid-feedback">
+                                    <p th:errors="*{vatNumber}"></p>
+                                </div>
                             </div>
 
                         </div>
@@ -96,33 +104,51 @@
                     <div class="form-row">
                         <div class="form-group col-md-6">
                             <label for="firstName">First name</label>
-                            <input type="text" class="form-control" th:field="*{firstName}">
+                            <input type="text" class="form-control" th:classappend="${#fields.hasErrors('firstName') ? 'is-invalid' :''}" th:field="*{firstName}">
+                            <div th:if="${#fields.hasErrors('firstName')}" class="invalid-feedback">
+                                <p th:errors="*{firstName}"></p>
+                            </div>
                         </div>
                         <div class="form-group col-md-6">
                             <label for="lastName">Last name</label>
-                            <input type="text" class="form-control" th:field="*{lastName}">
+                            <input type="text" class="form-control" th:classappend="${#fields.hasErrors('lastName') ? 'is-invalid' :''}" th:field="*{lastName}">
+                            <div th:if="${#fields.hasErrors('lastName')}" class="invalid-feedback">
+                                <p th:errors="*{lastName}"></p>
+                            </div>
                         </div>
                     </div>
 
                     <div class="form-row">
                         <div class="form-group col-md-6">
                             <label for="mobile">Mobile</label>
-                            <input type="text" class="form-control" th:field="*{mobile}">
+                            <input type="text" class="form-control" th:classappend="${#fields.hasErrors('mobile') ? 'is-invalid' :''}" th:field="*{mobile}">
+                            <div th:if="${#fields.hasErrors('mobile')}" class="invalid-feedback">
+                                <p th:errors="*{mobile}"></p>
+                            </div>
                         </div>
                         <div class="form-group col-md-6">
                             <label for="street">Street</label>
-                            <input type="text" class="form-control" th:field="*{street}">
+                            <input type="text" class="form-control" th:classappend="${#fields.hasErrors('street') ? 'is-invalid' :''}" th:field="*{street}">
+                            <div th:if="${#fields.hasErrors('street')}" class="invalid-feedback">
+                                <p th:errors="*{street}"></p>
+                            </div>
                         </div>
                     </div>
 
                     <div class="form-row">
                         <div class="form-group col-md-6">
                             <label for="city">City</label>
-                            <input type="text" class="form-control" th:field="*{city}">
+                            <input type="text" class="form-control" th:classappend="${#fields.hasErrors('city') ? 'is-invalid' :''}" th:field="*{city}">
+                            <div th:if="${#fields.hasErrors('city')}" class="invalid-feedback">
+                                <p th:errors="*{city}"></p>
+                            </div>
                         </div>
                         <div class="form-group col-md-6">
                             <label for="postcode">Postcode</label>
-                            <input type="text" class="form-control" th:field="*{postcode}">
+                            <input type="text" class="form-control" th:classappend="${#fields.hasErrors('postcode') ? 'is-invalid' :''}" th:field="*{postcode}">
+                            <div th:if="${#fields.hasErrors('postcode')}" class="invalid-feedback">
+                                <p th:errors="*{postcode}"></p>
+                            </div>
                         </div>
                     </div>
 
@@ -132,9 +158,7 @@
                             <ul>
                                 <li th:each="work : ${allWorks}">
                                     <input type="checkbox" th:field="*{works}" th:value="${work.id}" />
-                                    <label th:for="${#ids.prev('works')}"
-                                           th:classappend="${work.targetCustomer=='retail'} ? text-primary : text-info"
-                                           th:text="${work.name}">Heating</label>
+                                    <label th:for="${#ids.prev('works')}" th:classappend="${work.targetCustomer=='retail'} ? text-primary : text-info" th:text="${work.name}">Heating</label>
                                 </li>
                             </ul>
                         </div>
@@ -147,29 +171,36 @@
             </div>
             <div class="tab-pane fade pt-3" id="newPassword" role="tabpanel" aria-labelledby="newPassword-tab">
 
-                <form th:action="@{${action2}}" th:object="${user}" method="POST">
+                <form th:action="@{${formActionPassword}}" th:object="${passwordChange}" method="POST">
 
                     <input type="hidden" th:field="*{id}">
-                    <div th:if="${passwordChanged}" class="alert alert-danger">
-                        <p>newPassword changed!!!</p>
-                    </div>
+
                     <div class="form-row">
                         <div class="form-group col-md-6">
                             <label for="currentPassword">Current password</label>
-                            <input type="password" class="form-control" th:field="*{currentPassword}">
+                            <input type="password" class="form-control" th:classappend="${#fields.hasErrors('currentPassword') ? 'is-invalid' :''}" th:field="*{currentPassword}">
+                            <div th:if="${#fields.hasErrors('currentPassword')}" class="invalid-feedback">
+                                <p th:errors="*{currentPassword}"></p>
+                            </div>
                         </div>
                     </div>
 
                     <div class="form-row">
                         <div class="form-group col-md-6">
                             <label for="password">New password</label>
-                            <input type="password" class="form-control" th:field="*{password}">
+                            <input type="password" class="form-control" th:classappend="${#fields.hasErrors('password') ? 'is-invalid' :''}" th:field="*{password}">
+                            <div th:if="${#fields.hasErrors('password')}" class="invalid-feedback">
+                                <p th:errors="*{password}"></p>
+                            </div>
                         </div>
                     </div>
                     <div class="form-row">
                         <div class="form-group col-md-6">
                             <label for="matchingPassword">Repeat new password</label>
-                            <input type="password" class="form-control" th:field="*{matchingPassword}">
+                            <input type="password" class="form-control" th:classappend="${#fields.hasErrors('matchingPassword') ? 'is-invalid' :''}" th:field="*{matchingPassword}">
+                            <div th:if="${#fields.hasErrors('matchingPassword')}" class="invalid-feedback">
+                                <p th:errors="*{matchingPassword}"></p>
+                            </div>
                         </div>
                     </div>
                     <button type="submit" class="btn btn-primary">Save</button>

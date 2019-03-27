@@ -1,7 +1,7 @@
 package com.example.slabiak.appointmentscheduler.entity.user.customer;
 
 import com.example.slabiak.appointmentscheduler.entity.user.Role;
-import com.example.slabiak.appointmentscheduler.model.UserFormDTO;
+import com.example.slabiak.appointmentscheduler.model.UserForm;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -24,14 +24,14 @@ public class CorporateCustomer extends Customer {
     public CorporateCustomer(){
     }
 
-    public CorporateCustomer(UserFormDTO userFormDTO, String encryptedPassword, Collection<Role> roles){
+    public CorporateCustomer(UserForm userFormDTO, String encryptedPassword, Collection<Role> roles){
         super(userFormDTO,encryptedPassword,roles);
         this.companyName = userFormDTO.getCompanyName();
         this.vatNumber = userFormDTO.getVatNumber();
     }
 
     @Override
-    public void update(UserFormDTO updateData) {
+    public void update(UserForm updateData) {
         super.update(updateData);
         this.companyName = updateData.getCompanyName();
         this.vatNumber = updateData.getVatNumber();

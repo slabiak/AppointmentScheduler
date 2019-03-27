@@ -5,7 +5,7 @@ import com.example.slabiak.appointmentscheduler.entity.Work;
 import com.example.slabiak.appointmentscheduler.entity.WorkingPlan;
 import com.example.slabiak.appointmentscheduler.entity.user.Role;
 import com.example.slabiak.appointmentscheduler.entity.user.User;
-import com.example.slabiak.appointmentscheduler.model.UserFormDTO;
+import com.example.slabiak.appointmentscheduler.model.UserForm;
 
 import javax.persistence.*;
 import java.util.ArrayList;
@@ -31,7 +31,7 @@ public class Provider extends User {
     public Provider(){
     }
 
-    public Provider(UserFormDTO userFormDTO, String encryptedPassword, Collection<Role> roles, WorkingPlan workingPlan) {
+    public Provider(UserForm userFormDTO, String encryptedPassword, Collection<Role> roles, WorkingPlan workingPlan) {
         super(userFormDTO,encryptedPassword,roles);
         this.workingPlan = workingPlan;
         workingPlan.setProvider(this);
@@ -39,7 +39,7 @@ public class Provider extends User {
     }
 
     @Override
-    public void update(UserFormDTO updateData) {
+    public void update(UserForm updateData) {
         super.update(updateData);
         this.works = updateData.getWorks();
     }
@@ -102,4 +102,5 @@ public class Provider extends User {
 
         return Objects.hash(appointments, works, workingPlan);
     }
+
 }

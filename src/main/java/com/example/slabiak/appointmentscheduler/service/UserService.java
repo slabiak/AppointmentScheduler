@@ -8,7 +8,8 @@ import com.example.slabiak.appointmentscheduler.entity.user.customer.CorporateCu
 import com.example.slabiak.appointmentscheduler.entity.user.customer.Customer;
 import com.example.slabiak.appointmentscheduler.entity.user.customer.RetailCustomer;
 import com.example.slabiak.appointmentscheduler.entity.user.provider.Provider;
-import com.example.slabiak.appointmentscheduler.model.UserFormDTO;
+import com.example.slabiak.appointmentscheduler.model.ChangePasswordForm;
+import com.example.slabiak.appointmentscheduler.model.UserForm;
 
 import java.util.Collection;
 import java.util.List;
@@ -22,7 +23,7 @@ public interface UserService {
     List<User> getUsersByRoleName(String roleName);
     List<User> getAllUsers();
     void deleteUserById(int userId);
-    boolean updateUserPassword(UserFormDTO userForm);
+    boolean updateUserPassword(ChangePasswordForm passwordChangeForm);
 
     /*
     * Provider
@@ -32,8 +33,8 @@ public interface UserService {
     List<Provider> getProvidersWithCorporateWorks();
     List<Provider> getProvidersByWork(Work work);
     List<Provider> getAllProviders();
-    void saveNewProvider(UserFormDTO userForm);
-    void updateProviderProfile(UserFormDTO updateData);
+    void saveNewProvider(UserForm userForm);
+    void updateProviderProfile(UserForm updateData);
     Collection<Role> getRolesForProvider();
 
     /*
@@ -46,8 +47,8 @@ public interface UserService {
     * RetailCustomer
     * */
     RetailCustomer getRetailCustomerById(int retailCustomerId);
-    void saveNewRetailCustomer(UserFormDTO userForm);
-    void updateRetailCustomerProfile(UserFormDTO updateData);
+    void saveNewRetailCustomer(UserForm userForm);
+    void updateRetailCustomerProfile(UserForm updateData);
     Collection<Role> getRolesForRetailCustomer();
 
     /*
@@ -55,8 +56,8 @@ public interface UserService {
     * */
     CorporateCustomer getCorporateCustomerById(int corporateCustomerId);
     List<RetailCustomer> getAllRetailCustomers();
-    void saveNewCorporateCustomer(UserFormDTO userForm);
-    void updateCorporateCustomerProfile(UserFormDTO updateData);
+    void saveNewCorporateCustomer(UserForm userForm);
+    void updateCorporateCustomerProfile(UserForm updateData);
     Collection<Role> getRoleForCorporateCustomers();
 
 

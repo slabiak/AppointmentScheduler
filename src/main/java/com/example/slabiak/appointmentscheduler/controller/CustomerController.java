@@ -1,18 +1,26 @@
 package com.example.slabiak.appointmentscheduler.controller;
 
 import com.example.slabiak.appointmentscheduler.entity.user.User;
-import com.example.slabiak.appointmentscheduler.entity.user.customer.CorporateCustomer;
 import com.example.slabiak.appointmentscheduler.entity.user.customer.Customer;
-import com.example.slabiak.appointmentscheduler.entity.user.customer.RetailCustomer;
-import com.example.slabiak.appointmentscheduler.model.UserFormDTO;
+import com.example.slabiak.appointmentscheduler.model.ChangePasswordForm;
+import com.example.slabiak.appointmentscheduler.model.UserForm;
 import com.example.slabiak.appointmentscheduler.security.CustomUserDetails;
 import com.example.slabiak.appointmentscheduler.service.AppointmentService;
 import com.example.slabiak.appointmentscheduler.service.UserService;
+import com.example.slabiak.appointmentscheduler.validation.groups.CreateCorporateCustomer;
+import com.example.slabiak.appointmentscheduler.validation.groups.CreateUser;
+import com.example.slabiak.appointmentscheduler.validation.groups.UpdateCorporateCustomer;
+import com.example.slabiak.appointmentscheduler.validation.groups.UpdateUser;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+
+import javax.validation.Valid;
 
 @Controller
 @RequestMapping("/customers")
@@ -24,6 +32,7 @@ public class CustomerController {
     @Autowired
     private AppointmentService appointmentService;
 
+
     @GetMapping("")
     public String showAllCustomers(Model model) {
         model.addAttribute("customers", userService.getAllCustomers());
@@ -34,74 +43,112 @@ public class CustomerController {
     public String showCustomerDetails(@PathVariable int id, Model model) {
         Customer customer = userService.getCustomerById(id);
         if(customer.hasRole("ROLE_CUSTOMER_CORPORATE")){
-            CorporateCustomer corporateCustomer = userService.getCorporateCustomerById(id);
-            model.addAttribute("user", new UserFormDTO(corporateCustomer));
+            if(!model.containsAttribute("user")){
+                model.addAttribute("user", new UserForm(userService.getCorporateCustomerById(id)));
+            }
             model.addAttribute("account_type","customer_corporate");
-        } else if(customer.hasRole("ROLE_CUSTOMER_RETAIL")) {
-            RetailCustomer retailCustomer = userService.getRetailCustomerById(id);
-            model.addAttribute("user", new UserFormDTO(retailCustomer));
-            model.addAttribute("account_type", "customer_retail");
+            model.addAttribute("formActionProfile","/customers/corporate/update/profile");
         }
-        model.addAttribute("action1","/customers/update/profile");
-        model.addAttribute("action2","/customers/update/password");
+        else if(customer.hasRole("ROLE_CUSTOMER_RETAIL")) {
+            if(!model.containsAttribute("user")){
+                model.addAttribute("user", new UserForm(userService.getRetailCustomerById(id)));
+            }
+            model.addAttribute("account_type", "customer_retail");
+            model.addAttribute("formActionProfile","/customers/retail/update/profile");
+        }
+        if(!model.containsAttribute("passwordChange")){
+            model.addAttribute("passwordChange", new ChangePasswordForm(id));
+        }
+        model.addAttribute("formActionPassword","/customers/update/password");
         model.addAttribute("numberOfScheduledAppointments",appointmentService.getNumberOfScheduledAppointmentsForUser(id));
         model.addAttribute("numberOfCanceledAppointments",appointmentService.getNumberOfCanceledAppointmentsForUser(id));
         return "users/updateUserForm";
     }
 
-    @PostMapping("/update/profile")
-    public String processCustomerProfileUpdate(@ModelAttribute("user") UserFormDTO user, Model model) {
-        Customer customer = userService.getCustomerById(user.getId());
-        if(customer.hasRole("ROLE_CUSTOMER_CORPORATE")) {
-            userService.updateCorporateCustomerProfile(user);
-        } else if(customer.hasRole("ROLE_CUSTOMER_RETAIL")){
-            userService.updateRetailCustomerProfile(user);
+    @PostMapping("corporate/update/profile")
+    public String processCorporateCustomerProfileUpdate(@Validated({UpdateUser.class,UpdateCorporateCustomer.class}) @ModelAttribute("user") UserForm user, BindingResult bindingResult, RedirectAttributes redirectAttributes) {
+        if(bindingResult.hasErrors()){
+            redirectAttributes.addFlashAttribute("org.springframework.validation.BindingResult.user",bindingResult);
+            redirectAttributes.addFlashAttribute("user",user);
+            return "redirect:/customers/"+user.getId();
         }
+            userService.updateCorporateCustomerProfile(user);
         return "redirect:/customers/"+user.getId();
     }
 
-    @GetMapping("/new/{customer_type}")
+    @PostMapping("retail/update/profile")
+    public String processRetailCustomerProfileUpdate(@Validated({UpdateUser.class}) @ModelAttribute("user") UserForm user, BindingResult bindingResult, RedirectAttributes redirectAttributes) {
+        if(bindingResult.hasErrors()){
+            redirectAttributes.addFlashAttribute("org.springframework.validation.BindingResult.user",bindingResult);
+            redirectAttributes.addFlashAttribute("user",user);
+            return "redirect:/customers/"+user.getId();
+        }
+            userService.updateRetailCustomerProfile(user);
+        return "redirect:/customers/"+user.getId();
+    }
+
+
+    @GetMapping("{customer_type}/new")
     public String showCustomerRegistrationForm(@PathVariable("customer_type")String customerType, Model model,@AuthenticationPrincipal CustomUserDetails currentUser) {
         if(currentUser !=null){
             return "redirect:/";
         }
         if(customerType.equals("corporate")){
             model.addAttribute("account_type","customer_corporate");
+            model.addAttribute("action","/customers/corporate/new");
         } else if(customerType.equals("retail")){
             model.addAttribute("account_type","customer_retail");
+            model.addAttribute("action","/customers/retail/new");
         } else {
             throw new RuntimeException();
         }
-        model.addAttribute("action","/customers/new/"+customerType);
-        model.addAttribute("user", new UserFormDTO());
+        model.addAttribute("user", new UserForm());
         return "users/createUserForm";
     }
 
 
-    @PostMapping("/new/{customer_type}")
-    public String processCustomerRegistration(@PathVariable("customer_type")String customerType, @ModelAttribute("user") UserFormDTO userForm, Model model) {
-        User user = userService.getUserByUsername(userForm.getUserName());
-        if (user != null){
-            model.addAttribute("user", userForm);
-            model.addAttribute("account_type","customer_" + customerType);
-            model.addAttribute("action","/customers/new/"+customerType);
-            model.addAttribute("registrationError", "User name already exists.");
+    @PostMapping("/retail/new")
+    public String processReatilCustomerRegistration(@Validated({CreateUser.class}) @ModelAttribute("user") UserForm userForm, BindingResult bindingResult, Model model) {
+        if(bindingResult.hasErrors()){
+            populateModel(model,userForm,"customer_retail","/customers/retail/new/",null);
             return "users/createUserForm";
         }
-        if(customerType.equals("corporate")){
-            userService.saveNewCorporateCustomer(userForm);
-        } else if(customerType.equals("retail")){
-            userService.saveNewRetailCustomer(userForm);
+        User user = userService.getUserByUsername(userForm.getUserName());
+        if (user != null){
+            populateModel(model,userForm,"customer_retail","/customers/retail/new/","User name already exists.");
+            return "users/createUserForm";
         }
+        userService.saveNewRetailCustomer(userForm);
+        model.addAttribute("createdUserName",userForm.getUserName());
+        return "users/login";
+    }
+
+    @PostMapping("/corporate/new")
+    public String processCorporateCustomerRegistration(@Validated({CreateUser.class,CreateCorporateCustomer.class}) @ModelAttribute("user") UserForm userForm, BindingResult bindingResult, Model model) {
+        if(bindingResult.hasErrors()){
+            populateModel(model,userForm,"customer_corporate","/customers/corporate/new/",null);
+            return "users/createUserForm";
+        }
+        User user = userService.getUserByUsername(userForm.getUserName());
+        if (user != null){
+            populateModel(model,userForm,"customer_corporate","/customers/corporate/new/","User name already exists.");
+            return "users/createUserForm";
+        }
+        userService.saveNewCorporateCustomer(userForm);
         model.addAttribute("createdUserName",userForm.getUserName());
         return "users/login";
     }
 
 
     @PostMapping("/update/password")
-    public String processCustomerPasswordUpate(@ModelAttribute("user") UserFormDTO userForm, @AuthenticationPrincipal CustomUserDetails currentUser, Model model) {
+    public String processCustomerPasswordUpate(@Valid @ModelAttribute("passwordChange") ChangePasswordForm passwordChange, BindingResult bindingResult, @AuthenticationPrincipal CustomUserDetails currentUser, RedirectAttributes redirectAttributes) {
+        if(bindingResult.hasErrors()){
+            redirectAttributes.addFlashAttribute("org.springframework.validation.BindingResult.passwordChange",bindingResult);
+            redirectAttributes.addFlashAttribute("passwordChange",passwordChange);
+            return "redirect:/customers/"+currentUser.getId();
+        }
         Customer customer = userService.getCustomerById(currentUser.getId());
-        boolean passwordChanged = userService.updateUserPassword(userForm);
+        boolean passwordChanged = userService.updateUserPassword(passwordChange);
         return "redirect:/customers/"+currentUser.getId();
     }
 
@@ -109,6 +156,14 @@ public class CustomerController {
     public String processDeleteCustomerRequest(@RequestParam("customerId") int customerId) {
         userService.deleteUserById(customerId);
         return "redirect:/customers";
+    }
+
+    public Model populateModel(Model model, UserForm user, String account_type, String action, String error){
+        model.addAttribute("user",user);
+        model.addAttribute("account_type", account_type);
+        model.addAttribute("registerAction",action);
+        model.addAttribute("registrationError",error);
+        return model;
     }
 
 }

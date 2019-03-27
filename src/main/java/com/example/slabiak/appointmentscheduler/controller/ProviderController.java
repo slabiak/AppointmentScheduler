@@ -1,20 +1,29 @@
 package com.example.slabiak.appointmentscheduler.controller;
 
 import com.example.slabiak.appointmentscheduler.entity.WorkingPlan;
-import com.example.slabiak.appointmentscheduler.entity.user.User;
-import com.example.slabiak.appointmentscheduler.entity.user.provider.Provider;
+import com.example.slabiak.appointmentscheduler.model.ChangePasswordForm;
 import com.example.slabiak.appointmentscheduler.model.TimePeroid;
-import com.example.slabiak.appointmentscheduler.model.UserFormDTO;
+import com.example.slabiak.appointmentscheduler.model.UserForm;
 import com.example.slabiak.appointmentscheduler.security.CustomUserDetails;
 import com.example.slabiak.appointmentscheduler.service.AppointmentService;
 import com.example.slabiak.appointmentscheduler.service.UserService;
 import com.example.slabiak.appointmentscheduler.service.WorkService;
 import com.example.slabiak.appointmentscheduler.service.WorkingPlanService;
+import com.example.slabiak.appointmentscheduler.validation.groups.CreateProvider;
+import com.example.slabiak.appointmentscheduler.validation.groups.CreateUser;
+import com.example.slabiak.appointmentscheduler.validation.groups.UpdateProvider;
+import com.example.slabiak.appointmentscheduler.validation.groups.UpdateUser;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+
+import javax.validation.Valid;
+
 
 @Controller
 @RequestMapping("/providers")
@@ -38,46 +47,52 @@ public class ProviderController {
         return "users/listProviders";
     }
 
+    @GetMapping("/{id}")
+    public String showProviderDetails(@PathVariable("id") int providerId, Model model) {
+        if(!model.containsAttribute("user")){
+            model.addAttribute("user", new UserForm(userService.getProviderById(providerId)));
+        }
+        if(!model.containsAttribute("passwordChange")){
+            model.addAttribute("passwordChange", new ChangePasswordForm(providerId));
+        }
+        model.addAttribute("account_type","provider");
+        model.addAttribute("formActionProfile","/providers/update/profile");
+        model.addAttribute("formActionPassword","/providers/update/password");
+        model.addAttribute("allWorks", workService.getAllWorks());
+        model.addAttribute("numberOfScheduledAppointments",appointmentService.getNumberOfScheduledAppointmentsForUser(providerId));
+        model.addAttribute("numberOfCanceledAppointments",appointmentService.getNumberOfCanceledAppointmentsForUser(providerId));
+        return "users/updateUserForm";
+    }
+
+    @PostMapping("/update/profile")
+    public String processProviderUpdate(@Validated({UpdateUser.class,UpdateProvider.class}) @ModelAttribute("user") UserForm userUpdateData, BindingResult bindingResult, RedirectAttributes redirectAttributes) {
+        if(bindingResult.hasErrors()){
+            redirectAttributes.addFlashAttribute("org.springframework.validation.BindingResult.user",bindingResult);
+            redirectAttributes.addFlashAttribute("user",userUpdateData);
+            return "redirect:/providers/"+userUpdateData.getId();
+        }
+        userService.updateProviderProfile(userUpdateData);
+        return "redirect:/providers/"+userUpdateData.getId();
+    }
+
     @GetMapping("/new")
     public String showProviderRegistrationForm(Model model) {
+        if(!model.containsAttribute("user"))model.addAttribute("user", new UserForm());
         model.addAttribute("account_type","provider");
-        model.addAttribute("action","/providers/new");
-        model.addAttribute("user", new UserFormDTO());
+        model.addAttribute("registerAction","/providers/new");
         model.addAttribute("allWorks",workService.getAllWorks());
         return "users/createUserForm";
     }
 
     @PostMapping("/new")
-    public String processProviderRegistrationForm(@ModelAttribute("user") UserFormDTO userForm, Model model) {
-        User user = userService.getUserByUsername(userForm.getUserName());
-        if (user != null){
-            model.addAttribute("user", userForm);
-            model.addAttribute("account_type","provider");
-            model.addAttribute("action","/providers/new");
-            model.addAttribute("registrationError", "User name already exists.");
-            return "users/createUserForm";
+    public String processProviderRegistrationForm(@Validated({CreateUser.class,CreateProvider.class}) @ModelAttribute("user") UserForm userForm, BindingResult bindingResult, RedirectAttributes redirectAttributes) {
+        if(bindingResult.hasErrors()){
+            redirectAttributes.addFlashAttribute("org.springframework.validation.BindingResult.user",bindingResult);
+            redirectAttributes.addFlashAttribute("user",userForm);
+            return "redirect:/providers/new";
         }
         userService.saveNewProvider(userForm);
         return "redirect:/providers";
-    }
-
-    @GetMapping("/{id}")
-    public String showProviderDetails(@PathVariable("id") int id, Model model) {
-        Provider provider = userService.getProviderById(id);
-        model.addAttribute("user", new UserFormDTO(provider));
-        model.addAttribute("account_type","provider");
-        model.addAttribute("action1","/providers/update/profile");
-        model.addAttribute("action2","/providers/update/password");
-        model.addAttribute("allWorks", workService.getAllWorks());
-        model.addAttribute("numberOfScheduledAppointments",appointmentService.getNumberOfScheduledAppointmentsForUser(id));
-        model.addAttribute("numberOfCanceledAppointments",appointmentService.getNumberOfCanceledAppointmentsForUser(id));
-        return "users/updateUserForm";
-    }
-
-    @PostMapping("/update/profile")
-    public String processProviderUpdate(@ModelAttribute("user") UserFormDTO userUpdateData, Model model) {
-        userService.updateProviderProfile(userUpdateData);
-        return "redirect:/providers/"+userUpdateData.getId();
     }
 
     @PostMapping("/delete")
@@ -112,15 +127,15 @@ public class ProviderController {
     }
 
     @PostMapping("/update/password")
-    public String processProviderPasswordUpate(@ModelAttribute("provider") UserFormDTO userForm, @AuthenticationPrincipal CustomUserDetails currentUser, Model model) {
-        Provider provider = userService.getProviderById(currentUser.getId());
-        boolean passwordChanged = userService.updateUserPassword(userForm);
-        model.addAttribute(passwordChanged);
-        model.addAttribute("user", new UserFormDTO(provider));
-        return "users/updateUserForm";
+    public String processProviderPasswordUpate(@Valid @ModelAttribute("passwordChange") ChangePasswordForm passwordChange, BindingResult bindingResult, @AuthenticationPrincipal CustomUserDetails currentUser, RedirectAttributes redirectAttributes) {
+        if(bindingResult.hasErrors()){
+            redirectAttributes.addFlashAttribute("org.springframework.validation.BindingResult.passwordChange",bindingResult);
+            redirectAttributes.addFlashAttribute("passwordChange",passwordChange);
+            return "redirect:/providers/"+passwordChange.getId();
+        }
+       userService.updateUserPassword(passwordChange);
+        return "redirect:/providers/"+passwordChange.getId();
     }
-
-
 
 
 }
