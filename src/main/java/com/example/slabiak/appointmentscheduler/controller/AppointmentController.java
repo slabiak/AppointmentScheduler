@@ -2,6 +2,7 @@ package com.example.slabiak.appointmentscheduler.controller;
 
 import com.example.slabiak.appointmentscheduler.entity.Appointment;
 import com.example.slabiak.appointmentscheduler.entity.ChatMessage;
+import com.example.slabiak.appointmentscheduler.entity.Work;
 import com.example.slabiak.appointmentscheduler.security.CustomUserDetails;
 import com.example.slabiak.appointmentscheduler.service.AppointmentService;
 import com.example.slabiak.appointmentscheduler.service.UserService;
@@ -29,9 +30,9 @@ public class AppointmentController {
     private AppointmentService appointmentService;
 
 
-    @GetMapping("")
+    @GetMapping("/all")
     public String showAllAppointments(Model model, @AuthenticationPrincipal CustomUserDetails currentUser) {
-        if (currentUser.hasRole("ROLE_CUSTOMER_RETAIL") || currentUser.hasRole("ROLE_CUSTOMER_CORPORATE")) {
+        if (currentUser.hasRole("ROLE_CUSTOMER")) {
             model.addAttribute("appointments",appointmentService.getAppointmentByCustomerId(currentUser.getId()));
         } else if(currentUser.hasRole("ROLE_PROVIDER")) {
             model.addAttribute("appointments",appointmentService.getAppointmentByProviderId(currentUser.getId()));
@@ -61,10 +62,11 @@ public class AppointmentController {
 
 
     @PostMapping("/reject")
-    public String processAppointmentRejectionRequest(@RequestParam("appointmentId") int appointmentId, @AuthenticationPrincipal CustomUserDetails currentUser, Model model) {
-        int customerId = currentUser.getId();
-        appointmentService.requestAppointmentRejection(appointmentId,customerId);
-        return "redirect:/appointments/"+appointmentId;
+    public String processAppointmentRejectionRequest(@RequestParam("appointmentId") int appointmentId, @AuthenticationPrincipal CustomUserDetails currentUser,Model model) {
+        boolean result = appointmentService.requestAppointmentRejection(appointmentId,currentUser.getId());
+        model.addAttribute("result",result);
+        model.addAttribute("type","request");
+        return "appointments/rejectionConfirmation";
     }
 
     @GetMapping("/reject")
@@ -77,9 +79,10 @@ public class AppointmentController {
 
     @PostMapping("/acceptRejection")
     public String acceptAppointmentRejectionRequest(@RequestParam("appointmentId") int appointmentId, @AuthenticationPrincipal CustomUserDetails currentUser, Model model) {
-        int providerId = currentUser.getId();
-        appointmentService.acceptRejection(appointmentId,providerId);
-        return "redirect:/appointments/"+appointmentId;
+        boolean result = appointmentService.acceptRejection(appointmentId,currentUser.getId());
+        model.addAttribute("result",result);
+        model.addAttribute("type","accept");
+        return "appointments/rejectionConfirmation";
     }
 
     @GetMapping("/acceptRejection")
@@ -110,42 +113,50 @@ public class AppointmentController {
     @GetMapping("/new/{providerId}")
   public String selectService(@PathVariable("providerId") int providerId, Model model,@AuthenticationPrincipal CustomUserDetails currentUser) {
         if(currentUser.hasRole("ROLE_CUSTOMER_RETAIL")) {
-            model.addAttribute("works", workService.getRetailCustomerWorksByProviderId(providerId));
+            model.addAttribute("works", workService.getWorksForRetailCustomerByProviderId(providerId));
         } else if(currentUser.hasRole("ROLE_CUSTOMER_CORPORATE")) {
-            model.addAttribute("works", workService.getCorporateCustomerWorksByProviderId(providerId));
+            model.addAttribute("works", workService.getWorksForCorporateCustomerByProviderId(providerId));
         }
         model.addAttribute("providerId",providerId);
         return "appointments/selectService";
     }
 
     @GetMapping("/new/{providerId}/{workId}")
-    public String selectDate(@PathVariable("workId") int workId,@PathVariable("providerId") int providerId, Model model){
-        model.addAttribute("providerId",providerId);
-        model.addAttribute("workId",workId);
-        return "appointments/selectDate";
+    public String selectDate(@PathVariable("workId") int workId,@PathVariable("providerId") int providerId, Model model,@AuthenticationPrincipal CustomUserDetails currentUser){
+        if(workService.isWorkForCustomer(workId,currentUser.getId())){
+            model.addAttribute("providerId",providerId);
+            model.addAttribute("workId",workId);
+            return "appointments/selectDate";
+        } else{
+            return "redirect:/appointments/new";
+        }
+
     }
 
     @GetMapping("/new/{providerId}/{workId}/{dateTime}")
-    public String showNewAppointmentSummary(@PathVariable("workId") int workId,@PathVariable("providerId") int providerId,@PathVariable("dateTime") String start,Model model){
-        model.addAttribute("work",workService.getWorkById(workId));
-        model.addAttribute("provider",userService.getProviderById(providerId).getFirstName()+" " +userService.getProviderById(providerId).getLastName());
-        model.addAttribute("providerId",providerId);
-        model.addAttribute("start",LocalDateTime.parse(start));
-        model.addAttribute("end",LocalDateTime.parse(start).plusMinutes(workService.getWorkById(workId).getDuration()));
-        return "appointments/newAppointmentSummary";
+    public String showNewAppointmentSummary(@PathVariable("workId") int workId,@PathVariable("providerId") int providerId,@PathVariable("dateTime") String start,Model model,@AuthenticationPrincipal CustomUserDetails currentUser){
+        if(appointmentService.isAvailable(workId,providerId,currentUser.getId(),LocalDateTime.parse(start))) {
+            model.addAttribute("work", workService.getWorkById(workId));
+            model.addAttribute("provider", userService.getProviderById(providerId).getFirstName() + " " + userService.getProviderById(providerId).getLastName());
+            model.addAttribute("providerId", providerId);
+            model.addAttribute("start", LocalDateTime.parse(start));
+            model.addAttribute("end", LocalDateTime.parse(start).plusMinutes(workService.getWorkById(workId).getDuration()));
+            return "appointments/newAppointmentSummary";
+        }else{
+            return "redirect:/appointments/new";
+        }
     }
 
     @PostMapping("/new")
     public String bookAppointment(@RequestParam("workId") int workId,@RequestParam("providerId") int providerId,@RequestParam("start") String start, @AuthenticationPrincipal CustomUserDetails currentUser){
-        int customerId= currentUser.getId();
-        appointmentService.createNewAppointment(workId,providerId,customerId,LocalDateTime.parse(start));
-        return "redirect:/appointments/";
+        appointmentService.createNewAppointment(workId,providerId,currentUser.getId(),LocalDateTime.parse(start));
+        return "redirect:/appointments/all";
     }
 
     @PostMapping("/cancel")
     public String cancelAppointment(@RequestParam("appointmentId") int appointmentId, @AuthenticationPrincipal CustomUserDetails currentUser){
         appointmentService.cancelUserAppointmentById(appointmentId,currentUser.getId());
-        return "redirect:/appointments";
+        return "redirect:/appointments/all";
     }
 
 

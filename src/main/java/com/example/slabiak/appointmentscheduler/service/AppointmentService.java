@@ -39,14 +39,12 @@ public interface AppointmentService {
     boolean acceptRejection(int appointmentId, int providerId);
     boolean acceptRejection(String token);
 
+
     void addMessageToAppointmentChat(int appointmentId, int authorId, ChatMessage chatMessage);
     
     int getNumberOfCanceledAppointmentsForUser(int userId);
     int getNumberOfScheduledAppointmentsForUser(int userId);
 
 
-
-
-
-
+    boolean isAvailable(int workId, int providerId, int customerId, LocalDateTime start);
 }

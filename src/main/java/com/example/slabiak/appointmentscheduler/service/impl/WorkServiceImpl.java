@@ -2,8 +2,12 @@ package com.example.slabiak.appointmentscheduler.service.impl;
 
 import com.example.slabiak.appointmentscheduler.dao.WorkRepository;
 import com.example.slabiak.appointmentscheduler.entity.Work;
+import com.example.slabiak.appointmentscheduler.entity.user.User;
+import com.example.slabiak.appointmentscheduler.entity.user.customer.Customer;
+import com.example.slabiak.appointmentscheduler.service.UserService;
 import com.example.slabiak.appointmentscheduler.service.WorkService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -15,13 +19,17 @@ public class WorkServiceImpl implements WorkService {
     @Autowired
     WorkRepository workRepository;
 
+    @Autowired
+    UserService userService;
 
     @Override
+    @PreAuthorize("hasRole('ADMIN')")
     public void createNewWork(Work work) {
         workRepository.save(work);
     }
 
     @Override
+    @PreAuthorize("hasRole('ADMIN')")
     public void updateWork(Work workUpdateData) {
         Work work = getWorkById(workUpdateData.getId());
         work.setName(workUpdateData.getName());
@@ -56,8 +64,21 @@ public class WorkServiceImpl implements WorkService {
     }
 
     @Override
+    @PreAuthorize("hasRole('ADMIN')")
     public void deleteWorkById(int workId) {
         workRepository.deleteById(workId);
+    }
+
+    @Override
+    public boolean isWorkForCustomer(int workId,int customerId) {
+        Customer customer = userService.getCustomerById(customerId);
+        Work work = getWorkById(workId);
+        if(customer.hasRole("ROLE_CUSTOMER_RETAIL") && !work.getTargetCustomer().equals("retail")) {
+            return false;
+        } else if(customer.hasRole("ROLE_CUSTOMER_CORPORATE") && !work.getTargetCustomer().equals("corporate")) {
+            return false;
+        }
+        return true;
     }
 
     @Override
@@ -76,12 +97,12 @@ public class WorkServiceImpl implements WorkService {
     }
 
     @Override
-    public List<Work> getRetailCustomerWorksByProviderId(int providerId) {
+    public List<Work> getWorksForRetailCustomerByProviderId(int providerId) {
         return workRepository.findByTargetCustomerAndProviderId("retail",providerId);
     }
 
     @Override
-    public List<Work> getCorporateCustomerWorksByProviderId(int providerId) {
+    public List<Work> getWorksForCorporateCustomerByProviderId(int providerId) {
         return workRepository.findByTargetCustomerAndProviderId("corporate",providerId);
     }
 

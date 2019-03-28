@@ -19,6 +19,7 @@ import com.example.slabiak.appointmentscheduler.model.UserForm;
 import com.example.slabiak.appointmentscheduler.service.UserService;
 import com.example.slabiak.appointmentscheduler.service.WorkingPlanService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -56,6 +57,7 @@ public class UserServiceImpl implements UserService {
 
 
     @Override
+    @PreAuthorize("#userId == principal.id")
     public User getUserById(int userId) {
         Optional<User> result = userRepository.findById(userId);
         User user = null;
@@ -69,6 +71,14 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    @PreAuthorize("#customerId == principal.id or hasRole('ADMIN')")
+    public Customer getCustomerById(int customerId) {
+        return customerRepository.getOne(customerId);
+    }
+
+
+    @Override
+    //@PreAuthorize("#providerId == principal.id")
     public Provider getProviderById(int providerId) {
         Optional<Provider> optionalProvider = providerRepository.findById(providerId);
         Provider provider = null;
@@ -82,11 +92,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public Customer getCustomerById(int customerId) {
-        return customerRepository.getOne(customerId);
-    }
-
-    @Override
+    @PreAuthorize("#retailCustomerId == principal.id or hasRole('ADMIN')")
     public RetailCustomer getRetailCustomerById(int retailCustomerId) {
         Optional<RetailCustomer> optionalRetailCustomer = retailCustomerRepository.findById(retailCustomerId);
         RetailCustomer retailCustomer = null;
@@ -100,6 +106,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    @PreAuthorize("#corporateCustomerId == principal.id or hasRole('ADMIN')")
     public CorporateCustomer getCorporateCustomerById(int corporateCustomerId) {
         Optional<CorporateCustomer> optionalCorporateCustomer = corporateCustomerRepository.findById(corporateCustomerId);
         CorporateCustomer corporateCustomer = null;
@@ -113,6 +120,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    @PreAuthorize("hasRole('ADMIN')")
     public List<Provider> getAllProviders() {
         return providerRepository.findAll();
     }
@@ -154,6 +162,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    @PreAuthorize("hasRole('ADMIN')")
     public void deleteUserById(int userId) {
         userRepository.deleteById(userId);
     }
@@ -174,14 +183,15 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public boolean updateUserPassword(ChangePasswordForm passwordChangeForm) {
+    @PreAuthorize("#passwordChangeForm.id == principal.id")
+    public void updateUserPassword(ChangePasswordForm passwordChangeForm) {
         User user = userRepository.getOne(passwordChangeForm.getId());
             user.setPassword(passwordEncoder.encode(passwordChangeForm.getPassword()));
             userRepository.save(user);
-            return true;
     }
 
     @Override
+    @PreAuthorize("#updateData.id == principal.id or hasRole('ADMIN')")
     public void updateProviderProfile(UserForm updateData) {
      Provider provider = providerRepository.getOne(updateData.getId());
      provider.update(updateData);
@@ -189,6 +199,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    @PreAuthorize("#updateData.id == principal.id or hasRole('ADMIN')")
     public void updateRetailCustomerProfile(UserForm updateData) {
         RetailCustomer retailCustomer = retailCustomerRepository.getOne(updateData.getId());
         retailCustomer.update(updateData);
@@ -197,6 +208,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    @PreAuthorize("#updateData.id == principal.id or hasRole('ADMIN')")
     public void updateCorporateCustomerProfile(UserForm updateData) {
         CorporateCustomer corporateCustomer = corporateCustomerRepository.getOne(updateData.getId());
         corporateCustomer.update(updateData);

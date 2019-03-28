@@ -19,15 +19,15 @@ public class UserForm {
     private int id;
 
     @UniqueUsername(groups = {CreateUser.class})
-    @Size(min=5, max=10,groups = {CreateUser.class}, message = "Username should have 5-15 letters")
+    @Size(min=5, max=15,groups = {CreateUser.class}, message = "Username should have 5-15 letters")
     @NotBlank(groups = {CreateUser.class})
     private String userName;
 
-    @Size(min=5, max=10,groups = {CreateUser.class}, message = "Password should have 5-15 letters")
+    @Size(min=5, max=15,groups = {CreateUser.class}, message = "Password should have 5-15 letters")
     @NotBlank(groups = {CreateUser.class})
     private String password;
 
-    @Size(min=5, max=10,groups = {CreateUser.class}, message = "Password should have 5-15 letters")
+    @Size(min=5, max=15,groups = {CreateUser.class}, message = "Password should have 5-15 letters")
     @NotBlank(groups = {CreateUser.class})
     private String matchingPassword;
 

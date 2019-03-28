@@ -11,8 +11,9 @@ public interface WorkService {
     List<Work> getWorksByProviderId(int providerId);
     List<Work> getRetailCustomerWorks();
     List<Work> getCorporateCustomerWorks();
-    List<Work> getRetailCustomerWorksByProviderId(int providerId);
-    List<Work> getCorporateCustomerWorksByProviderId(int providerId);
+    List<Work> getWorksForRetailCustomerByProviderId(int providerId);
+    List<Work> getWorksForCorporateCustomerByProviderId(int providerId);
     void updateWork(Work work);
     void deleteWorkById(int workId);
+    boolean isWorkForCustomer(int workId,int customerId);
 }

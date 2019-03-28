@@ -23,7 +23,7 @@ public interface UserService {
     List<User> getUsersByRoleName(String roleName);
     List<User> getAllUsers();
     void deleteUserById(int userId);
-    boolean updateUserPassword(ChangePasswordForm passwordChangeForm);
+    void updateUserPassword(ChangePasswordForm passwordChangeForm);
 
     /*
     * Provider

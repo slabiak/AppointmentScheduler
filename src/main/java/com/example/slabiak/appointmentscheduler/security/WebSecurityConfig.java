@@ -5,6 +5,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
+import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
@@ -12,6 +13,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 @EnableWebSecurity
 @Configuration
+@EnableGlobalMethodSecurity(prePostEnabled = true)
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Autowired
@@ -29,10 +31,19 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity http) throws Exception {
         http.authorizeRequests()
                 .antMatchers("/").hasAnyRole("CUSTOMER", "PROVIDER", "ADMIN")
-                /*.antMatchers("/customers/**").hasRole("CUSTOMER")
-                .antMatchers("/providers/**").hasRole("PROVIDER")
-                .antMatchers("/appointments/**").hasAnyRole("CUSTOMER", "PROVIDER")
-                .antMatchers("/api/**").hasAnyRole("CUSTOMER", "PROVIDER")*/
+                .antMatchers("/api/**").hasAnyRole("CUSTOMER", "PROVIDER", "ADMIN")
+                .antMatchers("/customers/all").hasRole( "ADMIN")
+                .antMatchers("/providers/new").hasRole( "ADMIN")
+                .antMatchers("/invoices/all").hasRole( "ADMIN")
+                .antMatchers("/providers/all").hasRole( "ADMIN")
+                .antMatchers("/customers/new/**").permitAll()
+                .antMatchers("/customers/**").hasAnyRole("CUSTOMER", "ADMIN")
+                .antMatchers("/providers/availability/**").hasRole("PROVIDER")
+                .antMatchers("/providers/**").hasAnyRole("PROVIDER", "ADMIN")
+                .antMatchers("/works/**").hasRole( "ADMIN")
+                .antMatchers("/appointments/new/**").hasRole("CUSTOMER")
+                .antMatchers("/appointments/**").hasAnyRole("CUSTOMER", "PROVIDER", "ADMIN")
+                .antMatchers("/invoices/**").hasAnyRole("CUSTOMER", "PROVIDER", "ADMIN")
                 .and()
                 .formLogin()
                     .loginPage("/login")

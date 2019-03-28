@@ -32,8 +32,7 @@ public class CustomerController {
     @Autowired
     private AppointmentService appointmentService;
 
-
-    @GetMapping("")
+    @GetMapping("/all")
     public String showAllCustomers(Model model) {
         model.addAttribute("customers", userService.getAllCustomers());
         return "users/listCustomers";
@@ -65,7 +64,7 @@ public class CustomerController {
         return "users/updateUserForm";
     }
 
-    @PostMapping("corporate/update/profile")
+    @PostMapping("/corporate/update/profile")
     public String processCorporateCustomerProfileUpdate(@Validated({UpdateUser.class,UpdateCorporateCustomer.class}) @ModelAttribute("user") UserForm user, BindingResult bindingResult, RedirectAttributes redirectAttributes) {
         if(bindingResult.hasErrors()){
             redirectAttributes.addFlashAttribute("org.springframework.validation.BindingResult.user",bindingResult);
@@ -76,7 +75,7 @@ public class CustomerController {
         return "redirect:/customers/"+user.getId();
     }
 
-    @PostMapping("retail/update/profile")
+    @PostMapping("/retail/update/profile")
     public String processRetailCustomerProfileUpdate(@Validated({UpdateUser.class}) @ModelAttribute("user") UserForm user, BindingResult bindingResult, RedirectAttributes redirectAttributes) {
         if(bindingResult.hasErrors()){
             redirectAttributes.addFlashAttribute("org.springframework.validation.BindingResult.user",bindingResult);
@@ -88,17 +87,17 @@ public class CustomerController {
     }
 
 
-    @GetMapping("{customer_type}/new")
+    @GetMapping("/new/{customer_type}")
     public String showCustomerRegistrationForm(@PathVariable("customer_type")String customerType, Model model,@AuthenticationPrincipal CustomUserDetails currentUser) {
         if(currentUser !=null){
             return "redirect:/";
         }
         if(customerType.equals("corporate")){
             model.addAttribute("account_type","customer_corporate");
-            model.addAttribute("action","/customers/corporate/new");
+            model.addAttribute("action","/customers/new/corporate");
         } else if(customerType.equals("retail")){
             model.addAttribute("account_type","customer_retail");
-            model.addAttribute("action","/customers/retail/new");
+            model.addAttribute("action","/customers/new/retail");
         } else {
             throw new RuntimeException();
         }
@@ -107,15 +106,10 @@ public class CustomerController {
     }
 
 
-    @PostMapping("/retail/new")
+    @PostMapping("/new/retail")
     public String processReatilCustomerRegistration(@Validated({CreateUser.class}) @ModelAttribute("user") UserForm userForm, BindingResult bindingResult, Model model) {
         if(bindingResult.hasErrors()){
-            populateModel(model,userForm,"customer_retail","/customers/retail/new/",null);
-            return "users/createUserForm";
-        }
-        User user = userService.getUserByUsername(userForm.getUserName());
-        if (user != null){
-            populateModel(model,userForm,"customer_retail","/customers/retail/new/","User name already exists.");
+            populateModel(model,userForm,"customer_retail","/customers/new/retail",null);
             return "users/createUserForm";
         }
         userService.saveNewRetailCustomer(userForm);
@@ -123,15 +117,10 @@ public class CustomerController {
         return "users/login";
     }
 
-    @PostMapping("/corporate/new")
+    @PostMapping("/new/corporate")
     public String processCorporateCustomerRegistration(@Validated({CreateUser.class,CreateCorporateCustomer.class}) @ModelAttribute("user") UserForm userForm, BindingResult bindingResult, Model model) {
         if(bindingResult.hasErrors()){
-            populateModel(model,userForm,"customer_corporate","/customers/corporate/new/",null);
-            return "users/createUserForm";
-        }
-        User user = userService.getUserByUsername(userForm.getUserName());
-        if (user != null){
-            populateModel(model,userForm,"customer_corporate","/customers/corporate/new/","User name already exists.");
+            populateModel(model,userForm,"customer_corporate","/customers/new/corporate",null);
             return "users/createUserForm";
         }
         userService.saveNewCorporateCustomer(userForm);
@@ -147,15 +136,14 @@ public class CustomerController {
             redirectAttributes.addFlashAttribute("passwordChange",passwordChange);
             return "redirect:/customers/"+currentUser.getId();
         }
-        Customer customer = userService.getCustomerById(currentUser.getId());
-        boolean passwordChanged = userService.updateUserPassword(passwordChange);
+        userService.updateUserPassword(passwordChange);
         return "redirect:/customers/"+currentUser.getId();
     }
 
     @PostMapping("/delete")
     public String processDeleteCustomerRequest(@RequestParam("customerId") int customerId) {
         userService.deleteUserById(customerId);
-        return "redirect:/customers";
+        return "redirect:/customers/all";
     }
 
     public Model populateModel(Model model, UserForm user, String account_type, String action, String error){

@@ -22,20 +22,15 @@ import java.util.List;
 public class AjaxController {
 
     @Autowired
-    private UserService userService;
-
-    @Autowired
     private AppointmentService appointmentService;
 
 
     @GetMapping("/user/{userId}/appointments")
     List<Appointment> getAppointmentsForUser(@PathVariable("userId") int userId,@AuthenticationPrincipal CustomUserDetails currentUser) {
-        if (currentUser.hasRole("ROLE_CUSTOMER_RETAIL")) {
-            return userService.getRetailCustomerById(userId).getAppointments();
-        } else if(currentUser.hasRole("ROLE_CUSTOMER_CORPORATE"))
-            return userService.getCorporateCustomerById(userId).getAppointments();
-        else if(currentUser.hasRole("ROLE_PROVIDER"))
-            return userService.getProviderById(userId).getAppointments();
+        if (currentUser.hasRole("ROLE_CUSTOMER")) {
+            return appointmentService.getAppointmentByCustomerId(userId);
+        } else if(currentUser.hasRole("ROLE_PROVIDER"))
+            return appointmentService.getAppointmentByProviderId(userId);
         else if(currentUser.hasRole("ROLE_ADMIN"))
             return appointmentService.getAllAppointments();
         else return null;
@@ -51,6 +46,5 @@ public class AjaxController {
         }
         return appointments;
     }
-
 
 }

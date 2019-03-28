@@ -14,7 +14,10 @@ import com.example.slabiak.appointmentscheduler.service.AppointmentService;
 import com.example.slabiak.appointmentscheduler.service.EmailService;
 import com.example.slabiak.appointmentscheduler.service.UserService;
 import com.example.slabiak.appointmentscheduler.service.WorkService;
+import org.hibernate.Session;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PostAuthorize;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -57,6 +60,7 @@ public class AppointmentServiceImpl implements AppointmentService {
     }
 
     @Override
+    @PostAuthorize("returnObject.provider.id == principal.id or returnObject.customer.id == principal.id or hasRole('ADMIN') ")
     public Appointment getAppointmentById(int id) {
         Optional<Appointment> result = appointmentRepository.findById(id);
         Appointment appointment = null;
@@ -72,6 +76,7 @@ public class AppointmentServiceImpl implements AppointmentService {
     }
 
     @Override
+    @PreAuthorize("hasRole('ADMIN')")
     public List<Appointment> getAllAppointments() {
         return appointmentRepository.findAll();
     }
@@ -82,11 +87,13 @@ public class AppointmentServiceImpl implements AppointmentService {
     }
 
     @Override
+    @PreAuthorize("#customerId == principal.id")
     public List<Appointment> getAppointmentByCustomerId(int customerId) {
         return appointmentRepository.findByCustomerId(customerId);
     }
 
     @Override
+    @PreAuthorize("#providerId == principal.id")
     public List<Appointment> getAppointmentByProviderId(int providerId) {
         return appointmentRepository.findByProviderId(providerId);
     }
@@ -116,27 +123,35 @@ public class AppointmentServiceImpl implements AppointmentService {
 
     @Override
     public void createNewAppointment(int workId, int providerId, int customerId, LocalDateTime start) {
-        Appointment appointment = new Appointment();
-        appointment.setStatus("scheduled");
-        appointment.setCustomer(userService.getCustomerById(customerId));
-        appointment.setProvider(userService.getProviderById(providerId));
-        Work work = workService.getWorkById(workId);
-        appointment.setWork(work);
-        appointment.setStart(start);
-        appointment.setEnd(start.plusMinutes(work.getDuration()));
-        appointmentRepository.save(appointment);
-        emailService.sendNewAppointmentScheduledNotification(appointment);
+        if(isAvailable(workId,providerId,customerId,start)){
+            Appointment appointment = new Appointment();
+            appointment.setStatus("scheduled");
+            appointment.setCustomer(userService.getCustomerById(customerId));
+            appointment.setProvider(userService.getProviderById(providerId));
+            Work work = workService.getWorkById(workId);
+            appointment.setWork(work);
+            appointment.setStart(start);
+            appointment.setEnd(start.plusMinutes(work.getDuration()));
+            appointmentRepository.save(appointment);
+            emailService.sendNewAppointmentScheduledNotification(appointment);
+        } else{
+            throw new RuntimeException();
+        }
+
     }
 
     @Override
     public void addMessageToAppointmentChat(int appointmentId, int authorId, ChatMessage chatMessage) {
-        chatMessage.setAuthor(userService.getUserById(authorId));
-        chatMessage.setAppointment(getAppointmentById(appointmentId));
-        chatMessage.setCreatedAt(LocalDateTime.now());
-        chatMessageRepository.save(chatMessage);
+        Appointment appointment = getAppointmentById(appointmentId);
+        if(appointment.getProvider().getId()==authorId || appointment.getCustomer().getId() == authorId){
+            chatMessage.setAuthor(userService.getUserById(authorId));
+            chatMessage.setAppointment(appointment);
+            chatMessage.setCreatedAt(LocalDateTime.now());
+            chatMessageRepository.save(chatMessage);
+        } else{
+            throw new org.springframework.security.access.AccessDeniedException("Unauthorized");
+        }
     }
-
-
 
     @Override
     public List<TimePeroid> calculateAvailableHours(List<TimePeroid> availableTimePeroids, Work work){
@@ -234,16 +249,22 @@ public class AppointmentServiceImpl implements AppointmentService {
     @Override
     public void cancelUserAppointmentById(int appointmentId, int userId) {
         Appointment appointment = appointmentRepository.getOne(appointmentId);
-        appointment.setStatus("canceled");
-        User canceler = userService.getUserById(userId);
-        appointment.setCanceler(canceler);
-        appointment.setCanceledAt(LocalDateTime.now());
-        appointmentRepository.save(appointment);
-        if(canceler.equals(appointment.getCustomer())){
-            emailService.sendAppointmentCanceledByCustomerNotification(appointment);
-        } else if(canceler.equals(appointment.getProvider())){
-            emailService.sendAppointmentCanceledByProviderNotification(appointment);
+        if(appointment.getCustomer().getId() == userId || appointment.getProvider().getId() == userId){
+            appointment.setStatus("canceled");
+            User canceler = userService.getUserById(userId);
+            appointment.setCanceler(canceler);
+            appointment.setCanceledAt(LocalDateTime.now());
+            appointmentRepository.save(appointment);
+            if(canceler.equals(appointment.getCustomer())){
+                emailService.sendAppointmentCanceledByCustomerNotification(appointment);
+            } else if(canceler.equals(appointment.getProvider())){
+                emailService.sendAppointmentCanceledByProviderNotification(appointment);
+            }
+        }else{
+            throw new org.springframework.security.access.AccessDeniedException("Unauthorized");
         }
+
+
 
     }
 
@@ -272,7 +293,7 @@ public class AppointmentServiceImpl implements AppointmentService {
             emailService.sendAppointmentRejectionRequestedNotification(appointment);
             updateAppointment(appointment);
             return true;
-        } else{
+        } else {
             return false;
         }
 
@@ -368,6 +389,19 @@ public class AppointmentServiceImpl implements AppointmentService {
     @Override
     public int getNumberOfScheduledAppointmentsForUser(int userId) {
         return appointmentRepository.findScheduledByUserId(userId).size();
+    }
+
+    @Override
+    public boolean isAvailable(int workId, int providerId, int customerId, LocalDateTime start) {
+        if(!workService.isWorkForCustomer(workId,customerId)){
+            return false;
+        }
+        Work work = workService.getWorkById(workId);
+        TimePeroid timePeroid = new TimePeroid(start.toLocalTime(),start.toLocalTime().plusMinutes(work.getDuration()));
+        if(!getAvailableTimePeroidsForProvider(providerId,workId,start.toLocalDate()).contains(timePeroid)){
+            return false;
+        }
+        return true;
     }
 
     @Override

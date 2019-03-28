@@ -29,7 +29,7 @@ public class ScheduledTasksServiceImpl implements ScheduledTasksService {
     @Scheduled(fixedDelay = 1000)
     @Override
     public void issueInvoicesForCurrnetMonth(){
-        invoiceService.issueInvoicesForConfirmedAppointments();
+       invoiceService.issueInvoicesForConfirmedAppointments();
     }
 
 

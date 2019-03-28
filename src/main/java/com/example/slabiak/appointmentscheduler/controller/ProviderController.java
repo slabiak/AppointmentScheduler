@@ -41,27 +41,34 @@ public class ProviderController {
     @Autowired
     private AppointmentService appointmentService;
 
-    @GetMapping("")
+
+
+    @GetMapping("/all")
     public String showAllProviders(Model model) {
         model.addAttribute("providers", userService.getAllProviders());
         return "users/listProviders";
     }
 
     @GetMapping("/{id}")
-    public String showProviderDetails(@PathVariable("id") int providerId, Model model) {
-        if(!model.containsAttribute("user")){
-            model.addAttribute("user", new UserForm(userService.getProviderById(providerId)));
+    public String showProviderDetails(@PathVariable("id") int providerId, Model model, @AuthenticationPrincipal CustomUserDetails currentUser) {
+        if(currentUser.getId() == providerId || currentUser.hasRole("ROLE_ADMIN")){
+            if(!model.containsAttribute("user")){
+                model.addAttribute("user", new UserForm(userService.getProviderById(providerId)));
+            }
+            if(!model.containsAttribute("passwordChange")){
+                model.addAttribute("passwordChange", new ChangePasswordForm(providerId));
+            }
+            model.addAttribute("account_type","provider");
+            model.addAttribute("formActionProfile","/providers/update/profile");
+            model.addAttribute("formActionPassword","/providers/update/password");
+            model.addAttribute("allWorks", workService.getAllWorks());
+            model.addAttribute("numberOfScheduledAppointments",appointmentService.getNumberOfScheduledAppointmentsForUser(providerId));
+            model.addAttribute("numberOfCanceledAppointments",appointmentService.getNumberOfCanceledAppointmentsForUser(providerId));
+            return "users/updateUserForm";
+
+        } else{
+            throw new org.springframework.security.access.AccessDeniedException("Unauthorized");
         }
-        if(!model.containsAttribute("passwordChange")){
-            model.addAttribute("passwordChange", new ChangePasswordForm(providerId));
-        }
-        model.addAttribute("account_type","provider");
-        model.addAttribute("formActionProfile","/providers/update/profile");
-        model.addAttribute("formActionPassword","/providers/update/password");
-        model.addAttribute("allWorks", workService.getAllWorks());
-        model.addAttribute("numberOfScheduledAppointments",appointmentService.getNumberOfScheduledAppointmentsForUser(providerId));
-        model.addAttribute("numberOfCanceledAppointments",appointmentService.getNumberOfCanceledAppointmentsForUser(providerId));
-        return "users/updateUserForm";
     }
 
     @PostMapping("/update/profile")
@@ -92,18 +99,18 @@ public class ProviderController {
             return "redirect:/providers/new";
         }
         userService.saveNewProvider(userForm);
-        return "redirect:/providers";
+        return "redirect:/providers/all";
     }
 
     @PostMapping("/delete")
     public String processDeleteProviderRequest(@RequestParam("providerId") int providerId){
         userService.deleteUserById(providerId);
-        return "redirect:/providers";
+        return "redirect:/providers/all";
     }
 
     @GetMapping("/availability")
     public String showProviderAvailability(Model model,@AuthenticationPrincipal CustomUserDetails currentUser){
-        model.addAttribute("plan",userService.getProviderById(currentUser.getId()).getWorkingPlan());
+        model.addAttribute("plan",workingPlanService.getWorkingPlanByProviderId(currentUser.getId()));
         model.addAttribute("breakModel", new TimePeroid());
         return "users/showOrUpdateProviderAvailability";
     }

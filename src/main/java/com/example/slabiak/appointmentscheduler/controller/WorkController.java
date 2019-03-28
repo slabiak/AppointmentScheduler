@@ -14,7 +14,7 @@ public class WorkController {
     @Autowired
     private WorkService workService;
 
-    @GetMapping("")
+    @GetMapping("/all")
     public String showAllWorks(Model model) {
         model.addAttribute("works", workService.getAllWorks());
         return "works/list";
@@ -39,12 +39,12 @@ public class WorkController {
         }else {
             workService.createNewWork(work);
         }
-        return "redirect:/works";
+        return "redirect:/works/all";
     }
 
     @PostMapping("/delete")
     public String deleteWork(@RequestParam("workId") int workId){
         workService.deleteWorkById(workId);
-        return "redirect:/works";
+        return "redirect:/works/all";
     }
 }
