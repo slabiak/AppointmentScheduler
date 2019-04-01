@@ -25,8 +25,7 @@ public class ScheduledTasksServiceImpl implements ScheduledTasksService {
     }
 
     // runs on the first day of each month
-    //@Scheduled(cron = "0 0 0 1 * ?")
-    @Scheduled(fixedDelay = 1000)
+    @Scheduled(cron = "0 0 0 1 * ?")
     @Override
     public void issueInvoicesForCurrnetMonth(){
        invoiceService.issueInvoicesForConfirmedAppointments();
