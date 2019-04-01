@@ -17,8 +17,8 @@ public class ScheduledTasksServiceImpl implements ScheduledTasksService {
     @Autowired
     private InvoiceService invoiceService;
 
-    // runs every 1 second
-    @Scheduled(fixedDelay = 1000)
+    // runs every 30 minutes
+    @Scheduled(fixedDelay = 30*60*1000)
     @Override
     public void updateAllAppointmentsStatuses(){
      appointmentService.updateAllAppointmentsStatuses();
