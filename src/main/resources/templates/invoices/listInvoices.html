@@ -15,6 +15,7 @@
                 <th> Issued</th>
                 <th> Status</th>
                 <th> Total price</th>
+                <th> Customer</th>
                 <th> Action</th>
             </tr>
             </thead>
@@ -28,6 +29,7 @@
                 </td>
                 <td><span th:text="${invoice.status}"> paid </span></td>
                 <td><span th:text="${invoice.totalAmount +' PLN'}"> 60.00 PLN</span></td>
+                <td><span th:text="${invoice.appointments[0].customer.firstName + ' '+invoice.appointments[0].customer.lastName}">Jan Kowalski</span></td>
                 <td>
                     <a class="btn btn-secondary" th:href="@{'/invoices/download/' + ${invoice.id}}" role="button">Download</a>
                     <form th:if="${invoice.status=='issued'}" class="d-inline-block"
