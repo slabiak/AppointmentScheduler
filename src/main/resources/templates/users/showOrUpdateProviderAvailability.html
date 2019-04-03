@@ -19,6 +19,7 @@
             </thead>
             <form th:action="@{/providers/availability}" method="POST" th:object="${plan}">
                 <input type="hidden" th:field="*{id}" th:value="${plan.id}">
+                <input type="hidden" th:field="*{provider.id}" th:value="${plan.provider.id}">
                 <tr>
                     <td>Monday</td>
                     <td><input type="time" th:field="*{monday.workingHours.start}"

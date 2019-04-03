@@ -14,7 +14,6 @@ import com.example.slabiak.appointmentscheduler.service.AppointmentService;
 import com.example.slabiak.appointmentscheduler.service.EmailService;
 import com.example.slabiak.appointmentscheduler.service.UserService;
 import com.example.slabiak.appointmentscheduler.service.WorkService;
-import org.hibernate.Session;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PostAuthorize;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -104,19 +103,27 @@ public class AppointmentServiceImpl implements AppointmentService {
     }
 
     @Override
-    public List<TimePeroid> getAvailableTimePeroidsForProvider(int providerId, int workId, LocalDate date){
+    public List<Appointment> getAppointmentsByCustomerAtDay(int providerId, LocalDate day) {
+        return appointmentRepository.findByCustomerIdWithStartInPeroid(providerId,day.atStartOfDay(), day.atStartOfDay().plusHours(24));
+    }
+
+    @Override
+    public List<TimePeroid> getAvailableHours(int providerId,int customerId, int workId, LocalDate date){
         Provider p = userService.getProviderById(providerId);
        WorkingPlan workingPlan = p.getWorkingPlan();
         DayPlan selectedDay = workingPlan.getDay(date.getDayOfWeek().toString().toLowerCase());
 
-        List<Appointment> providerAppointments = getAppointmentsByProviderAtDay(p.getId(),date);
-
+        List<Appointment> providerAppointments = getAppointmentsByProviderAtDay(providerId,date);
+        List<Appointment> customerAppointments = getAppointmentsByCustomerAtDay(customerId,date);
         List<TimePeroid> availablePeroids = new ArrayList<TimePeroid>();
         // get peroids from working hours for selected day excluding breaks
 
         availablePeroids = selectedDay.getTimePeroidsWithBreaksExcluded();
         // exclude provider's appointments from available peroids
         availablePeroids = excludeAppointmentsFromTimePeroids(availablePeroids,providerAppointments);
+
+        //exclude customer's appointments from available peroids
+        availablePeroids = excludeAppointmentsFromTimePeroids(availablePeroids,customerAppointments);
        return calculateAvailableHours(availablePeroids,workService.getWorkById(workId));
        // return availablePeroids;
     }
@@ -403,7 +410,7 @@ public class AppointmentServiceImpl implements AppointmentService {
         }
         Work work = workService.getWorkById(workId);
         TimePeroid timePeroid = new TimePeroid(start.toLocalTime(),start.toLocalTime().plusMinutes(work.getDuration()));
-        if(!getAvailableTimePeroidsForProvider(providerId,workId,start.toLocalDate()).contains(timePeroid)){
+        if(!getAvailableHours(providerId,customerId,workId,start.toLocalDate()).contains(timePeroid)){
             return false;
         }
         return true;

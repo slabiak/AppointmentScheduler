@@ -21,10 +21,11 @@ public interface AppointmentService {
     List<Appointment> getAppointmentByCustomerId(int customerId);
     List<Appointment> getAppointmentByProviderId(int providerId);
     List<Appointment> getAppointmentsByProviderAtDay(int providerId, LocalDate day);
+    List<Appointment> getAppointmentsByCustomerAtDay(int providerId, LocalDate day);
     List<Appointment> getConfirmedAppointmentsByCustomerId(int customerId);
     List<Appointment> getCanceledAppointmentsByCustomerIdForCurrentMonth(int userId);
 
-    List<TimePeroid> getAvailableTimePeroidsForProvider(int providerId, int workId, LocalDate date);
+    List<TimePeroid> getAvailableHours(int providerId,int customerId, int workId, LocalDate date);
     List<TimePeroid> calculateAvailableHours(List<TimePeroid> availableTimePeroids, Work work);
     List<TimePeroid> excludeAppointmentsFromTimePeroids(List<TimePeroid> peroids, List<Appointment> appointments);
 
