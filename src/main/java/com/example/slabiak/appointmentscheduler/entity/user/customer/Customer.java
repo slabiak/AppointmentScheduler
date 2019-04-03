@@ -28,6 +28,15 @@ public class Customer extends User {
     }
 
 
+    public String getType(){
+        if (super.hasRole("ROLE_CUSTOMER_CORPORATE")){
+            return "corporate";
+        } else if(super.hasRole("ROLE_CUSTOMER_RETAIL")){
+            return "retail";
+        }
+        return "";
+    }
+
     public List<Appointment> getAppointments() {
         return appointments;
     }
