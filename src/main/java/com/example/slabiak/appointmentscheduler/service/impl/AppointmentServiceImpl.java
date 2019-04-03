@@ -355,8 +355,13 @@ public class AppointmentServiceImpl implements AppointmentService {
         User user = userService.getUserById(userId);
         Appointment appointment = getAppointmentById(appointmentId);
 
+        // conditions for admin
+        if (user.hasRole("ROLE_ADMIN")) {
+            return "Only customer or provider can cancel appointments";
+        }
+
         // conditions for provider
-        if (appointment.getProvider().equals(user) || user.hasRole("ROLE_ADMIN")) {
+        if (appointment.getProvider().equals(user)) {
             if (!appointment.getStatus().equals("scheduled")) {
                 return "Only appoinmtents with scheduled status can be cancelled.";
             } else {
