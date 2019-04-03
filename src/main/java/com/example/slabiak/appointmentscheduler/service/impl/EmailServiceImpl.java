@@ -7,6 +7,7 @@ import com.example.slabiak.appointmentscheduler.util.PdfGeneratorUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.thymeleaf.context.Context;
 import org.thymeleaf.spring5.SpringTemplateEngine;
@@ -32,6 +33,7 @@ public class EmailServiceImpl implements EmailService {
     @Autowired
     PdfGeneratorUtil pdfGenaratorUtil;
 
+    @Async
     @Override
     public void sendEmail(String to, String subject,String templateName, Context templateContext,File attachment) {
         MimeMessage message = javaMailSender.createMimeMessage();
@@ -59,7 +61,7 @@ public class EmailServiceImpl implements EmailService {
         }
 
     }
-
+    @Async
     @Override
     public void sendAppointmentFinishedNotification(Appointment appointment) {
         Context context = new Context();
@@ -67,7 +69,7 @@ public class EmailServiceImpl implements EmailService {
         context.setVariable("url", "http://localhost:8080/appointments/reject?token="+jwtTokenService.generateAppointmentRejectionToken(appointment));
         sendEmail(appointment.getCustomer().getEmail(),"Finished appointment summary","appointmentFinished",context,null);
     }
-
+    @Async
     @Override
     public void sendAppointmentRejectionRequestedNotification(Appointment appointment) {
         Context context = new Context();
@@ -75,14 +77,14 @@ public class EmailServiceImpl implements EmailService {
         context.setVariable("url", "http://localhost:8080/appointments/acceptRejection?token="+jwtTokenService.generateAcceptRejectionToken(appointment));
         sendEmail(appointment.getProvider().getEmail(),"Rejection requested","appointmentRejectionRequested",context,null);
     }
-
+    @Async
     @Override
     public void sendNewAppointmentScheduledNotification(Appointment appointment) {
         Context context = new Context();
         context.setVariable("appointment",appointment);
         sendEmail(appointment.getProvider().getEmail(),"New appointment booked","newAppointmentScheduled",context,null);
     }
-
+    @Async
     @Override
     public void sendAppointmentCanceledByCustomerNotification(Appointment appointment) {
         Context context = new Context();
@@ -90,7 +92,7 @@ public class EmailServiceImpl implements EmailService {
         context.setVariable("canceler","customer");
         sendEmail(appointment.getProvider().getEmail(),"Appointment canceled by Customer","appointmentCanceled",context,null);
     }
-
+    @Async
     @Override
     public void sendAppointmentCanceledByProviderNotification(Appointment appointment) {
         Context context = new Context();
@@ -99,7 +101,7 @@ public class EmailServiceImpl implements EmailService {
         sendEmail(appointment.getCustomer().getEmail(),"Appointment canceled by Provider","appointmentCanceled",context,null);
     }
 
-
+    @Async
     @Override
     public void sendInvoice(Invoice invoice) {
         Context context = new Context();
@@ -112,7 +114,7 @@ public class EmailServiceImpl implements EmailService {
         }
 
     }
-
+    @Async
     @Override
     public void sendAppointmentRejectionAcceptedNotification(Appointment appointment) {
             Context context = new Context();
