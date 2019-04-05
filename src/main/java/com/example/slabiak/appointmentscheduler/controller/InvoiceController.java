@@ -38,6 +38,12 @@ public class InvoiceController {
         return "redirect:/invoices/all";
     }
 
+    @RequestMapping("/issue")
+    public String issueInvoicesManually(Model model){
+        invoiceService.issueInvoicesForConfirmedAppointments();
+        return "redirect:/invoices/all";
+    }
+
     @RequestMapping("/download/{invoiceId}")
     public ResponseEntity<InputStreamResource> downloadInvoice(@PathVariable("invoiceId") int invoiceId,@AuthenticationPrincipal CustomUserDetails currentUser) {
             try {
