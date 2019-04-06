@@ -8,6 +8,7 @@
 The live demo app of this app is deployed and can be found [here](https://appointmentscheduler.tslabiak.me/) 
 
 You can use the following credentials with live demo:
+
 | Account type | Username | Password 
 | --- | --- | --- |
 | `admin` | admin | qwerty123 |
@@ -83,6 +84,7 @@ This function works as follow:
 
 ## Appointments lifecycle
 **1. Every appointment has it's own status. Below you can find description for every possible status:**
+
 | Status | Set by | When | Condition |
 | --- | --- | --- | -- |
 | `scheudled` |system | New appointment is created | -|
