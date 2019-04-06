@@ -229,7 +229,7 @@ INSERT INTO `roles` (id,name) VALUES
 INSERT INTO `users` (id,username,password) VALUES
 	(1,'admin','$2a$10$EqKcp1WFKVQISheBxkQJoOqFbsWDzGJXRz/tjkGq85IZKJJ1IipYi');
 
--- ASSIGN role admin to admin account   
+-- ASSIGN role admin to admin account
 INSERT INTO `users_roles` (user_id,role_id) VALUES
 	(1,1);
 
