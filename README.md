@@ -5,7 +5,7 @@
 <a href="https://www.appointmentscheduler.tslabiak.me/"><img src="https://tslabiak.me/images/appointmentscheduler/calendar.png" width="600"></a>
 ## Demo
 
-The live demo app of this app is deployed and can be found [here](https://appointmentscheduler.tslabiak.me/) 
+The live demo of this app is deployed and can be found [here](https://appointmentscheduler.tslabiak.me/) 
 
 You can use the following credentials with live demo:
 
