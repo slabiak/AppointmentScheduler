@@ -29,10 +29,10 @@ import java.util.Optional;
 public class InvoiceServiceImpl implements InvoiceService {
 
     @Autowired
-    InvoiceRepository invoiceRepository;
+    private InvoiceRepository invoiceRepository;
 
     @Autowired
-    PdfGeneratorUtil pdfGeneratorUtil;
+    private PdfGeneratorUtil pdfGeneratorUtil;
 
     @Autowired
     private UserService userService;

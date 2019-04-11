@@ -10,7 +10,7 @@ import javax.validation.ConstraintValidatorContext;
 public class UniqueUsernameValidator implements ConstraintValidator<UniqueUsername, Object> {
 
     @Autowired
-    UserService userService;
+    private UserService userService;
 
     @Override
     public void initialize(final UniqueUsername constraintAnnotation) {

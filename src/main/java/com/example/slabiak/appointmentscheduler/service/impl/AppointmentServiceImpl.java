@@ -43,10 +43,10 @@ public class AppointmentServiceImpl implements AppointmentService {
     private ChatMessageRepository chatMessageRepository;
 
     @Autowired
-    EmailService emailService;
+    private EmailService emailService;
 
     @Autowired
-    JwtTokenServiceImpl jwtTokenService;
+    private JwtTokenServiceImpl jwtTokenService;
 
 
     public AppointmentServiceImpl() {

@@ -8,8 +8,8 @@ import javax.validation.ConstraintValidatorContext;
 
 public class FieldsMatchesValidator implements ConstraintValidator<FieldsMatches, Object> {
 
-    String field1;
-    String field2;
+    private String field1;
+    private String field2;
 
     @Override
     public void initialize(final FieldsMatches constraintAnnotation) {

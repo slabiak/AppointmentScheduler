@@ -31,7 +31,7 @@ public class EmailServiceImpl implements EmailService {
     private JwtTokenServiceImpl jwtTokenService;
 
     @Autowired
-    PdfGeneratorUtil pdfGenaratorUtil;
+    private PdfGeneratorUtil pdfGenaratorUtil;
 
     @Async
     @Override

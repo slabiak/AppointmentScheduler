@@ -17,10 +17,10 @@ import java.util.Optional;
 public class WorkServiceImpl implements WorkService {
     
     @Autowired
-    WorkRepository workRepository;
+    private WorkRepository workRepository;
 
     @Autowired
-    UserService userService;
+    private UserService userService;
 
     @Override
     @PreAuthorize("hasRole('ADMIN')")

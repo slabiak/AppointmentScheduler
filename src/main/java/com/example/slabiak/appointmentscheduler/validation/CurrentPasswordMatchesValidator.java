@@ -12,10 +12,10 @@ import javax.validation.ConstraintValidatorContext;
 public class CurrentPasswordMatchesValidator implements ConstraintValidator<CurrentPasswordMatches, Object> {
 
     @Autowired
-    PasswordEncoder passwordEncoder;
+    private PasswordEncoder passwordEncoder;
 
     @Autowired
-    UserService userService;
+    private UserService userService;
 
     @Override
     public void initialize(final CurrentPasswordMatches constraintAnnotation) {

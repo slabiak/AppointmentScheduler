@@ -32,22 +32,22 @@ import java.util.Optional;
 public class UserServiceImpl implements UserService {
 
     @Autowired
-    ProviderRepository providerRepository;
+    private ProviderRepository providerRepository;
 
     @Autowired
-    CustomerRepository customerRepository;
+    private CustomerRepository customerRepository;
 
     @Autowired
-    CorporateCustomerRepository corporateCustomerRepository;
+    private CorporateCustomerRepository corporateCustomerRepository;
 
     @Autowired
-    RetailCustomerRepository retailCustomerRepository;
+    private RetailCustomerRepository retailCustomerRepository;
 
     @Autowired
-    UserRepository userRepository;
+    private UserRepository userRepository;
 
     @Autowired
-    RoleRepository roleRepository;
+    private RoleRepository roleRepository;
 
     @Autowired
     private BCryptPasswordEncoder passwordEncoder;
