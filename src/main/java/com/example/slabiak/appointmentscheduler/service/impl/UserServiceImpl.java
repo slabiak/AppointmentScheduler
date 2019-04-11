@@ -230,7 +230,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public void saveNewProvider(UserForm userForm) {
-        WorkingPlan workingPlan = workingPlanService.generateDefaultWorkingPlan();
+        WorkingPlan workingPlan = WorkingPlan.generateDefaultWorkingPlan();
         Provider provider = new Provider(userForm,passwordEncoder.encode(userForm.getPassword()), getRolesForProvider(),workingPlan);
         providerRepository.save(provider);
     }

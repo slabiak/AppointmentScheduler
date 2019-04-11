@@ -7,6 +7,5 @@ public interface WorkingPlanService {
     void updateWorkingPlan(WorkingPlan workingPlan);
     void addBreakToWorkingPlan(TimePeroid breakToAdd, int planId, String dayOfWeek);
     void deleteBreakFromWorkingPlan(TimePeroid breakToDelete, int planId, String dayOfWeek);
-    WorkingPlan generateDefaultWorkingPlan();
     WorkingPlan getWorkingPlanByProviderId(int providerId);
 }

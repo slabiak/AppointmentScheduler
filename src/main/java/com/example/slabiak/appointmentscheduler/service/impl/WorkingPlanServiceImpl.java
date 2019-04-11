@@ -56,18 +56,6 @@ public class WorkingPlanServiceImpl implements WorkingPlanService {
         workingPlanRepository.save(workingPlan);
     }
 
-    @Override
-    public WorkingPlan generateDefaultWorkingPlan() {
-        WorkingPlan wp= new WorkingPlan();
-        wp.setMonday(new DayPlan(new TimePeroid(LocalTime.parse("06:00"),LocalTime.parse("18:00"))));
-        wp.setTuesday(new DayPlan(new TimePeroid(LocalTime.of(06,00),LocalTime.of(18,00))));
-        wp.setWednesday(new DayPlan(new TimePeroid(LocalTime.of(06,00),LocalTime.of(18,00))));
-        wp.setThursday(new DayPlan(new TimePeroid(LocalTime.of(06,00),LocalTime.of(18,00))));
-        wp.setFriday(new DayPlan(new TimePeroid(LocalTime.of(06,00),LocalTime.of(18,00))));
-        wp.setSaturday(new DayPlan(new TimePeroid(LocalTime.of(06,00),LocalTime.of(18,00))));
-        wp.setSunday(new DayPlan(new TimePeroid(LocalTime.of(06,00),LocalTime.of(18,00))));
-        return wp;
-    }
 
     @Override
     @PreAuthorize("#providerId == principal.id")

@@ -3,12 +3,14 @@ package com.example.slabiak.appointmentscheduler.entity;
 import com.example.slabiak.appointmentscheduler.entity.user.User;
 import com.example.slabiak.appointmentscheduler.entity.user.provider.Provider;
 import com.example.slabiak.appointmentscheduler.model.DayPlan;
+import com.example.slabiak.appointmentscheduler.model.TimePeroid;
 import com.vladmihalcea.hibernate.type.json.JsonStringType;
 import org.hibernate.annotations.Type;
 import org.hibernate.annotations.TypeDef;
 import org.hibernate.annotations.TypeDefs;
 
 import javax.persistence.*;
+import java.time.LocalTime;
 
 @TypeDefs(@TypeDef(name = "json", typeClass = JsonStringType.class))
 @Entity
@@ -155,5 +157,22 @@ public class WorkingPlan{
 
     public void setSunday(DayPlan sunday) {
         this.sunday = sunday;
+    }
+
+
+    public static WorkingPlan generateDefaultWorkingPlan() {
+        WorkingPlan wp= new WorkingPlan();
+        LocalTime defaultStartHour = LocalTime.parse("06:00");
+        LocalTime defaultEndHour = LocalTime.parse("18:00");
+        TimePeroid defaultWorkingPeroid = new TimePeroid(defaultStartHour, defaultEndHour);
+        DayPlan defaultDayPlan = new DayPlan(defaultWorkingPeroid);
+        wp.setMonday(defaultDayPlan);
+        wp.setTuesday(defaultDayPlan);
+        wp.setWednesday(defaultDayPlan);
+        wp.setThursday(defaultDayPlan);
+        wp.setFriday(defaultDayPlan);
+        wp.setSaturday(defaultDayPlan);
+        wp.setSunday(defaultDayPlan);
+        return wp;
     }
 }
