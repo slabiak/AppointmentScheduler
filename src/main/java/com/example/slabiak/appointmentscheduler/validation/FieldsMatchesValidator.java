@@ -8,21 +8,21 @@ import javax.validation.ConstraintValidatorContext;
 
 public class FieldsMatchesValidator implements ConstraintValidator<FieldsMatches, Object> {
 
-    private String field1;
-    private String field2;
+    private String field;
+    private String matchingField;
 
     @Override
     public void initialize(final FieldsMatches constraintAnnotation) {
-        field1 = constraintAnnotation.field1();
-        field2 = constraintAnnotation.field2();
+        field = constraintAnnotation.field();
+        matchingField = constraintAnnotation.matchingField();
     }
 
     @Override
     public boolean isValid(final Object obj, final ConstraintValidatorContext context) {
             Object field1Value = new BeanWrapperImpl(obj)
-                    .getPropertyValue(field1);
+                    .getPropertyValue(field);
             Object field2Value = new BeanWrapperImpl(obj)
-                    .getPropertyValue(field2);
+                    .getPropertyValue(matchingField);
 
             if (field1Value != null) {
                 return field1Value.equals(field2Value);

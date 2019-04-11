@@ -12,7 +12,7 @@ import com.example.slabiak.appointmentscheduler.validation.groups.*;
 import javax.validation.constraints.*;
 import java.util.List;
 
-@FieldsMatches(field1 = "password",field2 = "matchingPassword",groups= {CreateUser.class})
+@FieldsMatches(field = "password", matchingField = "matchingPassword",groups= {CreateUser.class})
 public class UserForm {
 
     @NotNull(groups={UpdateUser.class})

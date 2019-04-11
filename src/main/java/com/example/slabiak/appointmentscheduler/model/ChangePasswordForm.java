@@ -8,7 +8,7 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
-@FieldsMatches(field1 = "password",field2 = "matchingPassword")
+@FieldsMatches(field = "password", matchingField = "matchingPassword")
 @CurrentPasswordMatches()
 public class ChangePasswordForm {
 

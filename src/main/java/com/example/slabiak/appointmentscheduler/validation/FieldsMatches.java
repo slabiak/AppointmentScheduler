@@ -12,8 +12,8 @@ import java.lang.annotation.Target;
 @Constraint(validatedBy = FieldsMatchesValidator.class)
 public @interface FieldsMatches {
 
-    String field1();
-    String field2();
+    String field();
+    String matchingField();
 
     String message() default "Passwords don't match";
 
