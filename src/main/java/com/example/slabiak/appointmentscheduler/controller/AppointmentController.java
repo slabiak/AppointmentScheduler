@@ -52,7 +52,7 @@ public class AppointmentController {
         model.addAttribute("allowedToRequestRejection",allowedToRequestRejection);
         model.addAttribute("allowedToAcceptRejection",allowedToAcceptRejection);
         if(allowedToRequestRejection){
-            model.addAttribute("remainingTime", formatDuration(Duration.between(LocalDateTime.now(),appointment.getEnd().plusHours(24))));
+            model.addAttribute("remainingTime", formatDuration(Duration.between(LocalDateTime.now(),appointment.getEnd().plusDays(1))));
         }
         String cancelNotAllowedReason = appointmentService.getCancelNotAllowedReason(currentUser.getId(), appointmentId);
         model.addAttribute("allowedToCancel", cancelNotAllowedReason == null);

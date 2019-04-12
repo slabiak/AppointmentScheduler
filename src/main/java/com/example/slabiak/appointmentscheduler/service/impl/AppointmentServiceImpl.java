@@ -99,12 +99,12 @@ public class AppointmentServiceImpl implements AppointmentService {
 
     @Override
     public List<Appointment> getAppointmentsByProviderAtDay(int providerId, LocalDate day) {
-        return appointmentRepository.findByProviderIdWithStartInPeroid(providerId,day.atStartOfDay(), day.atStartOfDay().plusHours(24));
+        return appointmentRepository.findByProviderIdWithStartInPeroid(providerId,day.atStartOfDay(), day.atStartOfDay().plusDays(1));
     }
 
     @Override
     public List<Appointment> getAppointmentsByCustomerAtDay(int providerId, LocalDate day) {
-        return appointmentRepository.findByCustomerIdWithStartInPeroid(providerId,day.atStartOfDay(), day.atStartOfDay().plusHours(24));
+        return appointmentRepository.findByCustomerIdWithStartInPeroid(providerId,day.atStartOfDay(), day.atStartOfDay().plusDays(1));
     }
 
     @Override
@@ -217,7 +217,7 @@ public class AppointmentServiceImpl implements AppointmentService {
          * find appointments which requires status change from finished to confirmed and change their status
          * (all appointments which have status 'finished' and their end date is more than 24 hours before current timestamp)
          * */
-        for(Appointment appointment: appointmentRepository.findFinishedByUserIdWithEndBeforeDate(LocalDateTime.now().minusHours(24),userId)){
+        for(Appointment appointment: appointmentRepository.findFinishedByUserIdWithEndBeforeDate(LocalDateTime.now().minusDays(1),userId)){
 
             appointment.setStatus("invoiced");
             updateAppointment(appointment);
@@ -238,7 +238,7 @@ public class AppointmentServiceImpl implements AppointmentService {
             * if it's less than 24h since the appointment finished, send him a link with a token that allows to deny that appointment took place
             * it it's more than 24h, dont send it cause it's to late to deny
             * */
-            if(LocalDateTime.now().minusHours(24).isBefore(appointment.getEnd())) {
+            if(LocalDateTime.now().minusDays(1).isBefore(appointment.getEnd())) {
                 emailService.sendAppointmentFinishedNotification(appointment);
             }
         }
@@ -246,7 +246,7 @@ public class AppointmentServiceImpl implements AppointmentService {
          * find appointments which requires status change from finished to confirmed and change their status
          * (all appointments which have status 'finished' and their end date is more than 24 hours before current timestamp)
          * */
-        for(Appointment appointment: appointmentRepository.findFinishedWithEndBeforeDate(LocalDateTime.now().minusHours(24))){
+        for(Appointment appointment: appointmentRepository.findFinishedWithEndBeforeDate(LocalDateTime.now().minusDays(1))){
             appointment.setStatus("confirmed");
             updateAppointment(appointment);
         }
@@ -285,7 +285,7 @@ public class AppointmentServiceImpl implements AppointmentService {
             return false;
         } else if(!appointment.getStatus().equals("finished")){
             return false;
-        } else if(LocalDateTime.now().isAfter(appointment.getEnd().plusHours(24))){
+        } else if(LocalDateTime.now().isAfter(appointment.getEnd().plusDays(1))){
             return false;
         }else{
             return true;
@@ -380,7 +380,7 @@ public class AppointmentServiceImpl implements AppointmentService {
         if (appointment.getCustomer().equals(user)) {
             if (!appointment.getStatus().equals("scheduled")) {
                 return "Only appoinmtents with scheduled status can be cancelled.";
-            } else if (LocalDateTime.now().plusHours(24).isAfter(appointment.getStart())) {
+            } else if (LocalDateTime.now().plusDays(1).isAfter(appointment.getStart())) {
                 return "Appointments which will be in less than 24 hours cannot be canceled.";
             } else if (!appointment.getWork().getEditable()) {
                 return "This type of appointment can be canceled only by Provider.";

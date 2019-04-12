@@ -25,7 +25,7 @@ public class JwtTokenServiceImpl implements JwtTokenService {
     @Override
     public String generateAppointmentRejectionToken(Appointment appointment){
         ZoneId zoneId = ZoneId.of("Europe/Warsaw");
-        Date expiryDate = convertLocalDateTimeToDate(appointment.getEnd().plusHours(24));
+        Date expiryDate = convertLocalDateTimeToDate(appointment.getEnd().plusDays(1));
         return Jwts.builder()
                 .claim("appointmentId",appointment.getId())
                 .claim("customerId",appointment.getCustomer().getId())
