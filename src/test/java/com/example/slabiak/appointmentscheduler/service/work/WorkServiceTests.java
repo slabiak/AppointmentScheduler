@@ -1,4 +1,4 @@
-package com.example.slabiak.appointmentscheduler.work;
+package com.example.slabiak.appointmentscheduler.service.work;
 
 import com.example.slabiak.appointmentscheduler.dao.WorkRepository;
 import com.example.slabiak.appointmentscheduler.entity.Work;
@@ -16,6 +16,7 @@ import java.util.Optional;
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
+import static org.mockito.internal.verification.VerificationModeFactory.times;
 
 @RunWith(MockitoJUnitRunner.class)
 public class WorkServiceTests {
@@ -39,25 +40,25 @@ public class WorkServiceTests {
     @Test
     public void shouldSaveWork(){
         workService.createNewWork(work);
-        verify(workRepository).save(work);
+        verify(workRepository,times(1)).save(work);
     }
 
     @Test
-    public void shouldFindById() {
+    public void shouldFindWorkById() {
         when(workRepository.findById(1)).thenReturn(workOptional);
         assertEquals(workOptional.get(), workService.getWorkById(1));
-        verify(workRepository).findById(1);
+        verify(workRepository,times(1)).findById(1);
     }
 
     @Test
-    public void shouldFindAllAppointments(){
+    public void shouldFindAllWorks(){
         when(workRepository.findAll()).thenReturn(works);
         assertEquals(works,workService.getAllWorks());
-        verify(workRepository).findAll();
+        verify(workRepository,times(1)).findAll();
     }
 
     @Test
-    public void shouldDeleteById() {
+    public void shouldDeleteWorkById() {
         workService.deleteWorkById(1);
         verify(workRepository).deleteById(1);
     }
