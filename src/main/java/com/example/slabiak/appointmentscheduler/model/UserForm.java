@@ -16,6 +16,7 @@ import java.util.List;
 public class UserForm {
 
     @NotNull(groups={UpdateUser.class})
+    @Min(value=1,groups = {UpdateUser.class})
     private int id;
 
     @UniqueUsername(groups = {CreateUser.class})
@@ -42,6 +43,7 @@ public class UserForm {
     private String email;
 
     @Pattern(groups = {CreateUser.class,UpdateUser.class},regexp = "[0-9]{9}",message = "Please enter valid mobile phone")
+    @NotBlank(groups = {CreateUser.class,UpdateUser.class},message = "Mobile phone cannot be empty")
     private String mobile;
 
     @Size(groups = {CreateUser.class,UpdateUser.class},min=5, max=30, message = "Wrong street!")
@@ -49,6 +51,7 @@ public class UserForm {
     private String street;
 
     @Pattern(groups = {CreateUser.class,UpdateUser.class},regexp="[0-9]{2}-[0-9]{3}",message = "Please enter valid postcode")
+    @NotBlank(groups = {CreateUser.class,UpdateUser.class},message = "Post code cannot be empty")
     private String postcode;
 
     @NotBlank(groups = {CreateUser.class,UpdateUser.class},message = "City cannot be empty")
@@ -61,6 +64,7 @@ public class UserForm {
     private String companyName;
 
     @Pattern(groups = {CreateCorporateCustomer.class,UpdateCorporateCustomer.class},regexp = "[0-9]{10}",message = "Please enter valid Polish VAT number")
+    @NotBlank(groups = {CreateCorporateCustomer.class,UpdateCorporateCustomer.class},message = "VAT number cannot be empty")
     private String vatNumber;
 
     /*
