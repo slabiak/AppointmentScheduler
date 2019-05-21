@@ -217,6 +217,23 @@ CREATE TABLE IF NOT EXISTS `customers` (
 	ENGINE = InnoDB
   DEFAULT CHARSET = utf8;
 
+CREATE TABLE IF NOT EXISTS `notifications` (
+	`id` INT(11) NOT NULL AUTO_INCREMENT,
+	`message` TEXT,
+  `created_at` DATETIME,
+	`is_read` BOOLEAN,
+  `id_user` INT(11),
+  PRIMARY KEY (`id`),
+	KEY `id_user` (`id_user`),
+
+	CONSTRAINT `FK_notification_user` FOREIGN KEY (`id_user`)
+  REFERENCES `users` (`id`)
+	ON DELETE NO ACTION
+  ON UPDATE NO ACTION
+)
+  ENGINE = InnoDB
+  DEFAULT CHARSET = utf8;
+
 -- INSERT available roles
 INSERT INTO `roles` (id,name) VALUES
   (1,'ROLE_ADMIN'),
