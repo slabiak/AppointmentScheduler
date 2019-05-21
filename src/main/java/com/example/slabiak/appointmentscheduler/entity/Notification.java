@@ -9,6 +9,9 @@ import java.util.Date;
 @Table(name="notifications")
 public class Notification extends BaseEntity {
 
+    @Column(name="title")
+    private String title;
+
     @Column(name="message")
     private String message;
 
@@ -31,6 +34,13 @@ public class Notification extends BaseEntity {
         this.isRead = false;
     }
 
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
 
     public String getMessage() {
         return message;

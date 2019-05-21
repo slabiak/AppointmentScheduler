@@ -219,6 +219,7 @@ CREATE TABLE IF NOT EXISTS `customers` (
 
 CREATE TABLE IF NOT EXISTS `notifications` (
 	`id` INT(11) NOT NULL AUTO_INCREMENT,
+	`title` VARCHAR(256),
 	`message` TEXT,
   `created_at` DATETIME,
 	`is_read` BOOLEAN,

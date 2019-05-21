@@ -4,6 +4,6 @@ import com.example.slabiak.appointmentscheduler.entity.user.User;
 
 public interface NotificationService {
 
-    void notify(String message, User user);
+    void notify(String title, String message, User user);
     void markAsRead(int notificationId);
 }
