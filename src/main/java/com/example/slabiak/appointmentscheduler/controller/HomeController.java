@@ -33,4 +33,12 @@ public class HomeController {
         return "access-denied";
     }
 
+    @GetMapping("/notifications")
+    public String showUserNotifications(Model model,@AuthenticationPrincipal CustomUserDetails currentUser) {
+        model.addAttribute("notifications",userService.getUserById(currentUser.getId()).getNotifications());
+        return "notifications/listNotifications";
+    }
+
+
+
 }
