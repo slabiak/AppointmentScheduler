@@ -81,6 +81,27 @@
     <th:block th:include="${content}"/>
 </div>
 
+<script th:inline="javascript">
+    function fetchdata(){
+        $.ajax({
+            url: '/api/user/notifications',
+            type: 'get',
+            success: function(data){
+                document.getElementById("notifications_count").textContent=data;
+            },
+            complete:function(data){
+                setTimeout(fetchdata,5000);
+            }
+        });
+    }
+
+    $(document).ready(function(){
+        fetchdata();
+        setTimeout(fetchdata,5000);
+    });
+
+</script>
+
 </body>
 
 </html>
