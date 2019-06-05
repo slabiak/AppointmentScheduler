@@ -75,7 +75,7 @@
                 <ul class="navbar-nav ml-auto">
                     <li class="nav-item dropdown dropdown-notifications open">
                         <a href="#notifications-panel" class="nav-link dropdown-toggle" data-toggle="dropdown">
-                            <i data-count="2" class="fas fa-bell notification-icon" aria-label="Nofitication centre"></i>
+                            <i id="notifications-count" data-count="2" class="fas fa-bell" aria-label="Nofitication centre"></i>
                         </a>
                     </li>
                     <li>
@@ -105,7 +105,14 @@
             url: '/api/user/notifications',
             type: 'get',
             success: function(data){
-                document.getElementById("notifications_count").textContent=data;
+                var elemennt = document.getElementById("notifications-count");
+                if(data>0){
+                    elemennt.setAttribute("data-count",data);
+                    elemennt.className = "fas fa-bell notification-icon";
+                } else{
+                    elemennt.setAttribute("data-count",0);
+                    elemennt.className = "fas fa-bell";
+                }
             },
             complete:function(data){
                 setTimeout(fetchdata,5000);
