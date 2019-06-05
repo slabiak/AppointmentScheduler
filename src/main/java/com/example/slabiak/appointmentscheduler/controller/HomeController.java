@@ -1,8 +1,10 @@
 package com.example.slabiak.appointmentscheduler.controller;
 
 import com.example.slabiak.appointmentscheduler.security.CustomUserDetails;
+import com.example.slabiak.appointmentscheduler.service.NotificationService;
 import com.example.slabiak.appointmentscheduler.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -13,6 +15,9 @@ public class HomeController {
 
     @Autowired
     private UserService userService;
+
+    @Autowired
+    private NotificationService notificationService;
 
     @GetMapping("/")
     public String showHome(Model model,@AuthenticationPrincipal CustomUserDetails currentUser) {
@@ -35,6 +40,7 @@ public class HomeController {
 
     @GetMapping("/notifications")
     public String showUserNotifications(Model model,@AuthenticationPrincipal CustomUserDetails currentUser) {
+        notificationService.markAllAsRead(currentUser.getId());
         model.addAttribute("notifications",userService.getUserById(currentUser.getId()).getNotifications());
         return "notifications/listNotifications";
     }

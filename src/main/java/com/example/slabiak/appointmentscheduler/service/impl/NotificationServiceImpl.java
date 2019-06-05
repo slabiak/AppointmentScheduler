@@ -38,6 +38,15 @@ public class NotificationServiceImpl implements NotificationService {
     }
 
     @Override
+    public void markAllAsRead(int userId) {
+        List<Notification> notifications = notificationRepository.getAllUnreadNotifications(userId);
+        for(Notification notification : notifications){
+            notification.setRead(true);
+            notificationRepository.save(notification);
+        }
+    }
+
+    @Override
     public List<Notification> getAll(int userId) {
         return userService.getUserById(userId).getNotifications();
     }
