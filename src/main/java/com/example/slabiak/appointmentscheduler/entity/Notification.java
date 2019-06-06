@@ -18,6 +18,9 @@ public class Notification extends BaseEntity {
     @Column(name="created_at")
     private Date createdAt;
 
+    @Column(name="url")
+    private String url;
+
     @Column(name="is_read")
     private boolean isRead;
 
@@ -27,11 +30,10 @@ public class Notification extends BaseEntity {
 
     public Notification(){}
 
-    public Notification(String message,Date createdAt,User user){
+    public Notification(String title, String message,Date createdAt, String url, User user){
         this.message = message;
         this.createdAt = createdAt;
         this.user = user;
-        this.isRead = false;
     }
 
     public String getTitle() {
@@ -56,6 +58,14 @@ public class Notification extends BaseEntity {
 
     public void setCreatedAt(Date createdAt) {
         this.createdAt = createdAt;
+    }
+
+    public String getUrl() {
+        return url;
+    }
+
+    public void setUrl(String url) {
+        this.url = url;
     }
 
     public User getUser() {

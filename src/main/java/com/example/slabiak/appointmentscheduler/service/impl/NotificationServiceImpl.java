@@ -21,9 +21,10 @@ public class NotificationServiceImpl implements NotificationService {
     private UserService userService;
 
     @Override
-    public void notify(String title, String message, User user) {
+    public void notify(String title, String message, String url, User user) {
         Notification notification = new Notification();
         notification.setTitle(title);
+        notification.setUrl(url);
         notification.setCreatedAt(new Date());
         notification.setMessage(message);
         notification.setUser(user);

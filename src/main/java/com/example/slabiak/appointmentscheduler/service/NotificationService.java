@@ -7,7 +7,7 @@ import java.util.List;
 
 public interface NotificationService {
 
-    void notify(String title, String message, User user);
+    void notify(String title, String message, String url, User user);
     void markAsRead(int notificationId);
     void markAllAsRead(int userId);
     List<Notification> getAll(int userId);

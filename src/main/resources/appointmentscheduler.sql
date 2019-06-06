@@ -222,6 +222,7 @@ CREATE TABLE IF NOT EXISTS `notifications` (
 	`title` VARCHAR(256),
 	`message` TEXT,
   `created_at` DATETIME,
+  `url` VARCHAR(256),
 	`is_read` BOOLEAN,
   `id_user` INT(11),
   PRIMARY KEY (`id`),
