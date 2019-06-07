@@ -48,6 +48,11 @@ public class NotificationServiceImpl implements NotificationService {
     }
 
     @Override
+    public Notification getNotificationById(int notificationId) {
+        return notificationRepository.getOne(notificationId);
+    }
+
+    @Override
     public List<Notification> getAll(int userId) {
         return userService.getUserById(userId).getNotifications();
     }
