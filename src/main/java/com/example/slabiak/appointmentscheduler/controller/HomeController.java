@@ -16,9 +16,6 @@ public class HomeController {
     @Autowired
     private UserService userService;
 
-    @Autowired
-    private NotificationService notificationService;
-
     @GetMapping("/")
     public String showHome(Model model,@AuthenticationPrincipal CustomUserDetails currentUser) {
         model.addAttribute("user",userService.getUserById(currentUser.getId()));
@@ -38,12 +35,6 @@ public class HomeController {
         return "access-denied";
     }
 
-    @GetMapping("/notifications")
-    public String showUserNotifications(Model model,@AuthenticationPrincipal CustomUserDetails currentUser) {
-        notificationService.markAllAsRead(currentUser.getId());
-        model.addAttribute("notifications",userService.getUserById(currentUser.getId()).getNotifications());
-        return "notifications/listNotifications";
-    }
 
 
 
