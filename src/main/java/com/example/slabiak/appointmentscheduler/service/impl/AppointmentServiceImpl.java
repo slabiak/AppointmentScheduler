@@ -10,10 +10,7 @@ import com.example.slabiak.appointmentscheduler.entity.user.User;
 import com.example.slabiak.appointmentscheduler.entity.user.provider.Provider;
 import com.example.slabiak.appointmentscheduler.model.DayPlan;
 import com.example.slabiak.appointmentscheduler.model.TimePeroid;
-import com.example.slabiak.appointmentscheduler.service.AppointmentService;
-import com.example.slabiak.appointmentscheduler.service.EmailService;
-import com.example.slabiak.appointmentscheduler.service.UserService;
-import com.example.slabiak.appointmentscheduler.service.WorkService;
+import com.example.slabiak.appointmentscheduler.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PostAuthorize;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -44,6 +41,9 @@ public class AppointmentServiceImpl implements AppointmentService {
 
     @Autowired
     private EmailService emailService;
+
+    @Autowired
+    private NotificationService notificationService;
 
     @Autowired
     private JwtTokenServiceImpl jwtTokenService;
@@ -125,7 +125,6 @@ public class AppointmentServiceImpl implements AppointmentService {
         //exclude customer's appointments from available peroids
         availablePeroids = excludeAppointmentsFromTimePeroids(availablePeroids,customerAppointments);
        return calculateAvailableHours(availablePeroids,workService.getWorkById(workId));
-       // return availablePeroids;
     }
 
     @Override
@@ -141,6 +140,8 @@ public class AppointmentServiceImpl implements AppointmentService {
             appointment.setEnd(start.plusMinutes(work.getDuration()));
             appointmentRepository.save(appointment);
             emailService.sendNewAppointmentScheduledNotification(appointment);
+            notificationService.notify("New appointment","New appointment with "+appointment.getCustomer().getFirstName() + " on "+appointment.getStart(),"/appointments/"+appointment.getId(),appointment.getProvider());
+
         } else{
             throw new RuntimeException();
         }
