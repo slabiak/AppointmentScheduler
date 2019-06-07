@@ -31,11 +31,16 @@ public class NotificationServiceImpl implements NotificationService {
         notificationRepository.save(notification);
     }
 
+
     @Override
-    public void markAsRead(int notificationId) {
+    public void markAsRead(int notificationId, int userId) {
         Notification notification = notificationRepository.getOne(notificationId);
-        notification.setRead(true);
-        notificationRepository.save(notification);
+        if(notification.getUser().getId()==userId) {
+            notification.setRead(true);
+            notificationRepository.save(notification);
+        } else{
+            throw new org.springframework.security.access.AccessDeniedException("Unauthorized");
+        }
     }
 
     @Override

@@ -30,7 +30,7 @@
                 <td><span th:text="${#dates.format(notification.createdAt, 'dd-MMM-yyyy')}"> 01-01-2019 </span></td>
                 <td><span th:text="${notification.title}"> New appointment </span></td>
                 <td><span th:text="${notification.message}"> meesage</span></td>
-                <td><a th:href="@{${notification.url}}">See</a></td>
+                <td><a th:href="@{'/notifications/'+${notification.id}}">See</a></td>
                 <td><span th:text="${notification.isRead()}">true</span></td>
 
             </tr>

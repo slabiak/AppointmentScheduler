@@ -8,7 +8,7 @@ import java.util.List;
 public interface NotificationService {
 
     void notify(String title, String message, String url, User user);
-    void markAsRead(int notificationId);
+    void markAsRead(int notificationId, int userId);
     void markAllAsRead(int userId);
     Notification getNotificationById(int notificationId);
     List<Notification> getAll(int userId);
