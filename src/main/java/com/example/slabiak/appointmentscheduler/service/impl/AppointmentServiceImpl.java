@@ -151,6 +151,7 @@ public class AppointmentServiceImpl implements AppointmentService {
             chatMessage.setAppointment(appointment);
             chatMessage.setCreatedAt(LocalDateTime.now());
             chatMessageRepository.save(chatMessage);
+            notificationService.newChatMessageNotification(chatMessage,true);
         } else{
             throw new org.springframework.security.access.AccessDeniedException("Unauthorized");
         }

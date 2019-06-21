@@ -1,6 +1,7 @@
 package com.example.slabiak.appointmentscheduler.service;
 
 import com.example.slabiak.appointmentscheduler.entity.Appointment;
+import com.example.slabiak.appointmentscheduler.entity.ChatMessage;
 import com.example.slabiak.appointmentscheduler.entity.Invoice;
 import org.thymeleaf.context.Context;
 
@@ -15,4 +16,5 @@ public interface EmailService {
     void sendAppointmentCanceledByProviderNotification(Appointment appointment);
     void sendInvoice(Invoice invoice);
     void sendAppointmentRejectionAcceptedNotification(Appointment appointment);
+    void sendNewChatMessageNotification(ChatMessage appointment);
 }

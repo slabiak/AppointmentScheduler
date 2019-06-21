@@ -2,6 +2,7 @@ package com.example.slabiak.appointmentscheduler.service.impl;
 
 import com.example.slabiak.appointmentscheduler.dao.NotificationRepository;
 import com.example.slabiak.appointmentscheduler.entity.Appointment;
+import com.example.slabiak.appointmentscheduler.entity.ChatMessage;
 import com.example.slabiak.appointmentscheduler.entity.Invoice;
 import com.example.slabiak.appointmentscheduler.entity.Notification;
 import com.example.slabiak.appointmentscheduler.entity.user.User;
@@ -150,6 +151,17 @@ public class NotificationServiceImpl implements NotificationService {
         newNotification(title,message,url,appointment.getCustomer());
         if(sendEmail){
             emailService.sendAppointmentRejectionAcceptedNotification(appointment);
+        }
+    }
+
+    @Override
+    public void newChatMessageNotification(ChatMessage chatMessage, boolean sendEmail) {
+        String title = "New chat message";
+        String message = "You have new chat message from " +chatMessage.getAuthor().getFirstName() +" regarding appointment scheduled at "+ chatMessage.getAppointment().getStart();
+        String url = "/appointments/"+chatMessage.getAppointment().getId();
+        newNotification(title,message,url,chatMessage.getAuthor() == chatMessage.getAppointment().getProvider()? chatMessage.getAppointment().getCustomer(): chatMessage.getAppointment().getProvider());
+        if(sendEmail){
+            emailService.sendNewChatMessageNotification(chatMessage);
         }
     }
 

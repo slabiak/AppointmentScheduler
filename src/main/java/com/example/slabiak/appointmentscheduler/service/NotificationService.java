@@ -1,6 +1,7 @@
 package com.example.slabiak.appointmentscheduler.service;
 
 import com.example.slabiak.appointmentscheduler.entity.Appointment;
+import com.example.slabiak.appointmentscheduler.entity.ChatMessage;
 import com.example.slabiak.appointmentscheduler.entity.Invoice;
 import com.example.slabiak.appointmentscheduler.entity.Notification;
 import com.example.slabiak.appointmentscheduler.entity.user.User;
@@ -22,5 +23,6 @@ public interface NotificationService {
     void newAppointmentCanceledByCustomerNotification(Appointment appointment,boolean sendEmail);
     void newAppointmentCanceledByProviderNotification(Appointment appointment, boolean sendEmail);
     void newAppointmentRejectionAcceptedNotification(Appointment appointment, boolean sendEmail);
+    void newChatMessageNotification(ChatMessage chatMessage, boolean sendEmail);
     void newInvoice(Invoice invoice,boolean sendEmail);
 }
