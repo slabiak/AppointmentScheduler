@@ -5,6 +5,7 @@ import com.example.slabiak.appointmentscheduler.model.AppointmentRegisterForm;
 import com.example.slabiak.appointmentscheduler.model.TimePeroid;
 import com.example.slabiak.appointmentscheduler.security.CustomUserDetails;
 import com.example.slabiak.appointmentscheduler.service.AppointmentService;
+import com.example.slabiak.appointmentscheduler.service.NotificationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -23,27 +24,36 @@ public class AjaxController {
     @Autowired
     private AppointmentService appointmentService;
 
+    @Autowired
+    private NotificationService notificationService;
+
 
     @GetMapping("/user/{userId}/appointments")
-    List<Appointment> getAppointmentsForUser(@PathVariable("userId") int userId,@AuthenticationPrincipal CustomUserDetails currentUser) {
+    List<Appointment> getAppointmentsForUser(@PathVariable("userId") int userId, @AuthenticationPrincipal CustomUserDetails currentUser) {
         if (currentUser.hasRole("ROLE_CUSTOMER")) {
             return appointmentService.getAppointmentByCustomerId(userId);
-        } else if(currentUser.hasRole("ROLE_PROVIDER"))
+        } else if (currentUser.hasRole("ROLE_PROVIDER"))
             return appointmentService.getAppointmentByProviderId(userId);
-        else if(currentUser.hasRole("ROLE_ADMIN"))
+        else if (currentUser.hasRole("ROLE_ADMIN"))
             return appointmentService.getAllAppointments();
         else return null;
     }
 
     @GetMapping("/availableHours/{providerId}/{workId}/{date}")
-    List<AppointmentRegisterForm> getAvailableHours(@PathVariable("providerId") int providerId, @PathVariable("workId") int workId, @PathVariable("date") String date,@AuthenticationPrincipal CustomUserDetails currentUser) {
+    List<AppointmentRegisterForm> getAvailableHours(@PathVariable("providerId") int providerId, @PathVariable("workId") int workId, @PathVariable("date") String date, @AuthenticationPrincipal CustomUserDetails currentUser) {
         LocalDate localDate = LocalDate.parse(date);
-        List<TimePeroid> peroids = appointmentService.getAvailableHours(providerId,currentUser.getId(),workId,localDate);
+        List<TimePeroid> peroids = appointmentService.getAvailableHours(providerId, currentUser.getId(), workId, localDate);
         List<AppointmentRegisterForm> appointments = new ArrayList<>();
-        for(TimePeroid peroid:peroids){
-            appointments.add(new AppointmentRegisterForm(workId,providerId,peroid.getStart().atDate(localDate),peroid.getEnd().atDate(localDate)));
+        for (TimePeroid peroid : peroids) {
+            appointments.add(new AppointmentRegisterForm(workId, providerId, peroid.getStart().atDate(localDate), peroid.getEnd().atDate(localDate)));
         }
         return appointments;
     }
+
+    @GetMapping("/user/notifications")
+    int getUnreadNotificationsCount(@AuthenticationPrincipal CustomUserDetails currentUser) {
+        return notificationService.getUnreadNotifications(currentUser.getId()).size();
+    }
+
 
 }

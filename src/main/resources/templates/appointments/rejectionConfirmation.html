@@ -9,8 +9,8 @@
 <div class="row align-items-center justify-content-center" style="margin-top: 50px">
 <div th:if="${type == 'request'}">
     <div th:if="${result}">
-        <p>Appointment status has been succesfully set to rejected </p>
-        <p>It will be not invoiced.</p>
+        <p>You succesfully requested rejection for this appointment. </p>
+        <p>If provider will confirm that it will be not invoiced.</p>
     </div>
 
     <div th:if="${result==false}">

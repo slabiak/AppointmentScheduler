@@ -1,8 +1,10 @@
 package com.example.slabiak.appointmentscheduler.controller;
 
 import com.example.slabiak.appointmentscheduler.security.CustomUserDetails;
+import com.example.slabiak.appointmentscheduler.service.NotificationService;
 import com.example.slabiak.appointmentscheduler.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -32,5 +34,8 @@ public class HomeController {
     public String showAccessDeniedPage() {
         return "access-denied";
     }
+
+
+
 
 }

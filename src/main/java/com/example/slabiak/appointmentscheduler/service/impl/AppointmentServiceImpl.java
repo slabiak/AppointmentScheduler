@@ -10,10 +10,7 @@ import com.example.slabiak.appointmentscheduler.entity.user.User;
 import com.example.slabiak.appointmentscheduler.entity.user.provider.Provider;
 import com.example.slabiak.appointmentscheduler.model.DayPlan;
 import com.example.slabiak.appointmentscheduler.model.TimePeroid;
-import com.example.slabiak.appointmentscheduler.service.AppointmentService;
-import com.example.slabiak.appointmentscheduler.service.EmailService;
-import com.example.slabiak.appointmentscheduler.service.UserService;
-import com.example.slabiak.appointmentscheduler.service.WorkService;
+import com.example.slabiak.appointmentscheduler.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PostAuthorize;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -43,7 +40,7 @@ public class AppointmentServiceImpl implements AppointmentService {
     private ChatMessageRepository chatMessageRepository;
 
     @Autowired
-    private EmailService emailService;
+    private NotificationService notificationService;
 
     @Autowired
     private JwtTokenServiceImpl jwtTokenService;
@@ -125,7 +122,6 @@ public class AppointmentServiceImpl implements AppointmentService {
         //exclude customer's appointments from available peroids
         availablePeroids = excludeAppointmentsFromTimePeroids(availablePeroids,customerAppointments);
        return calculateAvailableHours(availablePeroids,workService.getWorkById(workId));
-       // return availablePeroids;
     }
 
     @Override
@@ -140,7 +136,7 @@ public class AppointmentServiceImpl implements AppointmentService {
             appointment.setStart(start);
             appointment.setEnd(start.plusMinutes(work.getDuration()));
             appointmentRepository.save(appointment);
-            emailService.sendNewAppointmentScheduledNotification(appointment);
+            notificationService.newNewAppointmentScheduledNotification(appointment,true);
         } else{
             throw new RuntimeException();
         }
@@ -155,6 +151,7 @@ public class AppointmentServiceImpl implements AppointmentService {
             chatMessage.setAppointment(appointment);
             chatMessage.setCreatedAt(LocalDateTime.now());
             chatMessageRepository.save(chatMessage);
+            notificationService.newChatMessageNotification(chatMessage,true);
         } else{
             throw new org.springframework.security.access.AccessDeniedException("Unauthorized");
         }
@@ -239,7 +236,7 @@ public class AppointmentServiceImpl implements AppointmentService {
             * it it's more than 24h, dont send it cause it's to late to deny
             * */
             if(LocalDateTime.now().minusDays(1).isBefore(appointment.getEnd())) {
-                emailService.sendAppointmentFinishedNotification(appointment);
+                notificationService.newAppointmentFinishedNotification(appointment,true);
             }
         }
          /*
@@ -263,9 +260,9 @@ public class AppointmentServiceImpl implements AppointmentService {
             appointment.setCanceledAt(LocalDateTime.now());
             appointmentRepository.save(appointment);
             if(canceler.equals(appointment.getCustomer())){
-                emailService.sendAppointmentCanceledByCustomerNotification(appointment);
+                notificationService.newAppointmentCanceledByCustomerNotification(appointment,true);
             } else if(canceler.equals(appointment.getProvider())){
-                emailService.sendAppointmentCanceledByProviderNotification(appointment);
+                notificationService.newAppointmentCanceledByProviderNotification(appointment,true);
             }
         }else{
             throw new org.springframework.security.access.AccessDeniedException("Unauthorized");
@@ -297,7 +294,7 @@ public class AppointmentServiceImpl implements AppointmentService {
         if(isCustomerAllowedToRejectAppointment(customerId,appointmentId)){
             Appointment appointment = getAppointmentById(appointmentId);
             appointment.setStatus("rejection requested");
-            emailService.sendAppointmentRejectionRequestedNotification(appointment);
+            notificationService.newAppointmentRejectionRequestedNotification(appointment,true);
             updateAppointment(appointment);
             return true;
         } else {
@@ -340,7 +337,7 @@ public class AppointmentServiceImpl implements AppointmentService {
             Appointment appointment = getAppointmentById(appointmentId);
             appointment.setStatus("rejected");
             updateAppointment(appointment);
-            emailService.sendAppointmentRejectionAcceptedNotification(appointment);
+            notificationService.newAppointmentRejectionAcceptedNotification(appointment,true);
             return true;
         } else{
             return false;

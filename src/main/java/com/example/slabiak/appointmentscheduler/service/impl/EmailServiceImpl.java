@@ -1,7 +1,9 @@
 package com.example.slabiak.appointmentscheduler.service.impl;
 
 import com.example.slabiak.appointmentscheduler.entity.Appointment;
+import com.example.slabiak.appointmentscheduler.entity.ChatMessage;
 import com.example.slabiak.appointmentscheduler.entity.Invoice;
+import com.example.slabiak.appointmentscheduler.entity.user.User;
 import com.example.slabiak.appointmentscheduler.service.EmailService;
 import com.example.slabiak.appointmentscheduler.util.PdfGeneratorUtil;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -120,5 +122,16 @@ public class EmailServiceImpl implements EmailService {
             Context context = new Context();
             context.setVariable("appointment",appointment);
             sendEmail(appointment.getCustomer().getEmail(),"Rejection request accepted","appointmentRejectionAccepted",context,null);
+    }
+
+    @Async
+    @Override
+    public void sendNewChatMessageNotification(ChatMessage chatMessage) {
+        Context context = new Context();
+        User recipent =chatMessage.getAuthor() == chatMessage.getAppointment().getProvider()? chatMessage.getAppointment().getCustomer(): chatMessage.getAppointment().getProvider();
+        context.setVariable("recipent",recipent);
+        context.setVariable("appointment",chatMessage.getAppointment());
+        context.setVariable("url","http://localhost:8080/appointments/"+chatMessage.getAppointment().getId());
+        sendEmail(recipent.getEmail(),"New chat message","newChatMessage",context,null);
     }
 }

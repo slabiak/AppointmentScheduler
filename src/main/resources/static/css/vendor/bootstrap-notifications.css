@@ -1,0 +1,105 @@
+.notifications {
+  list-style: none;
+  padding: 0; }
+
+.notification {
+  display: block;
+  padding: 0.8em;
+  border-width: 0 0 1px 0;
+  border-style: solid;
+  border-color: #e9ecef;
+  background-color: #ffffff;
+  color: #212529;
+  text-decoration: none; }
+  .notification:last-child {
+    border-bottom: 0;
+    border-radius: 0 0 0.25rem 0.25rem; }
+  .notification:hover, .notification.active:hover {
+    background-color: #f9f9f9;
+    border-color: #dee2e6;
+    text-decoration: none; }
+  .notification.active {
+    background-color: #efefef; }
+
+.notification-title {
+  font-size: 1em;
+  margin-bottom: 0; }
+
+.notification-desc {
+  margin-bottom: 0;
+  font-size: 0.94em; }
+
+.notification-meta {
+  color: #868e96; }
+
+.dropdown-notifications > .dropdown-container,
+.dropdown-notifications > .dropdown-menu {
+  width: 450px;
+  max-width: 450px; }
+
+.dropdown-notifications > .dropdown-container {
+  margin-top: 0.6rem; }
+
+.dropdown-notifications .dropdown-menu {
+  padding: 0; }
+
+.dropdown-notifications .dropdown-toolbar,
+.dropdown-notifications .dropdown-footer {
+  padding: 0.8em; }
+
+.dropdown-notifications .dropdown-toolbar {
+  background: #ffffff; }
+
+.dropdown-notifications .dropdown-footer {
+  background: #ced4da; }
+
+.dropdown-notifications .dropdown-toggle::after {
+  display: none; }
+
+.navbar .dropdown-notifications .dropdown-menu {
+  position: static; }
+
+.notification-icon {
+  margin-right: 0.49125rem;
+  vertical-align: middle; }
+
+.notification-icon:after {
+  position: absolute;
+  content: attr(data-count);
+  margin-left: -0.49125rem;
+  margin-top: -0.49125rem;
+  padding: 0 4px;
+  min-width: 0.9825rem;
+  height: 0.9825rem;
+  line-height: 0.9825rem;
+  background: red;
+  border-radius: 10px;
+  color: #ffffff;
+  text-align: center;
+  vertical-align: middle;
+  font-size: 0.786rem;
+  font-weight: 600;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol"; }
+
+.notification .media-body {
+  padding-top: 0; }
+
+.btn-lg .notification-icon:after {
+  margin-left: -0.5895rem;
+  margin-top: -0.5895rem;
+  min-width: 1.179rem;
+  height: 1.179rem;
+  line-height: 1.179rem;
+  font-size: 0.9825rem; }
+
+.btn-xs .notification-icon:after {
+  content: '';
+  margin-left: -0.29475rem;
+  margin-top: -0.147375rem;
+  min-width: 0.4465909091rem;
+  height: 0.4465909091rem;
+  line-height: 0.4465909091rem;
+  padding: 0; }
+
+.btn-xs .notification-icon {
+  margin-right: 0.245625rem; }

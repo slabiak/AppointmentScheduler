@@ -6,10 +6,7 @@ import com.example.slabiak.appointmentscheduler.entity.Invoice;
 import com.example.slabiak.appointmentscheduler.entity.user.User;
 import com.example.slabiak.appointmentscheduler.entity.user.customer.Customer;
 import com.example.slabiak.appointmentscheduler.security.CustomUserDetails;
-import com.example.slabiak.appointmentscheduler.service.AppointmentService;
-import com.example.slabiak.appointmentscheduler.service.EmailService;
-import com.example.slabiak.appointmentscheduler.service.InvoiceService;
-import com.example.slabiak.appointmentscheduler.service.UserService;
+import com.example.slabiak.appointmentscheduler.service.*;
 import com.example.slabiak.appointmentscheduler.util.PdfGeneratorUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -41,7 +38,7 @@ public class InvoiceServiceImpl implements InvoiceService {
     private AppointmentService appointmentService;
 
     @Autowired
-    private EmailService emailService;
+    private NotificationService notificationService;
 
     @Override
     public String generateInvoiceNumber() {
@@ -129,7 +126,7 @@ public class InvoiceServiceImpl implements InvoiceService {
                 }
                 Invoice invoice = new Invoice(generateInvoiceNumber(),"issued",LocalDateTime.now(),appointmentsToIssueInvoice);
                 invoiceRepository.save(invoice);
-                emailService.sendInvoice(invoice);
+                notificationService.newInvoice(invoice,true);
             }
 
         }

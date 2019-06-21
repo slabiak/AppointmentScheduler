@@ -1,10 +1,12 @@
 package com.example.slabiak.appointmentscheduler.entity.user;
 
 import com.example.slabiak.appointmentscheduler.entity.BaseEntity;
+import com.example.slabiak.appointmentscheduler.entity.Notification;
 import com.example.slabiak.appointmentscheduler.model.UserForm;
 
 import javax.persistence.*;
 import java.util.Collection;
+import java.util.List;
 
 
 @Entity
@@ -38,6 +40,9 @@ public class User extends BaseEntity {
 
     @Column(name = "postcode")
     private String postcode;
+
+    @OneToMany(mappedBy = "user")
+    private List<Notification> notifications;
 
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(name = "users_roles", joinColumns = @JoinColumn(name = "user_id"), inverseJoinColumns = @JoinColumn(name = "role_id"))
@@ -167,5 +172,13 @@ public class User extends BaseEntity {
 
         else return false;
 
+    }
+
+    public List<Notification> getNotifications() {
+        return notifications;
+    }
+
+    public void setNotifications(List<Notification> notifications) {
+        this.notifications = notifications;
     }
 }

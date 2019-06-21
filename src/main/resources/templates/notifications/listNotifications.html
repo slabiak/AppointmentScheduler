@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{fragments/layout :: layout (~{::body},'notifications','Notifications List')}"
+      xmlns:sec="http://www.w3.org/1999/xhtml">
+
+<body>
+
+
+<div class="row align-items-center justify-content-center" style="margin-top: 50px">
+
+
+    <div>
+        <table id="notifications" class="table table-striped text-center mt-2">
+
+            <thead class="thead-dark">
+
+            <tr >
+                <th> Date</th>
+                <th> Title</th>
+                <th> Message</th>
+                <th> Action </th>
+                <th> Seen</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:if="${notifications == null}">
+                <td colspan="4"> No notifications available</td>
+            </tr>
+            <tr th:each="notification : ${notifications}">
+                <td><span th:text="${#dates.format(notification.createdAt, 'dd-MMM-yyyy')}"> 01-01-2019 </span></td>
+                <td><span th:text="${notification.title}"> New appointment </span></td>
+                <td><span th:text="${notification.message}"> meesage</span></td>
+                <td><a th:href="@{'/notifications/'+${notification.id}}">See</a></td>
+                <td><span th:text="${notification.isRead()}">true</span></td>
+
+            </tr>
+            </tbody>
+        </table>
+    </div>
+
+</div>
+</body>
+</html>
