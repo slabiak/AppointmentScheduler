@@ -17,6 +17,12 @@
     <!--DataTables CSS-->
     <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.19/css/jquery.dataTables.css">
 
+    <link rel="stylesheet" th:href="@{/css/vendor/bootstrap-notifications.css}"/>
+
+
+    <!--font awesome-->
+    <script src="https://kit.fontawesome.com/56438f342e.js"></script>
+
     <!--jQuery-->
     <script src="/webjars/jquery/3.3.1-2/jquery.min.js"></script>
     <!-- Bootstrap core JavaScript -->
@@ -28,6 +34,8 @@
     <!--DataTables-->
     <script type="text/javascript" charset="utf8"
             src="https://cdn.datatables.net/1.10.19/js/jquery.dataTables.js"></script>
+
+
 
 
 </head>
@@ -57,9 +65,19 @@
                 <!-- menu for admin-->
                 <div th:replace="fragments/admin-nav.html :: navlinks(${activeLink})"></div>
             </th:block>
+            <!--notifications-->
 
+
+
+
+            <!--notifications-->
             <div class="collapse navbar-collapse">
                 <ul class="navbar-nav ml-auto">
+                    <li class="nav-item dropdown dropdown-notifications open">
+                        <a th:href="@{/notifications}" class="nav-link dropdown-toggle">
+                            <i id="notifications-count" data-count="2" class="fas fa-bell" aria-label="Nofitication centre"></i>
+                        </a>
+                    </li>
                     <li>
                         <p class="navbar-nav ml-auto navbar-text"> Logged as:
                             <span sec:authentication="name">username</span> | </p>
@@ -80,6 +98,34 @@
 <div class="container">
     <th:block th:include="${content}"/>
 </div>
+
+<script th:inline="javascript">
+    function fetchdata(){
+        $.ajax({
+            url: '/api/user/notifications',
+            type: 'get',
+            success: function(data){
+                var elemennt = document.getElementById("notifications-count");
+                if(data>0){
+                    elemennt.setAttribute("data-count",data);
+                    elemennt.className = "fas fa-bell notification-icon";
+                } else{
+                    elemennt.setAttribute("data-count",0);
+                    elemennt.className = "fas fa-bell";
+                }
+            },
+            complete:function(data){
+                setTimeout(fetchdata,5000);
+            }
+        });
+    }
+
+    $(document).ready(function(){
+        fetchdata();
+        setTimeout(fetchdata,5000);
+    });
+
+</script>
 
 </body>
 
