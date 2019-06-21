@@ -40,9 +40,6 @@ public class AppointmentServiceImpl implements AppointmentService {
     private ChatMessageRepository chatMessageRepository;
 
     @Autowired
-    private EmailService emailService;
-
-    @Autowired
     private NotificationService notificationService;
 
     @Autowired
@@ -139,9 +136,7 @@ public class AppointmentServiceImpl implements AppointmentService {
             appointment.setStart(start);
             appointment.setEnd(start.plusMinutes(work.getDuration()));
             appointmentRepository.save(appointment);
-            emailService.sendNewAppointmentScheduledNotification(appointment);
-            notificationService.notify("New appointment","New appointment with "+appointment.getCustomer().getFirstName() + " on "+appointment.getStart(),"/appointments/"+appointment.getId(),appointment.getProvider());
-
+            notificationService.newNewAppointmentScheduledNotification(appointment,true);
         } else{
             throw new RuntimeException();
         }
@@ -240,7 +235,7 @@ public class AppointmentServiceImpl implements AppointmentService {
             * it it's more than 24h, dont send it cause it's to late to deny
             * */
             if(LocalDateTime.now().minusDays(1).isBefore(appointment.getEnd())) {
-                emailService.sendAppointmentFinishedNotification(appointment);
+                notificationService.newAppointmentFinishedNotification(appointment,true);
             }
         }
          /*
@@ -264,9 +259,9 @@ public class AppointmentServiceImpl implements AppointmentService {
             appointment.setCanceledAt(LocalDateTime.now());
             appointmentRepository.save(appointment);
             if(canceler.equals(appointment.getCustomer())){
-                emailService.sendAppointmentCanceledByCustomerNotification(appointment);
+                notificationService.newAppointmentCanceledByCustomerNotification(appointment,true);
             } else if(canceler.equals(appointment.getProvider())){
-                emailService.sendAppointmentCanceledByProviderNotification(appointment);
+                notificationService.newAppointmentCanceledByProviderNotification(appointment,true);
             }
         }else{
             throw new org.springframework.security.access.AccessDeniedException("Unauthorized");
@@ -298,7 +293,7 @@ public class AppointmentServiceImpl implements AppointmentService {
         if(isCustomerAllowedToRejectAppointment(customerId,appointmentId)){
             Appointment appointment = getAppointmentById(appointmentId);
             appointment.setStatus("rejection requested");
-            emailService.sendAppointmentRejectionRequestedNotification(appointment);
+            notificationService.newAppointmentRejectionRequestedNotification(appointment,true);
             updateAppointment(appointment);
             return true;
         } else {
@@ -341,7 +336,7 @@ public class AppointmentServiceImpl implements AppointmentService {
             Appointment appointment = getAppointmentById(appointmentId);
             appointment.setStatus("rejected");
             updateAppointment(appointment);
-            emailService.sendAppointmentRejectionAcceptedNotification(appointment);
+            notificationService.newAppointmentRejectionAcceptedNotification(appointment,true);
             return true;
         } else{
             return false;
