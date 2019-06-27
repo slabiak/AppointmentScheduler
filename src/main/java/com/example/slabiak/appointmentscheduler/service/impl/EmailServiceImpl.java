@@ -134,4 +134,14 @@ public class EmailServiceImpl implements EmailService {
         context.setVariable("url","http://localhost:8080/appointments/"+chatMessage.getAppointment().getId());
         sendEmail(recipent.getEmail(),"New chat message","newChatMessage",context,null);
     }
+
+    @Async
+    @Override
+    public void sendNewExchangeRequestedNotification(Appointment oldAppointment, Appointment newAppointment) {
+        Context context = new Context();
+        context.setVariable("oldAppointment",oldAppointment);
+        context.setVariable("newAppointment",newAppointment);
+        context.setVariable("url","http://localhost:8080/appointments/"+newAppointment.getId());
+        sendEmail(newAppointment.getCustomer().getEmail(),"New Appointment Exchange Request","newExchangeRequest",context,null);
+    }
 }

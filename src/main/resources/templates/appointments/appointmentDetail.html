@@ -45,7 +45,7 @@
                         <td><b>canceled by</b></td>
                         <td><span
                                 th:text="${appointment.canceler.firstName+' '+appointment.canceler.lastName}">Canceller
-                                    name
+                            name</span>
                         </td>
 
                     </tr>
@@ -89,6 +89,16 @@
                         <td><a th:href="@{'/invoices/download/'+${appointment.invoice.id}}">download</a></td>
                     </tr>
 
+                    <tr>
+                        <td><b>exchange</b></td>
+                        <td th:if="${allowedToExchange}">
+                            <a th:href="@{'/exchange/'+${appointment.id}}">exchange</a>
+                        </td>
+                        <td th:unless="${allowedToExchange}">
+                            <p>This appointment cannot be exchanged.</p>
+                        </td>
+                    </tr>
+                    
                     <tr>
                         <td><b>cancellation</b></td>
                         <td th:if="${allowedToCancel}">

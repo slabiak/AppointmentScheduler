@@ -25,4 +25,6 @@ public interface NotificationService {
     void newAppointmentRejectionAcceptedNotification(Appointment appointment, boolean sendEmail);
     void newChatMessageNotification(ChatMessage chatMessage, boolean sendEmail);
     void newInvoice(Invoice invoice,boolean sendEmail);
+
+    void newExchangeRequestedNotification(Appointment oldAppointment, Appointment newAppointment, boolean sendEmail);
 }

@@ -17,4 +17,5 @@ public interface EmailService {
     void sendInvoice(Invoice invoice);
     void sendAppointmentRejectionAcceptedNotification(Appointment appointment);
     void sendNewChatMessageNotification(ChatMessage appointment);
+    void sendNewExchangeRequestedNotification(Appointment oldAppointment, Appointment newAppointment);
 }

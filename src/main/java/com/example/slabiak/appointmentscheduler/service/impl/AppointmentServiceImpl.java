@@ -72,6 +72,21 @@ public class AppointmentServiceImpl implements AppointmentService {
     }
 
     @Override
+    public Appointment getAppointmentByIdWithoutAuthorization(int id) {
+        Optional<Appointment> result = appointmentRepository.findById(id);
+        Appointment appointment = null;
+
+        if (result.isPresent()) {
+            appointment = result.get();
+        }
+        else {
+            // todo throw new excep
+        }
+
+        return appointment;
+    }
+
+    @Override
     @PreAuthorize("hasRole('ADMIN')")
     public List<Appointment> getAllAppointments() {
         return appointmentRepository.findAll();

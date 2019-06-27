@@ -45,4 +45,7 @@ public interface AppointmentRepository  extends JpaRepository<Appointment, Integ
 
     @Query("select a from Appointment a where a.status = 'confirmed' and a.customer.id = :customerId")
     List<Appointment> findConfirmedByCustomerId(@Param("customerId")int customerId);
+
+    @Query("select a from Appointment a inner join a.work w where a.status = 'scheduled' and a.customer.id <> :customerId and a.provider.id= :providerId and a.start >= :start and w.id = :workId")
+    List<Appointment> getEligibleAppointmentsForExchange(@Param("start") LocalDateTime start,@Param("customerId") Integer customerId,@Param("providerId") Integer providerId,@Param("workId") Integer workId);
 }

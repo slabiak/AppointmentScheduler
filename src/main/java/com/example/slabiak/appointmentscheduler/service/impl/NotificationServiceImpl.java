@@ -144,6 +144,17 @@ public class NotificationServiceImpl implements NotificationService {
     }
 
     @Override
+    public void newExchangeRequestedNotification(Appointment oldAppointment, Appointment newAppointment, boolean sendEmail) {
+        String title = "Request for exchange";
+        String message = "One of the users sent you a request to exchange his appointment with your appointment";
+        String url = "/appointments/"+newAppointment.getId();
+        newNotification(title,message,url,newAppointment.getCustomer());
+        if(sendEmail){
+            emailService.sendNewExchangeRequestedNotification(oldAppointment, newAppointment);
+        }
+    }
+
+    @Override
     public void newAppointmentRejectionAcceptedNotification(Appointment appointment, boolean sendEmail) {
         String title = "Rejection accepted";
         String message = "You provider accepted your rejection request";
