@@ -10,21 +10,27 @@
 
 
     <div>
+        <div style="text-align:right">
+            <form th:action="@{/notifications/markAllAsRead}" id="markAllAsRead" method="POST">
+                <a class="btn btn-success" href="#"
+                   onclick="document.getElementById('markAllAsRead').submit(); return false;">Mark All As Read</a>
+            </form>
+        </div>
         <table id="notifications" class="table table-striped text-center mt-2">
 
             <thead class="thead-dark">
 
-            <tr >
+            <tr>
                 <th> Date</th>
                 <th> Title</th>
                 <th> Message</th>
-                <th> Action </th>
+                <th> Action</th>
                 <th> Seen</th>
             </tr>
             </thead>
             <tbody>
-            <tr th:if="${notifications == null}">
-                <td colspan="4"> No notifications available</td>
+            <tr th:if="${notifications.size()==0}">
+                <td colspan="5"> No notifications available</td>
             </tr>
             <tr th:each="notification : ${notifications}">
                 <td><span th:text="${#dates.format(notification.createdAt, 'dd-MMM-yyyy')}"> 01-01-2019 </span></td>
