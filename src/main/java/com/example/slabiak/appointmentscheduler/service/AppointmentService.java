@@ -14,6 +14,7 @@ public interface AppointmentService {
     void updateAppointment(Appointment appointment);
     void updateUserAppointmentsStatuses(int userId);
     void updateAllAppointmentsStatuses();
+    void updateAppointmentsStatusesWithExpiredExchangeRequest();
     void deleteAppointmentById(int appointmentId);
 
     Appointment getAppointmentById(int id);
