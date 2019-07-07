@@ -5,6 +5,7 @@ import com.example.slabiak.appointmentscheduler.dao.ExchangeRequestRepository;
 import com.example.slabiak.appointmentscheduler.entity.Appointment;
 import com.example.slabiak.appointmentscheduler.entity.ExchangeRequest;
 import com.example.slabiak.appointmentscheduler.entity.ExchangeStatus;
+import com.example.slabiak.appointmentscheduler.entity.user.customer.Customer;
 import com.example.slabiak.appointmentscheduler.service.ExchangeService;
 import com.example.slabiak.appointmentscheduler.service.NotificationService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -56,7 +57,36 @@ public class ExchangeServiceImpl implements ExchangeService {
     }
 
     @Override
-    public boolean requestChange(int oldAppointmentId, int newAppointmentId, int userId) {
+    public boolean acceptExchange(int exchangeId, int userId) {
+        ExchangeRequest exchangeRequest = exchangeRequestRepository.getOne(exchangeId);
+        Appointment requestor = exchangeRequest.getRequestor();
+        Appointment requested = exchangeRequest.getRequested();
+        Customer tempCustomer = requestor.getCustomer();
+        requestor.setStatus("scheduled");
+        exchangeRequest.setStatus(ExchangeStatus.ACCEPTED);
+        requestor.setCustomer(requested.getCustomer());
+        requested.setCustomer(tempCustomer);
+        exchangeRequestRepository.save(exchangeRequest);
+        appointmentRepository.save(requested);
+        appointmentRepository.save(requestor);
+        notificationService.newExchangeAcceptedNotification(exchangeRequest,true);
+        return true;
+    }
+
+    @Override
+    public boolean rejectExchange(int exchangeId, int userId) {
+        ExchangeRequest exchangeRequest = exchangeRequestRepository.getOne(exchangeId);
+        Appointment requestor = exchangeRequest.getRequestor();
+        exchangeRequest.setStatus(ExchangeStatus.REJECTED);
+        requestor.setStatus("scheduled");
+        exchangeRequestRepository.save(exchangeRequest);
+        appointmentRepository.save(requestor);
+        notificationService.newExchangeRejectedNotification(exchangeRequest,true);
+        return true;
+    }
+
+    @Override
+    public boolean requestExchange(int oldAppointmentId, int newAppointmentId, int userId) {
         if(checkIfExchangeIsPossible(oldAppointmentId,newAppointmentId,userId)){
             Appointment oldAppointment = appointmentRepository.getOne(oldAppointmentId);
             Appointment newAppointment = appointmentRepository.getOne(newAppointmentId);

@@ -1,9 +1,6 @@
 package com.example.slabiak.appointmentscheduler.service;
 
-import com.example.slabiak.appointmentscheduler.entity.Appointment;
-import com.example.slabiak.appointmentscheduler.entity.ChatMessage;
-import com.example.slabiak.appointmentscheduler.entity.Invoice;
-import com.example.slabiak.appointmentscheduler.entity.Notification;
+import com.example.slabiak.appointmentscheduler.entity.*;
 import com.example.slabiak.appointmentscheduler.entity.user.User;
 
 import java.util.List;
@@ -27,4 +24,6 @@ public interface NotificationService {
     void newInvoice(Invoice invoice,boolean sendEmail);
 
     void newExchangeRequestedNotification(Appointment oldAppointment, Appointment newAppointment, boolean sendEmail);
+    void newExchangeAcceptedNotification(ExchangeRequest exchangeRequest, boolean sendEmail);
+    void newExchangeRejectedNotification(ExchangeRequest exchangeRequest, boolean sendEmail);
 }

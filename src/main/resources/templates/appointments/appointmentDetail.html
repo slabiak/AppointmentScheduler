@@ -10,6 +10,18 @@
         <div class="row justify-content-center">
             <div clas="col-md-1">
             </div>
+            <div th:if="${appointment.exchangeRequest !=null && appointment.exchangeRequest.getStatus().name()== 'PENDING'}" class="col-md-9 p-3 mb-2 bg-warning text-dark text-center">
+                <p>Someone requested this appointment to be exchanged.</p>
+
+                <form th:action="@{/exchange/reject}" method='POST'>
+                    <input type="hidden" name="exchangeId" th:value="${appointment.exchangeRequest.id}">
+                    <input type="submit" class="btn btn-success" value="Reject" />
+                </form>
+                <form th:action="@{/exchange/accept}" method='POST'>
+                    <input type="hidden" name="exchangeId" th:value="${appointment.exchangeRequest.id}">
+                    <input type="submit" class="btn btn-success" value="Accept" />
+                </form>
+            </div>
             <div th:if="${allowedToRequestRejection}" class="col-md-9 p-3 mb-2 bg-warning text-dark text-center">
                 <p>You have <span class="font-weight-bold" th:text="${remainingTime}">3h 45m</span> to deny that
                     this appointment took place.</p>

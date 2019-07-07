@@ -161,4 +161,12 @@ public class Appointment extends BaseEntity implements Comparable<Appointment> {
     public void setInvoice(Invoice invoice) {
         this.invoice = invoice;
     }
+
+    public ExchangeRequest getExchangeRequest() {
+        return exchangeRequest;
+    }
+
+    public void setExchangeRequest(ExchangeRequest exchangeRequest) {
+        this.exchangeRequest = exchangeRequest;
+    }
 }

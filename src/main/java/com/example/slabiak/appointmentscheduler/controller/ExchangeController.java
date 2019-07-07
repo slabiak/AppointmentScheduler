@@ -45,13 +45,24 @@ public class ExchangeController {
 
     @PostMapping()
     public String processExchangeRequest(@RequestParam("oldAppointmentId") int oldAppointmentId, @RequestParam("newAppointmentId") int newAppointmentId, Model model, @AuthenticationPrincipal CustomUserDetails currentUser) {
-        boolean result = exchangeService.requestChange(oldAppointmentId,newAppointmentId,currentUser.getId());
+        boolean result = exchangeService.requestExchange(oldAppointmentId,newAppointmentId,currentUser.getId());
         if(result){
             model.addAttribute("message","Exchange request sucsessfully sent!");
         }else{
             model.addAttribute("message","Error! Exchange not sent!");
         }
         return "exchange/requestConfirmation";
+    }
 
+    @PostMapping("/accept")
+    public String processExchangeAcceptation(@RequestParam("exchangeId") int exchangeId,Model model, @AuthenticationPrincipal CustomUserDetails currentUser){
+        exchangeService.acceptExchange(exchangeId,currentUser.getId());
+        return "redirect:/appointments/all";
+    }
+
+    @PostMapping("/reject")
+    public String processExchangeRejection(@RequestParam("exchangeId") int exchangeId,Model model, @AuthenticationPrincipal CustomUserDetails currentUser){
+        exchangeService.rejectExchange(exchangeId,currentUser.getId());
+        return "redirect:/appointments/all";
     }
 }
