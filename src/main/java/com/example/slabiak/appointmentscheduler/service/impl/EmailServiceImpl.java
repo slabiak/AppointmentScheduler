@@ -2,6 +2,7 @@ package com.example.slabiak.appointmentscheduler.service.impl;
 
 import com.example.slabiak.appointmentscheduler.entity.Appointment;
 import com.example.slabiak.appointmentscheduler.entity.ChatMessage;
+import com.example.slabiak.appointmentscheduler.entity.ExchangeRequest;
 import com.example.slabiak.appointmentscheduler.entity.Invoice;
 import com.example.slabiak.appointmentscheduler.entity.user.User;
 import com.example.slabiak.appointmentscheduler.service.EmailService;
@@ -139,5 +140,31 @@ public class EmailServiceImpl implements EmailService {
         context.setVariable("appointment", chatMessage.getAppointment());
         context.setVariable("url", "http://localhost:8080/appointments/" + chatMessage.getAppointment().getId());
         sendEmail(recipent.getEmail(), "New chat message", "newChatMessage", context, null);
+    }
+
+    @Async
+    @Override
+    public void sendNewExchangeRequestedNotification(Appointment oldAppointment, Appointment newAppointment) {
+        Context context = new Context();
+        context.setVariable("oldAppointment",oldAppointment);
+        context.setVariable("newAppointment",newAppointment);
+        context.setVariable("url","http://localhost:8080/appointments/"+newAppointment.getId());
+        sendEmail(newAppointment.getCustomer().getEmail(),"New Appointment Exchange Request","newExchangeRequest",context,null);
+    }
+
+    @Override
+    public void sendExchangeRequestAcceptedNotification(ExchangeRequest exchangeRequest) {
+        Context context = new Context();
+        context.setVariable("exchangeRequest",exchangeRequest);
+        context.setVariable("url","http://localhost:8080/appointments/"+exchangeRequest.getRequested().getId());
+        sendEmail(exchangeRequest.getRequested().getCustomer().getEmail(),"Exchange request accepted","exchangeRequestAccepted",context,null);
+    }
+
+    @Override
+    public void sendExchangeRequestRejectedNotification(ExchangeRequest exchangeRequest) {
+        Context context = new Context();
+        context.setVariable("exchangeRequest",exchangeRequest);
+        context.setVariable("url","http://localhost:8080/appointments/"+exchangeRequest.getRequestor().getId());
+        sendEmail(exchangeRequest.getRequestor().getCustomer().getEmail(),"Exchange request rejected","exchangeRequestRejected",context,null);
     }
 }

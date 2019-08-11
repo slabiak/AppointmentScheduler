@@ -1,10 +1,7 @@
 package com.example.slabiak.appointmentscheduler.service.impl;
 
 import com.example.slabiak.appointmentscheduler.dao.NotificationRepository;
-import com.example.slabiak.appointmentscheduler.entity.Appointment;
-import com.example.slabiak.appointmentscheduler.entity.ChatMessage;
-import com.example.slabiak.appointmentscheduler.entity.Invoice;
-import com.example.slabiak.appointmentscheduler.entity.Notification;
+import com.example.slabiak.appointmentscheduler.entity.*;
 import com.example.slabiak.appointmentscheduler.entity.user.User;
 import com.example.slabiak.appointmentscheduler.service.EmailService;
 import com.example.slabiak.appointmentscheduler.service.NotificationService;
@@ -140,6 +137,39 @@ public class NotificationServiceImpl implements NotificationService {
         newNotification(title,message,url,invoice.getAppointments().get(0).getCustomer());
         if(sendEmail){
             emailService.sendInvoice(invoice);
+        }
+    }
+
+    @Override
+    public void newExchangeRequestedNotification(Appointment oldAppointment, Appointment newAppointment, boolean sendEmail) {
+        String title = "Request for exchange";
+        String message = "One of the users sent you a request to exchange his appointment with your appointment";
+        String url = "/appointments/"+newAppointment.getId();
+        newNotification(title,message,url,newAppointment.getCustomer());
+        if(sendEmail){
+            emailService.sendNewExchangeRequestedNotification(oldAppointment, newAppointment);
+        }
+    }
+
+    @Override
+    public void newExchangeAcceptedNotification(ExchangeRequest exchangeRequest, boolean sendEmail) {
+        String title = "Exchange request accepted";
+        String message = "Someone accepted your appointment exchange request from "+exchangeRequest.getRequested().getStart() +" to "+exchangeRequest.getRequestor().getStart();
+        String url = "/appointments/"+exchangeRequest.getRequested();
+        newNotification(title,message,url,exchangeRequest.getRequested().getCustomer());
+        if(sendEmail){
+            emailService.sendExchangeRequestAcceptedNotification(exchangeRequest);
+        }
+    }
+
+    @Override
+    public void newExchangeRejectedNotification(ExchangeRequest exchangeRequest, boolean sendEmail) {
+        String title = "Exchange request rejected";
+        String message = "Someone rejected your appointment exchange request from "+exchangeRequest.getRequestor().getStart() +" to "+exchangeRequest.getRequested().getStart();
+        String url = "/appointments/"+exchangeRequest.getRequestor();
+        newNotification(title,message,url,exchangeRequest.getRequestor().getCustomer());
+        if(sendEmail){
+            emailService.sendExchangeRequestRejectedNotification(exchangeRequest);
         }
     }
 

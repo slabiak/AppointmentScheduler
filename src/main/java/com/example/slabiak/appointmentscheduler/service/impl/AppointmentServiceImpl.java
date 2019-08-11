@@ -63,8 +63,21 @@ public class AppointmentServiceImpl implements AppointmentService {
 
         if (result.isPresent()) {
             appointment = result.get();
+        } else {
+            // todo throw new excep
         }
-        else {
+
+        return appointment;
+    }
+
+    @Override
+    public Appointment getAppointmentByIdWithoutAuthorization(int id) {
+        Optional<Appointment> result = appointmentRepository.findById(id);
+        Appointment appointment = null;
+
+        if (result.isPresent()) {
+            appointment = result.get();
+        } else {
             // todo throw new excep
         }
 
@@ -96,37 +109,37 @@ public class AppointmentServiceImpl implements AppointmentService {
 
     @Override
     public List<Appointment> getAppointmentsByProviderAtDay(int providerId, LocalDate day) {
-        return appointmentRepository.findByProviderIdWithStartInPeroid(providerId,day.atStartOfDay(), day.atStartOfDay().plusDays(1));
+        return appointmentRepository.findByProviderIdWithStartInPeroid(providerId, day.atStartOfDay(), day.atStartOfDay().plusDays(1));
     }
 
     @Override
     public List<Appointment> getAppointmentsByCustomerAtDay(int providerId, LocalDate day) {
-        return appointmentRepository.findByCustomerIdWithStartInPeroid(providerId,day.atStartOfDay(), day.atStartOfDay().plusDays(1));
+        return appointmentRepository.findByCustomerIdWithStartInPeroid(providerId, day.atStartOfDay(), day.atStartOfDay().plusDays(1));
     }
 
     @Override
-    public List<TimePeroid> getAvailableHours(int providerId,int customerId, int workId, LocalDate date){
+    public List<TimePeroid> getAvailableHours(int providerId, int customerId, int workId, LocalDate date) {
         Provider p = userService.getProviderById(providerId);
-       WorkingPlan workingPlan = p.getWorkingPlan();
+        WorkingPlan workingPlan = p.getWorkingPlan();
         DayPlan selectedDay = workingPlan.getDay(date.getDayOfWeek().toString().toLowerCase());
 
-        List<Appointment> providerAppointments = getAppointmentsByProviderAtDay(providerId,date);
-        List<Appointment> customerAppointments = getAppointmentsByCustomerAtDay(customerId,date);
+        List<Appointment> providerAppointments = getAppointmentsByProviderAtDay(providerId, date);
+        List<Appointment> customerAppointments = getAppointmentsByCustomerAtDay(customerId, date);
         List<TimePeroid> availablePeroids = new ArrayList<TimePeroid>();
         // get peroids from working hours for selected day excluding breaks
 
         availablePeroids = selectedDay.getTimePeroidsWithBreaksExcluded();
         // exclude provider's appointments from available peroids
-        availablePeroids = excludeAppointmentsFromTimePeroids(availablePeroids,providerAppointments);
+        availablePeroids = excludeAppointmentsFromTimePeroids(availablePeroids, providerAppointments);
 
         //exclude customer's appointments from available peroids
-        availablePeroids = excludeAppointmentsFromTimePeroids(availablePeroids,customerAppointments);
-       return calculateAvailableHours(availablePeroids,workService.getWorkById(workId));
+        availablePeroids = excludeAppointmentsFromTimePeroids(availablePeroids, customerAppointments);
+        return calculateAvailableHours(availablePeroids, workService.getWorkById(workId));
     }
 
     @Override
     public void createNewAppointment(int workId, int providerId, int customerId, LocalDateTime start) {
-        if(isAvailable(workId,providerId,customerId,start)){
+        if (isAvailable(workId, providerId, customerId, start)) {
             Appointment appointment = new Appointment();
             appointment.setStatus("scheduled");
             appointment.setCustomer(userService.getCustomerById(customerId));
@@ -136,8 +149,8 @@ public class AppointmentServiceImpl implements AppointmentService {
             appointment.setStart(start);
             appointment.setEnd(start.plusMinutes(work.getDuration()));
             appointmentRepository.save(appointment);
-            notificationService.newNewAppointmentScheduledNotification(appointment,true);
-        } else{
+            notificationService.newNewAppointmentScheduledNotification(appointment, true);
+        } else {
             throw new RuntimeException();
         }
 
@@ -146,24 +159,24 @@ public class AppointmentServiceImpl implements AppointmentService {
     @Override
     public void addMessageToAppointmentChat(int appointmentId, int authorId, ChatMessage chatMessage) {
         Appointment appointment = getAppointmentById(appointmentId);
-        if(appointment.getProvider().getId()==authorId || appointment.getCustomer().getId() == authorId){
+        if (appointment.getProvider().getId() == authorId || appointment.getCustomer().getId() == authorId) {
             chatMessage.setAuthor(userService.getUserById(authorId));
             chatMessage.setAppointment(appointment);
             chatMessage.setCreatedAt(LocalDateTime.now());
             chatMessageRepository.save(chatMessage);
-            notificationService.newChatMessageNotification(chatMessage,true);
-        } else{
+            notificationService.newChatMessageNotification(chatMessage, true);
+        } else {
             throw new org.springframework.security.access.AccessDeniedException("Unauthorized");
         }
     }
 
     @Override
-    public List<TimePeroid> calculateAvailableHours(List<TimePeroid> availableTimePeroids, Work work){
+    public List<TimePeroid> calculateAvailableHours(List<TimePeroid> availableTimePeroids, Work work) {
         ArrayList<TimePeroid> availableHours = new ArrayList<TimePeroid>();
-        for(TimePeroid peroid: availableTimePeroids){
-            TimePeroid workPeroid = new TimePeroid(peroid.getStart(),peroid.getStart().plusMinutes(work.getDuration()));
-            while(workPeroid.getEnd().isBefore(peroid.getEnd()) || workPeroid.getEnd().equals(peroid.getEnd())){
-                availableHours.add(new TimePeroid(workPeroid.getStart(),workPeroid.getStart().plusMinutes(work.getDuration())));
+        for (TimePeroid peroid : availableTimePeroids) {
+            TimePeroid workPeroid = new TimePeroid(peroid.getStart(), peroid.getStart().plusMinutes(work.getDuration()));
+            while (workPeroid.getEnd().isBefore(peroid.getEnd()) || workPeroid.getEnd().equals(peroid.getEnd())) {
+                availableHours.add(new TimePeroid(workPeroid.getStart(), workPeroid.getStart().plusMinutes(work.getDuration())));
                 workPeroid.setStart(workPeroid.getStart().plusMinutes(work.getDuration()));
                 workPeroid.setEnd(workPeroid.getEnd().plusMinutes(work.getDuration()));
             }
@@ -172,49 +185,49 @@ public class AppointmentServiceImpl implements AppointmentService {
     }
 
     @Override
-    public List<TimePeroid> excludeAppointmentsFromTimePeroids(List<TimePeroid> peroids, List<Appointment> appointments){
+    public List<TimePeroid> excludeAppointmentsFromTimePeroids(List<TimePeroid> peroids, List<Appointment> appointments) {
 
-            List<TimePeroid> toAdd = new ArrayList<TimePeroid>();
-            Collections.sort(appointments);
-            for(Appointment appointment: appointments){
-                for(TimePeroid peroid:peroids){
-                    if((appointment.getStart().toLocalTime().isBefore(peroid.getStart()) || appointment.getStart().toLocalTime().equals(peroid.getStart())) && appointment.getEnd().toLocalTime().isAfter(peroid.getStart()) && appointment.getEnd().toLocalTime().isBefore(peroid.getEnd())){
-                        peroid.setStart(appointment.getEnd().toLocalTime());
-                    }
-                    if(appointment.getStart().toLocalTime().isAfter(peroid.getStart())&& appointment.getStart().toLocalTime().isBefore(peroid.getEnd()) && appointment.getEnd().toLocalTime().isAfter(peroid.getEnd()) || appointment.getEnd().toLocalTime().equals(peroid.getEnd())){
-                        peroid.setEnd(appointment.getStart().toLocalTime());
-                    }
-                    if(appointment.getStart().toLocalTime().isAfter(peroid.getStart()) && appointment.getEnd().toLocalTime().isBefore(peroid.getEnd())){
-                        toAdd.add(new TimePeroid(peroid.getStart(),appointment.getStart().toLocalTime()));
-                        peroid.setStart(appointment.getEnd().toLocalTime());
-                    }
+        List<TimePeroid> toAdd = new ArrayList<TimePeroid>();
+        Collections.sort(appointments);
+        for (Appointment appointment : appointments) {
+            for (TimePeroid peroid : peroids) {
+                if ((appointment.getStart().toLocalTime().isBefore(peroid.getStart()) || appointment.getStart().toLocalTime().equals(peroid.getStart())) && appointment.getEnd().toLocalTime().isAfter(peroid.getStart()) && appointment.getEnd().toLocalTime().isBefore(peroid.getEnd())) {
+                    peroid.setStart(appointment.getEnd().toLocalTime());
+                }
+                if (appointment.getStart().toLocalTime().isAfter(peroid.getStart()) && appointment.getStart().toLocalTime().isBefore(peroid.getEnd()) && appointment.getEnd().toLocalTime().isAfter(peroid.getEnd()) || appointment.getEnd().toLocalTime().equals(peroid.getEnd())) {
+                    peroid.setEnd(appointment.getStart().toLocalTime());
+                }
+                if (appointment.getStart().toLocalTime().isAfter(peroid.getStart()) && appointment.getEnd().toLocalTime().isBefore(peroid.getEnd())) {
+                    toAdd.add(new TimePeroid(peroid.getStart(), appointment.getStart().toLocalTime()));
+                    peroid.setStart(appointment.getEnd().toLocalTime());
                 }
             }
-            peroids.addAll(toAdd);
-            Collections.sort(peroids);
+        }
+        peroids.addAll(toAdd);
+        Collections.sort(peroids);
         return peroids;
     }
 
     @Override
-    public List<Appointment> getCanceledAppointmentsByCustomerIdForCurrentMonth(int customerId){
+    public List<Appointment> getCanceledAppointmentsByCustomerIdForCurrentMonth(int customerId) {
         return appointmentRepository.findByCustomerIdCanceledAfterDate(customerId, LocalDate.now().with(TemporalAdjusters.firstDayOfMonth()).atStartOfDay());
     }
 
     @Override
     public void updateUserAppointmentsStatuses(int userId) {
-         /*
+        /*
          * find appointments which requires status change from scheudled to finished and change their status
          * (all appointments which have status 'scheduled' and their end date is before current timestamp)
          * */
-        for(Appointment appointment: appointmentRepository.findScheduledByUserIdWithEndBeforeDate(LocalDateTime.now(),userId)){
+        for (Appointment appointment : appointmentRepository.findScheduledByUserIdWithEndBeforeDate(LocalDateTime.now(), userId)) {
             appointment.setStatus("finished");
             updateAppointment(appointment);
         }
-         /*
+        /*
          * find appointments which requires status change from finished to confirmed and change their status
          * (all appointments which have status 'finished' and their end date is more than 24 hours before current timestamp)
          * */
-        for(Appointment appointment: appointmentRepository.findFinishedByUserIdWithEndBeforeDate(LocalDateTime.now().minusDays(1),userId)){
+        for (Appointment appointment : appointmentRepository.findFinishedByUserIdWithEndBeforeDate(LocalDateTime.now().minusDays(1), userId)) {
 
             appointment.setStatus("invoiced");
             updateAppointment(appointment);
@@ -223,51 +236,48 @@ public class AppointmentServiceImpl implements AppointmentService {
 
     @Override
     public void updateAllAppointmentsStatuses() {
-         /*
-         * find appointments which requires status change from scheudled to finished and change their status
-         * (all appointments which have status 'scheduled' and their end date is before current timestamp)
-         * */
-        for(Appointment appointment: appointmentRepository.findScheduledWithEndBeforeDate(LocalDateTime.now())){
-            appointment.setStatus("finished");
-            updateAppointment(appointment);
-            /*
-            * user have 24h after appointment finished to deny that appointment took place
-            * if it's less than 24h since the appointment finished, send him a link with a token that allows to deny that appointment took place
-            * it it's more than 24h, dont send it cause it's to late to deny
-            * */
-            if(LocalDateTime.now().minusDays(1).isBefore(appointment.getEnd())) {
-                notificationService.newAppointmentFinishedNotification(appointment,true);
-            }
-        }
-         /*
-         * find appointments which requires status change from finished to confirmed and change their status
-         * (all appointments which have status 'finished' and their end date is more than 24 hours before current timestamp)
-         * */
-        for(Appointment appointment: appointmentRepository.findFinishedWithEndBeforeDate(LocalDateTime.now().minusDays(1))){
-            appointment.setStatus("confirmed");
-            updateAppointment(appointment);
-        }
+        appointmentRepository.findScheduledWithEndBeforeDate(LocalDateTime.now())
+                .forEach(appointment -> {
+                    appointment.setStatus("finished");
+                    updateAppointment(appointment);
+                    if (LocalDateTime.now().minusDays(1).isBefore(appointment.getEnd())) {
+                        notificationService.newAppointmentFinishedNotification(appointment, true);
+                    }
+                });
+
+        appointmentRepository.findFinishedWithEndBeforeDate(LocalDateTime.now().minusDays(1))
+                .forEach(appointment -> {
+                    appointment.setStatus("confirmed");
+                    updateAppointment(appointment);
+                });
     }
 
+    @Override
+    public void updateAppointmentsStatusesWithExpiredExchangeRequest() {
+        appointmentRepository.findExchangeRequestedWithStartBefore(LocalDateTime.now().plusDays(1))
+                .forEach(appointment -> {
+                    appointment.setStatus("scheduled");
+                    updateAppointment(appointment);
+                });
+    }
 
     @Override
     public void cancelUserAppointmentById(int appointmentId, int userId) {
         Appointment appointment = appointmentRepository.getOne(appointmentId);
-        if(appointment.getCustomer().getId() == userId || appointment.getProvider().getId() == userId){
+        if (appointment.getCustomer().getId() == userId || appointment.getProvider().getId() == userId) {
             appointment.setStatus("canceled");
             User canceler = userService.getUserById(userId);
             appointment.setCanceler(canceler);
             appointment.setCanceledAt(LocalDateTime.now());
             appointmentRepository.save(appointment);
-            if(canceler.equals(appointment.getCustomer())){
-                notificationService.newAppointmentCanceledByCustomerNotification(appointment,true);
-            } else if(canceler.equals(appointment.getProvider())){
-                notificationService.newAppointmentCanceledByProviderNotification(appointment,true);
+            if (canceler.equals(appointment.getCustomer())) {
+                notificationService.newAppointmentCanceledByCustomerNotification(appointment, true);
+            } else if (canceler.equals(appointment.getProvider())) {
+                notificationService.newAppointmentCanceledByProviderNotification(appointment, true);
             }
-        }else{
+        } else {
             throw new org.springframework.security.access.AccessDeniedException("Unauthorized");
         }
-
 
 
     }
@@ -278,23 +288,23 @@ public class AppointmentServiceImpl implements AppointmentService {
         User user = userService.getUserById(userId);
         Appointment appointment = getAppointmentById(appointmentId);
 
-        if(!appointment.getCustomer().equals(user)){
+        if (!appointment.getCustomer().equals(user)) {
             return false;
-        } else if(!appointment.getStatus().equals("finished")){
+        } else if (!appointment.getStatus().equals("finished")) {
             return false;
-        } else if(LocalDateTime.now().isAfter(appointment.getEnd().plusDays(1))){
+        } else if (LocalDateTime.now().isAfter(appointment.getEnd().plusDays(1))) {
             return false;
-        }else{
+        } else {
             return true;
         }
     }
 
     @Override
     public boolean requestAppointmentRejection(int appointmentId, int customerId) {
-        if(isCustomerAllowedToRejectAppointment(customerId,appointmentId)){
+        if (isCustomerAllowedToRejectAppointment(customerId, appointmentId)) {
             Appointment appointment = getAppointmentById(appointmentId);
             appointment.setStatus("rejection requested");
-            notificationService.newAppointmentRejectionRequestedNotification(appointment,true);
+            notificationService.newAppointmentRejectionRequestedNotification(appointment, true);
             updateAppointment(appointment);
             return true;
         } else {
@@ -306,15 +316,13 @@ public class AppointmentServiceImpl implements AppointmentService {
 
     @Override
     public boolean requestAppointmentRejection(String token) {
-        if(jwtTokenService.validateToken(token)){
+        if (jwtTokenService.validateToken(token)) {
             int appointmentId = jwtTokenService.getAppointmentIdFromToken(token);
             int customerId = jwtTokenService.getCustomerIdFromToken(token);
-            return requestAppointmentRejection(appointmentId,customerId);
+            return requestAppointmentRejection(appointmentId, customerId);
         }
         return false;
     }
-
-
 
 
     @Override
@@ -322,40 +330,40 @@ public class AppointmentServiceImpl implements AppointmentService {
         User user = userService.getUserById(providerId);
         Appointment appointment = getAppointmentById(appointmentId);
 
-        if(!appointment.getProvider().equals(user)){
+        if (!appointment.getProvider().equals(user)) {
             return false;
-        } else if(!appointment.getStatus().equals("rejection requested")){
+        } else if (!appointment.getStatus().equals("rejection requested")) {
             return false;
-        } else{
+        } else {
             return true;
         }
     }
 
     @Override
     public boolean acceptRejection(int appointmentId, int customerId) {
-        if(isProviderAllowedToAcceptRejection(customerId,appointmentId)){
+        if (isProviderAllowedToAcceptRejection(customerId, appointmentId)) {
             Appointment appointment = getAppointmentById(appointmentId);
             appointment.setStatus("rejected");
             updateAppointment(appointment);
-            notificationService.newAppointmentRejectionAcceptedNotification(appointment,true);
+            notificationService.newAppointmentRejectionAcceptedNotification(appointment, true);
             return true;
-        } else{
+        } else {
             return false;
         }
     }
 
     @Override
     public boolean acceptRejection(String token) {
-        if(jwtTokenService.validateToken(token)){
+        if (jwtTokenService.validateToken(token)) {
             int appointmentId = jwtTokenService.getAppointmentIdFromToken(token);
             int providerId = jwtTokenService.getProviderIdFromToken(token);
-            return acceptRejection(appointmentId,providerId);
+            return acceptRejection(appointmentId, providerId);
         }
         return false;
     }
 
     @Override
-    public String getCancelNotAllowedReason(int userId, int appointmentId){
+    public String getCancelNotAllowedReason(int userId, int appointmentId) {
         User user = userService.getUserById(userId);
         Appointment appointment = getAppointmentById(appointmentId);
 
@@ -402,12 +410,12 @@ public class AppointmentServiceImpl implements AppointmentService {
 
     @Override
     public boolean isAvailable(int workId, int providerId, int customerId, LocalDateTime start) {
-        if(!workService.isWorkForCustomer(workId,customerId)){
+        if (!workService.isWorkForCustomer(workId, customerId)) {
             return false;
         }
         Work work = workService.getWorkById(workId);
-        TimePeroid timePeroid = new TimePeroid(start.toLocalTime(),start.toLocalTime().plusMinutes(work.getDuration()));
-        if(!getAvailableHours(providerId,customerId,workId,start.toLocalDate()).contains(timePeroid)){
+        TimePeroid timePeroid = new TimePeroid(start.toLocalTime(), start.toLocalTime().plusMinutes(work.getDuration()));
+        if (!getAvailableHours(providerId, customerId, workId, start.toLocalDate()).contains(timePeroid)) {
             return false;
         }
         return true;

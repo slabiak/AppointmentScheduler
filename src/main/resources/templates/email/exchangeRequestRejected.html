@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+
+<head></head>
+
+<body>
+<p>Hello, <span th:text="${exchangeRequest.getRequestor().getCustomer().getFirstName()}"></span></p>
+<p>Someone rejected your request to exchange your appointment. </p>
+<p>Your appointment date is still scheduled at: <span th:text="${#temporals.format(exchangeRequest.getRequestor().getStart(), 'dd-MM-yyyy HH:mm')}"></span></p>
+
+<p>Click <a th:href="${url}">here</a> to see your appointment.</p>
+
+</body>
+</html>

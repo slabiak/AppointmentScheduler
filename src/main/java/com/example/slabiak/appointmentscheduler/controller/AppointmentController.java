@@ -5,6 +5,7 @@ import com.example.slabiak.appointmentscheduler.entity.ChatMessage;
 import com.example.slabiak.appointmentscheduler.entity.Work;
 import com.example.slabiak.appointmentscheduler.security.CustomUserDetails;
 import com.example.slabiak.appointmentscheduler.service.AppointmentService;
+import com.example.slabiak.appointmentscheduler.service.ExchangeService;
 import com.example.slabiak.appointmentscheduler.service.UserService;
 import com.example.slabiak.appointmentscheduler.service.WorkService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,6 +30,9 @@ public class AppointmentController {
     @Autowired
     private AppointmentService appointmentService;
 
+    @Autowired
+    private ExchangeService exchangeService;
+
 
     @GetMapping("/all")
     public String showAllAppointments(Model model, @AuthenticationPrincipal CustomUserDetails currentUser) {
@@ -49,8 +53,10 @@ public class AppointmentController {
         model.addAttribute("chatMessage", new ChatMessage());
         boolean allowedToRequestRejection = appointmentService.isCustomerAllowedToRejectAppointment(currentUser.getId(),appointmentId);
         boolean allowedToAcceptRejection = appointmentService.isProviderAllowedToAcceptRejection(currentUser.getId(),appointmentId);
+        boolean allowedToExchange = exchangeService.checkIfEligibleForExchange(currentUser.getId(),appointmentId);
         model.addAttribute("allowedToRequestRejection",allowedToRequestRejection);
         model.addAttribute("allowedToAcceptRejection",allowedToAcceptRejection);
+        model.addAttribute("allowedToExchange",allowedToExchange);
         if(allowedToRequestRejection){
             model.addAttribute("remainingTime", formatDuration(Duration.between(LocalDateTime.now(),appointment.getEnd().plusDays(1))));
         }
