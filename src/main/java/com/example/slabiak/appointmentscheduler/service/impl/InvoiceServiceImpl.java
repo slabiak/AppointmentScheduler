@@ -2,6 +2,7 @@ package com.example.slabiak.appointmentscheduler.service.impl;
 
 import com.example.slabiak.appointmentscheduler.dao.InvoiceRepository;
 import com.example.slabiak.appointmentscheduler.entity.Appointment;
+import com.example.slabiak.appointmentscheduler.entity.AppointmentStatus;
 import com.example.slabiak.appointmentscheduler.entity.Invoice;
 import com.example.slabiak.appointmentscheduler.entity.user.User;
 import com.example.slabiak.appointmentscheduler.entity.user.customer.Customer;
@@ -121,7 +122,7 @@ public class InvoiceServiceImpl implements InvoiceService {
             List<Appointment> appointmentsToIssueInvoice = appointmentService.getConfirmedAppointmentsByCustomerId(customer.getId());
             if(appointmentsToIssueInvoice.size()>0){
                 for(Appointment a: appointmentsToIssueInvoice){
-                    a.setStatus("invoiced");
+                    a.setStatus(AppointmentStatus.INVOICED);
                     appointmentService.updateAppointment(a);
                 }
                 Invoice invoice = new Invoice(generateInvoiceNumber(),"issued",LocalDateTime.now(),appointmentsToIssueInvoice);

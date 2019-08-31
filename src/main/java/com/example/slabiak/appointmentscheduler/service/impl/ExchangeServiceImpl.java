@@ -3,6 +3,7 @@ package com.example.slabiak.appointmentscheduler.service.impl;
 import com.example.slabiak.appointmentscheduler.dao.AppointmentRepository;
 import com.example.slabiak.appointmentscheduler.dao.ExchangeRequestRepository;
 import com.example.slabiak.appointmentscheduler.entity.Appointment;
+import com.example.slabiak.appointmentscheduler.entity.AppointmentStatus;
 import com.example.slabiak.appointmentscheduler.entity.ExchangeRequest;
 import com.example.slabiak.appointmentscheduler.entity.ExchangeStatus;
 import com.example.slabiak.appointmentscheduler.entity.user.customer.Customer;
@@ -62,7 +63,7 @@ public class ExchangeServiceImpl implements ExchangeService {
         Appointment requestor = exchangeRequest.getRequestor();
         Appointment requested = exchangeRequest.getRequested();
         Customer tempCustomer = requestor.getCustomer();
-        requestor.setStatus("scheduled");
+        requestor.setStatus(AppointmentStatus.SCHEDULED);
         exchangeRequest.setStatus(ExchangeStatus.ACCEPTED);
         requestor.setCustomer(requested.getCustomer());
         requested.setCustomer(tempCustomer);
@@ -78,7 +79,7 @@ public class ExchangeServiceImpl implements ExchangeService {
         ExchangeRequest exchangeRequest = exchangeRequestRepository.getOne(exchangeId);
         Appointment requestor = exchangeRequest.getRequestor();
         exchangeRequest.setStatus(ExchangeStatus.REJECTED);
-        requestor.setStatus("scheduled");
+        requestor.setStatus(AppointmentStatus.SCHEDULED);
         exchangeRequestRepository.save(exchangeRequest);
         appointmentRepository.save(requestor);
         notificationService.newExchangeRejectedNotification(exchangeRequest,true);
@@ -90,7 +91,7 @@ public class ExchangeServiceImpl implements ExchangeService {
         if(checkIfExchangeIsPossible(oldAppointmentId,newAppointmentId,userId)){
             Appointment oldAppointment = appointmentRepository.getOne(oldAppointmentId);
             Appointment newAppointment = appointmentRepository.getOne(newAppointmentId);
-            oldAppointment.setStatus("exchange requested");
+            oldAppointment.setStatus(AppointmentStatus.REJECTION_REQUESTED);
             appointmentRepository.save(oldAppointment);
             ExchangeRequest exchangeRequest = new ExchangeRequest(oldAppointment,newAppointment,ExchangeStatus.PENDING);
             exchangeRequestRepository.save(exchangeRequest);

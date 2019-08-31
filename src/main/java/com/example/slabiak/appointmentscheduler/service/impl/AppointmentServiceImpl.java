@@ -2,10 +2,7 @@ package com.example.slabiak.appointmentscheduler.service.impl;
 
 import com.example.slabiak.appointmentscheduler.dao.AppointmentRepository;
 import com.example.slabiak.appointmentscheduler.dao.ChatMessageRepository;
-import com.example.slabiak.appointmentscheduler.entity.Appointment;
-import com.example.slabiak.appointmentscheduler.entity.ChatMessage;
-import com.example.slabiak.appointmentscheduler.entity.Work;
-import com.example.slabiak.appointmentscheduler.entity.WorkingPlan;
+import com.example.slabiak.appointmentscheduler.entity.*;
 import com.example.slabiak.appointmentscheduler.entity.user.User;
 import com.example.slabiak.appointmentscheduler.entity.user.provider.Provider;
 import com.example.slabiak.appointmentscheduler.model.DayPlan;
@@ -141,7 +138,7 @@ public class AppointmentServiceImpl implements AppointmentService {
     public void createNewAppointment(int workId, int providerId, int customerId, LocalDateTime start) {
         if (isAvailable(workId, providerId, customerId, start)) {
             Appointment appointment = new Appointment();
-            appointment.setStatus("scheduled");
+            appointment.setStatus(AppointmentStatus.SCHEDULED);
             appointment.setCustomer(userService.getCustomerById(customerId));
             appointment.setProvider(userService.getProviderById(providerId));
             Work work = workService.getWorkById(workId);
@@ -220,7 +217,7 @@ public class AppointmentServiceImpl implements AppointmentService {
          * (all appointments which have status 'scheduled' and their end date is before current timestamp)
          * */
         for (Appointment appointment : appointmentRepository.findScheduledByUserIdWithEndBeforeDate(LocalDateTime.now(), userId)) {
-            appointment.setStatus("finished");
+            appointment.setStatus(AppointmentStatus.FINISHED);
             updateAppointment(appointment);
         }
         /*
@@ -229,7 +226,7 @@ public class AppointmentServiceImpl implements AppointmentService {
          * */
         for (Appointment appointment : appointmentRepository.findFinishedByUserIdWithEndBeforeDate(LocalDateTime.now().minusDays(1), userId)) {
 
-            appointment.setStatus("invoiced");
+            appointment.setStatus(AppointmentStatus.INVOICED);
             updateAppointment(appointment);
         }
     }
@@ -238,7 +235,7 @@ public class AppointmentServiceImpl implements AppointmentService {
     public void updateAllAppointmentsStatuses() {
         appointmentRepository.findScheduledWithEndBeforeDate(LocalDateTime.now())
                 .forEach(appointment -> {
-                    appointment.setStatus("finished");
+                    appointment.setStatus(AppointmentStatus.FINISHED);
                     updateAppointment(appointment);
                     if (LocalDateTime.now().minusDays(1).isBefore(appointment.getEnd())) {
                         notificationService.newAppointmentFinishedNotification(appointment, true);
@@ -247,7 +244,7 @@ public class AppointmentServiceImpl implements AppointmentService {
 
         appointmentRepository.findFinishedWithEndBeforeDate(LocalDateTime.now().minusDays(1))
                 .forEach(appointment -> {
-                    appointment.setStatus("confirmed");
+                    appointment.setStatus(AppointmentStatus.CONFIRMED);
                     updateAppointment(appointment);
                 });
     }
@@ -256,7 +253,7 @@ public class AppointmentServiceImpl implements AppointmentService {
     public void updateAppointmentsStatusesWithExpiredExchangeRequest() {
         appointmentRepository.findExchangeRequestedWithStartBefore(LocalDateTime.now().plusDays(1))
                 .forEach(appointment -> {
-                    appointment.setStatus("scheduled");
+                    appointment.setStatus(AppointmentStatus.SCHEDULED);
                     updateAppointment(appointment);
                 });
     }
@@ -265,7 +262,7 @@ public class AppointmentServiceImpl implements AppointmentService {
     public void cancelUserAppointmentById(int appointmentId, int userId) {
         Appointment appointment = appointmentRepository.getOne(appointmentId);
         if (appointment.getCustomer().getId() == userId || appointment.getProvider().getId() == userId) {
-            appointment.setStatus("canceled");
+            appointment.setStatus(AppointmentStatus.CANCELED);
             User canceler = userService.getUserById(userId);
             appointment.setCanceler(canceler);
             appointment.setCanceledAt(LocalDateTime.now());
@@ -290,7 +287,7 @@ public class AppointmentServiceImpl implements AppointmentService {
 
         if (!appointment.getCustomer().equals(user)) {
             return false;
-        } else if (!appointment.getStatus().equals("finished")) {
+        } else if (!(appointment.getStatus()==AppointmentStatus.FINISHED)) {
             return false;
         } else if (LocalDateTime.now().isAfter(appointment.getEnd().plusDays(1))) {
             return false;
@@ -303,7 +300,7 @@ public class AppointmentServiceImpl implements AppointmentService {
     public boolean requestAppointmentRejection(int appointmentId, int customerId) {
         if (isCustomerAllowedToRejectAppointment(customerId, appointmentId)) {
             Appointment appointment = getAppointmentById(appointmentId);
-            appointment.setStatus("rejection requested");
+            appointment.setStatus(AppointmentStatus.REJECTION_REQUESTED);
             notificationService.newAppointmentRejectionRequestedNotification(appointment, true);
             updateAppointment(appointment);
             return true;
@@ -332,7 +329,7 @@ public class AppointmentServiceImpl implements AppointmentService {
 
         if (!appointment.getProvider().equals(user)) {
             return false;
-        } else if (!appointment.getStatus().equals("rejection requested")) {
+        } else if (!(appointment.getStatus()==AppointmentStatus.REJECTION_REQUESTED)) {
             return false;
         } else {
             return true;
@@ -343,7 +340,7 @@ public class AppointmentServiceImpl implements AppointmentService {
     public boolean acceptRejection(int appointmentId, int customerId) {
         if (isProviderAllowedToAcceptRejection(customerId, appointmentId)) {
             Appointment appointment = getAppointmentById(appointmentId);
-            appointment.setStatus("rejected");
+            appointment.setStatus(AppointmentStatus.REJECTION_ACCEPTED);
             updateAppointment(appointment);
             notificationService.newAppointmentRejectionAcceptedNotification(appointment, true);
             return true;
@@ -374,7 +371,7 @@ public class AppointmentServiceImpl implements AppointmentService {
 
         // conditions for provider
         if (appointment.getProvider().equals(user)) {
-            if (!appointment.getStatus().equals("scheduled")) {
+            if (!(appointment.getStatus()==AppointmentStatus.SCHEDULED)) {
                 return "Only appoinmtents with scheduled status can be cancelled.";
             } else {
                 return null;
@@ -383,7 +380,7 @@ public class AppointmentServiceImpl implements AppointmentService {
 
         // conditions for provider
         if (appointment.getCustomer().equals(user)) {
-            if (!appointment.getStatus().equals("scheduled")) {
+            if (!(appointment.getStatus()==AppointmentStatus.SCHEDULED)) {
                 return "Only appoinmtents with scheduled status can be cancelled.";
             } else if (LocalDateTime.now().plusDays(1).isAfter(appointment.getStart())) {
                 return "Appointments which will be in less than 24 hours cannot be canceled.";
