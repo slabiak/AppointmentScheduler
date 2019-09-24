@@ -6,6 +6,7 @@ import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
@@ -15,6 +16,7 @@ import java.time.ZoneId;
 import java.time.ZoneOffset;
 import java.util.Date;
 
+@Slf4j
 @Component
 public class JwtTokenServiceImpl implements JwtTokenService {
 
@@ -23,41 +25,41 @@ public class JwtTokenServiceImpl implements JwtTokenService {
 
 
     @Override
-    public String generateAppointmentRejectionToken(Appointment appointment){
+    public String generateAppointmentRejectionToken(Appointment appointment) {
         ZoneId zoneId = ZoneId.of("Europe/Warsaw");
         Date expiryDate = convertLocalDateTimeToDate(appointment.getEnd().plusDays(1));
         return Jwts.builder()
-                .claim("appointmentId",appointment.getId())
-                .claim("customerId",appointment.getCustomer().getId())
+                .claim("appointmentId", appointment.getId())
+                .claim("customerId", appointment.getCustomer().getId())
                 .setExpiration(expiryDate)
                 .signWith(SignatureAlgorithm.HS512, jwtSecret)
                 .compact();
     }
 
     @Override
-    public String generateAcceptRejectionToken(Appointment appointment){
+    public String generateAcceptRejectionToken(Appointment appointment) {
         return Jwts.builder()
-                .claim("appointmentId",appointment.getId())
-                .claim("providerId",appointment.getProvider().getId())
+                .claim("appointmentId", appointment.getId())
+                .claim("providerId", appointment.getProvider().getId())
                 .signWith(SignatureAlgorithm.HS512, jwtSecret)
                 .compact();
     }
 
 
     @Override
-    public boolean validateToken(String token){
-           try {
-               Jwts.parser().setSigningKey(jwtSecret).parseClaimsJws(token);
-               return true;
-           } catch (JwtException e) {
-               //don't trust the JWT!
-           }
-           return false;
+    public boolean validateToken(String token) {
+        try {
+            Jwts.parser().setSigningKey(jwtSecret).parseClaimsJws(token);
+            return true;
+        } catch (JwtException e) {
+            log.error("Error while token {} validation, error is {}", token, e.getMessage());
+        }
+        return false;
 
     }
 
     @Override
-    public int getAppointmentIdFromToken(String token){
+    public int getAppointmentIdFromToken(String token) {
         Claims claims = Jwts.parser()
                 .setSigningKey(jwtSecret)
                 .parseClaimsJws(token)
@@ -66,7 +68,7 @@ public class JwtTokenServiceImpl implements JwtTokenService {
     }
 
     @Override
-    public int getCustomerIdFromToken(String token){
+    public int getCustomerIdFromToken(String token) {
         Claims claims = Jwts.parser()
                 .setSigningKey(jwtSecret)
                 .parseClaimsJws(token)
@@ -75,7 +77,7 @@ public class JwtTokenServiceImpl implements JwtTokenService {
     }
 
     @Override
-    public int getProviderIdFromToken(String token){
+    public int getProviderIdFromToken(String token) {
         Claims claims = Jwts.parser()
                 .setSigningKey(jwtSecret)
                 .parseClaimsJws(token)
@@ -84,7 +86,7 @@ public class JwtTokenServiceImpl implements JwtTokenService {
     }
 
     @Override
-    public Date convertLocalDateTimeToDate(LocalDateTime localDateTime){
+    public Date convertLocalDateTimeToDate(LocalDateTime localDateTime) {
         ZoneId zone = ZoneId.of("Europe/Warsaw");
         ZoneOffset zoneOffSet = zone.getRules().getOffset(localDateTime);
         Instant instant = localDateTime.toInstant(zoneOffSet);

@@ -236,6 +236,27 @@ CREATE TABLE IF NOT EXISTS `notifications` (
   ENGINE = InnoDB
   DEFAULT CHARSET = utf8;
 
+
+CREATE TABLE IF NOT EXISTS `exchanges` (
+	`id` INT(11) NOT NULL AUTO_INCREMENT,
+	`exchange_status` VARCHAR(256),
+  `id_appointment_requestor` INT(11),
+  `id_appointment_requested` INT(11),
+  PRIMARY KEY (`id`),
+	KEY `id_appointment_requestor` (`id_appointment_requestor`),
+KEY `id_appointment_requested` (`id_appointment_requested`),
+	CONSTRAINT `FK_exchange_appointment_requestor` FOREIGN KEY (`id_appointment_requestor`)
+  REFERENCES `appointments` (`id`)
+	ON DELETE NO ACTION
+  ON UPDATE NO ACTION,
+  	CONSTRAINT `FK_exchange_appointment_requested` FOREIGN KEY (`id_appointment_requested`)
+  REFERENCES `appointments` (`id`)
+	ON DELETE NO ACTION
+  ON UPDATE NO ACTION
+)
+  ENGINE = InnoDB
+  DEFAULT CHARSET = utf8;
+
 -- INSERT available roles
 INSERT INTO `roles` (id,name) VALUES
   (1,'ROLE_ADMIN'),

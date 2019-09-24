@@ -14,9 +14,11 @@ public interface AppointmentService {
     void updateAppointment(Appointment appointment);
     void updateUserAppointmentsStatuses(int userId);
     void updateAllAppointmentsStatuses();
+    void updateAppointmentsStatusesWithExpiredExchangeRequest();
     void deleteAppointmentById(int appointmentId);
 
     Appointment getAppointmentById(int id);
+    Appointment getAppointmentByIdWithoutAuthorization(int id);
     List<Appointment> getAllAppointments();
     List<Appointment> getAppointmentByCustomerId(int customerId);
     List<Appointment> getAppointmentByProviderId(int providerId);

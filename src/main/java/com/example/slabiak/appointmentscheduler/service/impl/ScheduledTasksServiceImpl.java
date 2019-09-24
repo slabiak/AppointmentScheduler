@@ -21,13 +21,14 @@ public class ScheduledTasksServiceImpl implements ScheduledTasksService {
     @Scheduled(fixedDelay = 30*60*1000)
     @Override
     public void updateAllAppointmentsStatuses(){
-     appointmentService.updateAllAppointmentsStatuses();
+        appointmentService.updateAppointmentsStatusesWithExpiredExchangeRequest();
+        appointmentService.updateAllAppointmentsStatuses();
     }
 
     // runs on the first day of each month
     @Scheduled(cron = "0 0 0 1 * ?")
     @Override
-    public void issueInvoicesForCurrnetMonth(){
+    public void issueInvoicesForCurrentMonth(){
        invoiceService.issueInvoicesForConfirmedAppointments();
     }
 

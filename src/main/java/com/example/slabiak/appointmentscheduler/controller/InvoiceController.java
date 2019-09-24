@@ -2,6 +2,7 @@ package com.example.slabiak.appointmentscheduler.controller;
 
 import com.example.slabiak.appointmentscheduler.security.CustomUserDetails;
 import com.example.slabiak.appointmentscheduler.service.InvoiceService;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.http.HttpHeaders;
@@ -19,6 +20,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 
+@Slf4j
 @Controller
 @RequestMapping("/invoices")
 public class InvoiceController {
@@ -28,36 +30,36 @@ public class InvoiceController {
 
     @GetMapping("/all")
     public String showAllInvoices(Model model) {
-        model.addAttribute("invoices",invoiceService.getAllInvoices());
+        model.addAttribute("invoices", invoiceService.getAllInvoices());
         return "invoices/listInvoices";
     }
 
     @RequestMapping("/paid/{invoiceId}")
-    public String changeStatusToPaid(@PathVariable("invoiceId") int invoiceId){
+    public String changeStatusToPaid(@PathVariable("invoiceId") int invoiceId) {
         invoiceService.changeInvoiceStatusToPaid(invoiceId);
         return "redirect:/invoices/all";
     }
 
     @RequestMapping("/issue")
-    public String issueInvoicesManually(Model model){
+    public String issueInvoicesManually(Model model) {
         invoiceService.issueInvoicesForConfirmedAppointments();
         return "redirect:/invoices/all";
     }
 
     @RequestMapping("/download/{invoiceId}")
-    public ResponseEntity<InputStreamResource> downloadInvoice(@PathVariable("invoiceId") int invoiceId,@AuthenticationPrincipal CustomUserDetails currentUser) {
-            try {
-                File invoicePdf = invoiceService.generatePdfForInvoice(invoiceId);
-                HttpHeaders respHeaders = new HttpHeaders();
-                MediaType mediaType = MediaType.parseMediaType("application/pdf");
-                respHeaders.setContentType(mediaType);
-                respHeaders.setContentLength(invoicePdf.length());
-                respHeaders.setContentDispositionFormData("attachment", invoicePdf.getName());
-                InputStreamResource isr = new InputStreamResource(new FileInputStream(invoicePdf));
-                return new ResponseEntity<InputStreamResource>(isr, respHeaders, HttpStatus.OK);
-            }
-            catch (FileNotFoundException e) {
-                return new ResponseEntity<InputStreamResource>(HttpStatus.INTERNAL_SERVER_ERROR);
-            }
+    public ResponseEntity<InputStreamResource> downloadInvoice(@PathVariable("invoiceId") int invoiceId, @AuthenticationPrincipal CustomUserDetails currentUser) {
+        try {
+            File invoicePdf = invoiceService.generatePdfForInvoice(invoiceId);
+            HttpHeaders respHeaders = new HttpHeaders();
+            MediaType mediaType = MediaType.parseMediaType("application/pdf");
+            respHeaders.setContentType(mediaType);
+            respHeaders.setContentLength(invoicePdf.length());
+            respHeaders.setContentDispositionFormData("attachment", invoicePdf.getName());
+            InputStreamResource isr = new InputStreamResource(new FileInputStream(invoicePdf));
+            return new ResponseEntity<InputStreamResource>(isr, respHeaders, HttpStatus.OK);
+        } catch (FileNotFoundException e) {
+            log.error("Error while generating pdf for download, error: {} ", e);
+            return new ResponseEntity<InputStreamResource>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
+    }
 }
