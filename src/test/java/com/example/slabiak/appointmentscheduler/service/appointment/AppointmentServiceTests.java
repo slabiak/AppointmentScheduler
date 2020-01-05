@@ -7,6 +7,7 @@ import com.example.slabiak.appointmentscheduler.entity.WorkingPlan;
 import com.example.slabiak.appointmentscheduler.entity.user.customer.Customer;
 import com.example.slabiak.appointmentscheduler.entity.user.provider.Provider;
 import com.example.slabiak.appointmentscheduler.service.EmailService;
+import com.example.slabiak.appointmentscheduler.service.NotificationService;
 import com.example.slabiak.appointmentscheduler.service.UserService;
 import com.example.slabiak.appointmentscheduler.service.WorkService;
 import com.example.slabiak.appointmentscheduler.service.impl.AppointmentServiceImpl;
@@ -42,6 +43,9 @@ public class AppointmentServiceTests {
 
     @Mock
     private UserService userService;
+
+    @Mock
+    private NotificationService notificationService;
 
 
     @InjectMocks
