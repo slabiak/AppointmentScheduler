@@ -1,0 +1,42 @@
+version: '3.7'
+
+services:
+
+  backend:
+    build: .
+    ports:
+      - "8080:8080"
+    restart: always
+    depends_on:
+      - db
+    environment:
+      dbURL: jdbc:mysql://db:3306/appointmentscheduler?useSSL=false&serverTimezone=UTC&useLegacyDatetimeCode=false
+      dbUsername: root
+      dbPassword: root
+      mailUsername: admin
+      mailPassword: password
+      jwtSecret: secret
+    networks:
+      - backend
+
+  db:
+    image: mysql:5.7
+    ports:
+      - "3306:3306"
+    restart: always
+    environment:
+      MYSQL_DATABASE: appointmentscheduler
+      MYSQL_USER: someUser
+      MYSQL_PASSWORD: password
+      MYSQL_ROOT_PASSWORD: root
+    volumes:
+      - db-data:/var/lib/mysql
+      - ./src/main/resources:/docker-entrypoint-initdb.d
+    networks:
+      - backend
+
+volumes:
+  db-data:
+
+networks:
+  backend:
