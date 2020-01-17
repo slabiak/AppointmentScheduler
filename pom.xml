@@ -107,7 +107,25 @@
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
 			</plugin>
+
+			<plugin>
+				<groupId>com.google.cloud.tools</groupId>
+				<artifactId>jib-maven-plugin</artifactId>
+				<version>1.8.0</version>
+				<configuration>
+					<to>
+						<image>docker.io/slabiak/appointmentscheduler:${project.version}</image>
+					</to>
+					<container>
+						<ports>
+							<port>8080</port>
+						</ports>
+						<creationTime>USE_CURRENT_TIMESTAMP</creationTime>
+					</container>
+				</configuration>
+			</plugin>
 		</plugins>
+
 	</build>
 
 </project>
