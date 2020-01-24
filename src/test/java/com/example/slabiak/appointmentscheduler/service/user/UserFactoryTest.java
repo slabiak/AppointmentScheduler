@@ -2,7 +2,7 @@ package com.example.slabiak.appointmentscheduler.service.user;
 
 import com.example.slabiak.appointmentscheduler.model.UserForm;
 
-public class UserFactory {
+public class UserFactoryTest {
 
     public static UserForm prepareSampleUserForm() {
         UserForm userForm = new UserForm();

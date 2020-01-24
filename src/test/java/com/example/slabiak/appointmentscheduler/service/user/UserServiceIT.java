@@ -23,7 +23,7 @@ public class UserServiceIT {
 
     @Test
     public void shouldSaveNewRetailCustomer() {
-        UserForm userForm = UserFactory.prepareSampleUserForm();
+        UserForm userForm = UserFactoryTest.prepareSampleUserForm();
 
         userService.saveNewRetailCustomer(userForm);
 

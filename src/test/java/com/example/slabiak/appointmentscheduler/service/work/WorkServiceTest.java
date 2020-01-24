@@ -19,7 +19,7 @@ import static org.mockito.Mockito.when;
 import static org.mockito.internal.verification.VerificationModeFactory.times;
 
 @RunWith(MockitoJUnitRunner.class)
-public class WorkServiceTests {
+public class WorkServiceTest {
 
     @Mock
     private WorkRepository workRepository;
@@ -32,29 +32,29 @@ public class WorkServiceTests {
     private List<Work> works;
 
     @Before
-    public void initObjects(){
-       work = new Work();
-       workOptional = Optional.of(work);
+    public void initObjects() {
+        work = new Work();
+        workOptional = Optional.of(work);
     }
 
     @Test
-    public void shouldSaveWork(){
+    public void shouldSaveWork() {
         workService.createNewWork(work);
-        verify(workRepository,times(1)).save(work);
+        verify(workRepository, times(1)).save(work);
     }
 
     @Test
     public void shouldFindWorkById() {
         when(workRepository.findById(1)).thenReturn(workOptional);
         assertEquals(workOptional.get(), workService.getWorkById(1));
-        verify(workRepository,times(1)).findById(1);
+        verify(workRepository, times(1)).findById(1);
     }
 
     @Test
-    public void shouldFindAllWorks(){
+    public void shouldFindAllWorks() {
         when(workRepository.findAll()).thenReturn(works);
-        assertEquals(works,workService.getAllWorks());
-        verify(workRepository,times(1)).findAll();
+        assertEquals(works, workService.getAllWorks());
+        verify(workRepository, times(1)).findAll();
     }
 
     @Test

@@ -13,13 +13,15 @@ import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
 
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.*;
 
 @RunWith(MockitoJUnitRunner.class)
-public class UserServiceTestsForUser {
+public class UserServiceTest {
 
     @Mock
     private BCryptPasswordEncoder passwordEncoder;
@@ -39,7 +41,7 @@ public class UserServiceTestsForUser {
     private Optional<User> optionalUser;
 
     @Before
-    public void initObjects(){
+    public void initObjects() {
         userId = 1;
         passwordEncoded = "encodedpass";
         userName = "username";
@@ -56,21 +58,21 @@ public class UserServiceTestsForUser {
     public void shouldFindUserById() {
         when(userRepository.findById(userId)).thenReturn(optionalUser);
         assertEquals(optionalUser.get(), userService.getUserById(userId));
-        verify(userRepository,times(1)).findById(userId);
+        verify(userRepository, times(1)).findById(userId);
     }
 
     @Test
-    public void shouldUpdateUserPassword(){
+    public void shouldUpdateUserPassword() {
         doReturn(new User()).when(userRepository).getOne(userId);
         ChangePasswordForm changePasswordForm = new ChangePasswordForm(userId);
         userService.updateUserPassword(changePasswordForm);
         ArgumentCaptor<User> argumentCaptor = ArgumentCaptor.forClass(User.class);
-        verify(userRepository,times(1)).getOne(userId);
-        verify(userRepository,times(1)).save(argumentCaptor.capture());
+        verify(userRepository, times(1)).getOne(userId);
+        verify(userRepository, times(1)).save(argumentCaptor.capture());
     }
 
     @Test
-    public void shouldEncodeUserPasswordWhileUpdate(){
+    public void shouldEncodeUserPasswordWhileUpdate() {
         User userToBeUpdated = new User();
         userToBeUpdated.setPassword(password);
         doReturn(userToBeUpdated).when(userRepository).getOne(userId);
@@ -81,33 +83,33 @@ public class UserServiceTestsForUser {
 
         userService.updateUserPassword(changePasswordForm);
         ArgumentCaptor<User> argumentCaptor = ArgumentCaptor.forClass(User.class);
-        verify(passwordEncoder,times(1)).encode(newPassword);
-        verify(userRepository,times(1)).save(argumentCaptor.capture());
-        assertEquals(argumentCaptor.getValue().getPassword(),passwordEncoded);
+        verify(passwordEncoder, times(1)).encode(newPassword);
+        verify(userRepository, times(1)).save(argumentCaptor.capture());
+        assertEquals(argumentCaptor.getValue().getPassword(), passwordEncoded);
     }
 
     @Test
-    public void shouldFindUserBeUsername(){
+    public void shouldFindUserBeUsername() {
         User user = new User();
         user.setId(userId);
         Optional<User> optionalUser = Optional.of(user);
         when(userRepository.findByUserName(userName)).thenReturn(optionalUser);
-        assertEquals(optionalUser.get(),userService.getUserByUsername(userName));
-        verify(userRepository,times(1)).findByUserName(userName);
+        assertEquals(optionalUser.get(), userService.getUserByUsername(userName));
+        verify(userRepository, times(1)).findByUserName(userName);
     }
 
 
     @Test
-    public void shouldFindAllUsers(){
+    public void shouldFindAllUsers() {
         List<User> users = new ArrayList<>();
         User user = new User();
         users.add(user);
         users.add(user);
         when(userRepository.findAll()).thenReturn(users);
         List<User> fetchedUsers = userService.getAllUsers();
-        assertEquals(fetchedUsers,users);
-        assertEquals(fetchedUsers.size(),2);
-        verify(userRepository,times(1)).findAll();
+        assertEquals(fetchedUsers, users);
+        assertEquals(fetchedUsers.size(), 2);
+        verify(userRepository, times(1)).findAll();
     }
 
     @Test

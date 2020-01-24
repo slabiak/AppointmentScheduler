@@ -14,21 +14,21 @@ import java.util.Set;
 
 import static org.junit.Assert.assertEquals;
 
-public class UpdateCorporateCustomerValidationTests {
+public class UpdateCorporateCustomerValidationTest {
 
     private ValidatorFactory factory;
     private Validator validator;
 
     @Before
-    public void stup(){
+    public void stup() {
         factory = Validation.buildDefaultValidatorFactory();
         validator = factory.getValidator();
     }
 
     @Test
-    public void shouldHave10ViolationsForEmptyFormWhenUpdateCorporateCustomer(){
+    public void shouldHave10ViolationsForEmptyFormWhenUpdateCorporateCustomer() {
         UserForm form = new UserForm();
-        Set<ConstraintViolation<UserForm>> violations = validator.validate(form,UpdateUser.class,UpdateCorporateCustomer.class);
-        assertEquals(violations.size(),10);
+        Set<ConstraintViolation<UserForm>> violations = validator.validate(form, UpdateUser.class, UpdateCorporateCustomer.class);
+        assertEquals(violations.size(), 10);
     }
 }
