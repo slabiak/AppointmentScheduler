@@ -5,11 +5,10 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
-public interface AppointmentRepository  extends JpaRepository<Appointment, Integer> {
+public interface AppointmentRepository extends JpaRepository<Appointment, Integer> {
 
     @Query("select a from Appointment a where a.customer.id = :customerId")
     List<Appointment> findByCustomerId(@Param("customerId") int customerId);
@@ -36,21 +35,21 @@ public interface AppointmentRepository  extends JpaRepository<Appointment, Integ
     List<Appointment> findScheduledWithEndBeforeDate(@Param("now") LocalDateTime now);
 
     @Query("select a from Appointment a where a.status = 'scheduled' and :date >= a.end and (a.customer.id = :userId or a.provider.id = :userId)")
-    List<Appointment> findScheduledByUserIdWithEndBeforeDate(@Param("date")LocalDateTime date, @Param("userId") int userId);
+    List<Appointment> findScheduledByUserIdWithEndBeforeDate(@Param("date") LocalDateTime date, @Param("userId") int userId);
 
     @Query("select a from Appointment a where a.status = 'finished' and :date >= a.end")
-    List<Appointment> findFinishedWithEndBeforeDate(@Param("date")LocalDateTime date);
+    List<Appointment> findFinishedWithEndBeforeDate(@Param("date") LocalDateTime date);
 
     @Query("select a from Appointment a where a.status = 'finished' and :date >= a.end and (a.customer.id = :userId or a.provider.id = :userId)")
-    List<Appointment> findFinishedByUserIdWithEndBeforeDate(@Param("date")LocalDateTime date, @Param("userId") int userId);
+    List<Appointment> findFinishedByUserIdWithEndBeforeDate(@Param("date") LocalDateTime date, @Param("userId") int userId);
 
     @Query("select a from Appointment a where a.status = 'confirmed' and a.customer.id = :customerId")
-    List<Appointment> findConfirmedByCustomerId(@Param("customerId")int customerId);
+    List<Appointment> findConfirmedByCustomerId(@Param("customerId") int customerId);
 
     @Query("select a from Appointment a inner join a.work w where a.status = 'scheduled' and a.customer.id <> :customerId and a.provider.id= :providerId and a.start >= :start and w.id = :workId")
-    List<Appointment> getEligibleAppointmentsForExchange(@Param("start") LocalDateTime start,@Param("customerId") Integer customerId,@Param("providerId") Integer providerId,@Param("workId") Integer workId);
+    List<Appointment> getEligibleAppointmentsForExchange(@Param("start") LocalDateTime start, @Param("customerId") Integer customerId, @Param("providerId") Integer providerId, @Param("workId") Integer workId);
 
     @Query("select a from Appointment a where a.status = 'exchange requested' and a.start <= :start")
-    List<Appointment> findExchangeRequestedWithStartBefore(@Param("start")LocalDateTime date);
+    List<Appointment> findExchangeRequestedWithStartBefore(@Param("start") LocalDateTime date);
 
 }

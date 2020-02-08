@@ -63,8 +63,7 @@ public class UserServiceImpl implements UserService {
         User user = null;
         if (result.isPresent()) {
             user = result.get();
-        }
-        else {
+        } else {
             // todo throw new excep
         }
         return user;
@@ -84,8 +83,7 @@ public class UserServiceImpl implements UserService {
         Provider provider = null;
         if (optionalProvider.isPresent()) {
             provider = optionalProvider.get();
-        }
-        else {
+        } else {
             // todo throw new excep
         }
         return provider;
@@ -98,8 +96,7 @@ public class UserServiceImpl implements UserService {
         RetailCustomer retailCustomer = null;
         if (optionalRetailCustomer.isPresent()) {
             retailCustomer = optionalRetailCustomer.get();
-        }
-        else {
+        } else {
             // todo throw new excep
         }
         return retailCustomer;
@@ -112,8 +109,7 @@ public class UserServiceImpl implements UserService {
         CorporateCustomer corporateCustomer = null;
         if (optionalCorporateCustomer.isPresent()) {
             corporateCustomer = optionalCorporateCustomer.get();
-        }
-        else {
+        } else {
             // todo throw new excep
         }
         return corporateCustomer;
@@ -144,8 +140,7 @@ public class UserServiceImpl implements UserService {
 
         if (result.isPresent()) {
             user = result.get();
-        }
-        else {
+        } else {
             // todo throw new excep
         }
         return user;
@@ -186,16 +181,16 @@ public class UserServiceImpl implements UserService {
     @PreAuthorize("#passwordChangeForm.id == principal.id")
     public void updateUserPassword(ChangePasswordForm passwordChangeForm) {
         User user = userRepository.getOne(passwordChangeForm.getId());
-            user.setPassword(passwordEncoder.encode(passwordChangeForm.getPassword()));
-            userRepository.save(user);
+        user.setPassword(passwordEncoder.encode(passwordChangeForm.getPassword()));
+        userRepository.save(user);
     }
 
     @Override
     @PreAuthorize("#updateData.id == principal.id or hasRole('ADMIN')")
     public void updateProviderProfile(UserForm updateData) {
-     Provider provider = providerRepository.getOne(updateData.getId());
-     provider.update(updateData);
-     providerRepository.save(provider);
+        Provider provider = providerRepository.getOne(updateData.getId());
+        provider.update(updateData);
+        providerRepository.save(provider);
     }
 
     @Override
@@ -218,20 +213,20 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public void saveNewRetailCustomer(UserForm userForm) {
-        RetailCustomer retailCustomer = new RetailCustomer(userForm,passwordEncoder.encode(userForm.getPassword()), getRolesForRetailCustomer());
+        RetailCustomer retailCustomer = new RetailCustomer(userForm, passwordEncoder.encode(userForm.getPassword()), getRolesForRetailCustomer());
         retailCustomerRepository.save(retailCustomer);
     }
 
     @Override
     public void saveNewCorporateCustomer(UserForm userForm) {
-        CorporateCustomer corporateCustomer = new CorporateCustomer(userForm,passwordEncoder.encode(userForm.getPassword()), getRoleForCorporateCustomers());
+        CorporateCustomer corporateCustomer = new CorporateCustomer(userForm, passwordEncoder.encode(userForm.getPassword()), getRoleForCorporateCustomers());
         corporateCustomerRepository.save(corporateCustomer);
     }
 
     @Override
     public void saveNewProvider(UserForm userForm) {
         WorkingPlan workingPlan = WorkingPlan.generateDefaultWorkingPlan();
-        Provider provider = new Provider(userForm,passwordEncoder.encode(userForm.getPassword()), getRolesForProvider(),workingPlan);
+        Provider provider = new Provider(userForm, passwordEncoder.encode(userForm.getPassword()), getRolesForProvider(), workingPlan);
         providerRepository.save(provider);
     }
 

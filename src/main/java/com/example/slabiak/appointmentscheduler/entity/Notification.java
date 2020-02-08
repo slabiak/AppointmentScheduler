@@ -6,31 +6,32 @@ import javax.persistence.*;
 import java.util.Date;
 
 @Entity
-@Table(name="notifications")
+@Table(name = "notifications")
 public class Notification extends BaseEntity {
 
-    @Column(name="title")
+    @Column(name = "title")
     private String title;
 
-    @Column(name="message")
+    @Column(name = "message")
     private String message;
 
-    @Column(name="created_at")
+    @Column(name = "created_at")
     private Date createdAt;
 
-    @Column(name="url")
+    @Column(name = "url")
     private String url;
 
-    @Column(name="is_read")
+    @Column(name = "is_read")
     private boolean isRead;
 
     @ManyToOne
-    @JoinColumn(name="id_user")
+    @JoinColumn(name = "id_user")
     private User user;
 
-    public Notification(){}
+    public Notification() {
+    }
 
-    public Notification(String title, String message,Date createdAt, String url, User user){
+    public Notification(String title, String message, Date createdAt, String url, User user) {
         this.message = message;
         this.createdAt = createdAt;
         this.user = user;

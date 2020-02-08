@@ -3,27 +3,27 @@ package com.example.slabiak.appointmentscheduler.entity;
 import javax.persistence.*;
 
 @Entity
-@Table(name="exchanges")
-public class ExchangeRequest extends BaseEntity{
+@Table(name = "exchanges")
+public class ExchangeRequest extends BaseEntity {
 
     @Enumerated(EnumType.STRING)
-    @Column(name="exchange_status")
+    @Column(name = "exchange_status")
     private ExchangeStatus status;
 
     @OneToOne
-    @JoinColumn(name="id_appointment_requestor")
+    @JoinColumn(name = "id_appointment_requestor")
     private Appointment requestor;
 
     @OneToOne
-    @JoinColumn(name="id_appointment_requested")
+    @JoinColumn(name = "id_appointment_requested")
     private Appointment requested;
 
 
-    public ExchangeRequest(){
+    public ExchangeRequest() {
 
     }
 
-    public ExchangeRequest(Appointment requestor, Appointment requested,ExchangeStatus status) {
+    public ExchangeRequest(Appointment requestor, Appointment requested, ExchangeStatus status) {
         this.status = status;
         this.requestor = requestor;
         this.requested = requested;

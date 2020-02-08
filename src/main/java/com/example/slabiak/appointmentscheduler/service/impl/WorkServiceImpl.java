@@ -2,7 +2,6 @@ package com.example.slabiak.appointmentscheduler.service.impl;
 
 import com.example.slabiak.appointmentscheduler.dao.WorkRepository;
 import com.example.slabiak.appointmentscheduler.entity.Work;
-import com.example.slabiak.appointmentscheduler.entity.user.User;
 import com.example.slabiak.appointmentscheduler.entity.user.customer.Customer;
 import com.example.slabiak.appointmentscheduler.service.UserService;
 import com.example.slabiak.appointmentscheduler.service.WorkService;
@@ -15,7 +14,7 @@ import java.util.Optional;
 
 @Service
 public class WorkServiceImpl implements WorkService {
-    
+
     @Autowired
     private WorkRepository workRepository;
 
@@ -49,8 +48,7 @@ public class WorkServiceImpl implements WorkService {
 
         if (result.isPresent()) {
             work = result.get();
-        }
-        else {
+        } else {
             // todo throw new excep
         }
 
@@ -70,12 +68,12 @@ public class WorkServiceImpl implements WorkService {
     }
 
     @Override
-    public boolean isWorkForCustomer(int workId,int customerId) {
+    public boolean isWorkForCustomer(int workId, int customerId) {
         Customer customer = userService.getCustomerById(customerId);
         Work work = getWorkById(workId);
-        if(customer.hasRole("ROLE_CUSTOMER_RETAIL") && !work.getTargetCustomer().equals("retail")) {
+        if (customer.hasRole("ROLE_CUSTOMER_RETAIL") && !work.getTargetCustomer().equals("retail")) {
             return false;
-        } else if(customer.hasRole("ROLE_CUSTOMER_CORPORATE") && !work.getTargetCustomer().equals("corporate")) {
+        } else if (customer.hasRole("ROLE_CUSTOMER_CORPORATE") && !work.getTargetCustomer().equals("corporate")) {
             return false;
         }
         return true;
@@ -98,12 +96,12 @@ public class WorkServiceImpl implements WorkService {
 
     @Override
     public List<Work> getWorksForRetailCustomerByProviderId(int providerId) {
-        return workRepository.findByTargetCustomerAndProviderId("retail",providerId);
+        return workRepository.findByTargetCustomerAndProviderId("retail", providerId);
     }
 
     @Override
     public List<Work> getWorksForCorporateCustomerByProviderId(int providerId) {
-        return workRepository.findByTargetCustomerAndProviderId("corporate",providerId);
+        return workRepository.findByTargetCustomerAndProviderId("corporate", providerId);
     }
 
 

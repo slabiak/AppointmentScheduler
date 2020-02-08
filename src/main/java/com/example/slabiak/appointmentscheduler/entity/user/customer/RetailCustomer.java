@@ -9,15 +9,15 @@ import javax.persistence.Table;
 import java.util.Collection;
 
 @Entity
-@Table(name="retail_customers")
+@Table(name = "retail_customers")
 @PrimaryKeyJoinColumn(name = "id_customer")
 public class RetailCustomer extends Customer {
 
-    public RetailCustomer(){
+    public RetailCustomer() {
     }
 
-    public RetailCustomer(UserForm userFormDTO, String encryptedPassword, Collection<Role> roles){
-        super(userFormDTO,encryptedPassword,roles);
+    public RetailCustomer(UserForm userFormDTO, String encryptedPassword, Collection<Role> roles) {
+        super(userFormDTO, encryptedPassword, roles);
     }
 
 

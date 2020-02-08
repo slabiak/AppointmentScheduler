@@ -50,8 +50,8 @@ public class ExchangeServiceImpl implements ExchangeService {
                     && oldAppointment.getProvider().getId() == newAppointment.getProvider().getId()
                     && oldAppointment.getStart().minusHours(24).isAfter(LocalDateTime.now())
                     && newAppointment.getStart().minusHours(24).isAfter(LocalDateTime.now());
-        } else{
-           throw new org.springframework.security.access.AccessDeniedException("Unauthorized");
+        } else {
+            throw new org.springframework.security.access.AccessDeniedException("Unauthorized");
         }
 
     }
@@ -69,7 +69,7 @@ public class ExchangeServiceImpl implements ExchangeService {
         exchangeRequestRepository.save(exchangeRequest);
         appointmentRepository.save(requested);
         appointmentRepository.save(requestor);
-        notificationService.newExchangeAcceptedNotification(exchangeRequest,true);
+        notificationService.newExchangeAcceptedNotification(exchangeRequest, true);
         return true;
     }
 
@@ -81,20 +81,20 @@ public class ExchangeServiceImpl implements ExchangeService {
         requestor.setStatus("scheduled");
         exchangeRequestRepository.save(exchangeRequest);
         appointmentRepository.save(requestor);
-        notificationService.newExchangeRejectedNotification(exchangeRequest,true);
+        notificationService.newExchangeRejectedNotification(exchangeRequest, true);
         return true;
     }
 
     @Override
     public boolean requestExchange(int oldAppointmentId, int newAppointmentId, int userId) {
-        if(checkIfExchangeIsPossible(oldAppointmentId,newAppointmentId,userId)){
+        if (checkIfExchangeIsPossible(oldAppointmentId, newAppointmentId, userId)) {
             Appointment oldAppointment = appointmentRepository.getOne(oldAppointmentId);
             Appointment newAppointment = appointmentRepository.getOne(newAppointmentId);
             oldAppointment.setStatus("exchange requested");
             appointmentRepository.save(oldAppointment);
-            ExchangeRequest exchangeRequest = new ExchangeRequest(oldAppointment,newAppointment,ExchangeStatus.PENDING);
+            ExchangeRequest exchangeRequest = new ExchangeRequest(oldAppointment, newAppointment, ExchangeStatus.PENDING);
             exchangeRequestRepository.save(exchangeRequest);
-            notificationService.newExchangeRequestedNotification(oldAppointment,newAppointment,true);
+            notificationService.newExchangeRequestedNotification(oldAppointment, newAppointment, true);
             return true;
         }
         return false;

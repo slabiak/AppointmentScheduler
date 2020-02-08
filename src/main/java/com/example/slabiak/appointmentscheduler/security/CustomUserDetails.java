@@ -30,7 +30,7 @@ public class CustomUserDetails implements UserDetails {
         this.authorities = authorities;
     }
 
-    public static CustomUserDetails create(User user){
+    public static CustomUserDetails create(User user) {
         List<GrantedAuthority> authorities =
                 user.getRoles().stream().map(role -> new SimpleGrantedAuthority(role.getName())).collect(Collectors.toList());
 
@@ -96,18 +96,18 @@ public class CustomUserDetails implements UserDetails {
         return lastName;
     }
 
-    public boolean hasRole(String roleName){
-        for(GrantedAuthority grantedAuthority :authorities){
-            if(grantedAuthority.getAuthority().equals(roleName)){
+    public boolean hasRole(String roleName) {
+        for (GrantedAuthority grantedAuthority : authorities) {
+            if (grantedAuthority.getAuthority().equals(roleName)) {
                 return true;
             }
         }
         return false;
     }
 
-    public boolean equals(Object object){
-        if(this == object) return true;
-        if(object == null || getClass() != object.getClass()) return false;
+    public boolean equals(Object object) {
+        if (this == object) return true;
+        if (object == null || getClass() != object.getClass()) return false;
         CustomUserDetails that = (CustomUserDetails) object;
         return Objects.equals(id, that.id);
     }

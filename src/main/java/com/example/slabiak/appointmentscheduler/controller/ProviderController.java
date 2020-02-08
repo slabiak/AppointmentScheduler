@@ -42,7 +42,6 @@ public class ProviderController {
     private AppointmentService appointmentService;
 
 
-
     @GetMapping("/all")
     public String showAllProviders(Model model) {
         model.addAttribute("providers", userService.getAllProviders());
@@ -51,51 +50,51 @@ public class ProviderController {
 
     @GetMapping("/{id}")
     public String showProviderDetails(@PathVariable("id") int providerId, Model model, @AuthenticationPrincipal CustomUserDetails currentUser) {
-        if(currentUser.getId() == providerId || currentUser.hasRole("ROLE_ADMIN")){
-            if(!model.containsAttribute("user")){
+        if (currentUser.getId() == providerId || currentUser.hasRole("ROLE_ADMIN")) {
+            if (!model.containsAttribute("user")) {
                 model.addAttribute("user", new UserForm(userService.getProviderById(providerId)));
             }
-            if(!model.containsAttribute("passwordChange")){
+            if (!model.containsAttribute("passwordChange")) {
                 model.addAttribute("passwordChange", new ChangePasswordForm(providerId));
             }
-            model.addAttribute("account_type","provider");
-            model.addAttribute("formActionProfile","/providers/update/profile");
-            model.addAttribute("formActionPassword","/providers/update/password");
+            model.addAttribute("account_type", "provider");
+            model.addAttribute("formActionProfile", "/providers/update/profile");
+            model.addAttribute("formActionPassword", "/providers/update/password");
             model.addAttribute("allWorks", workService.getAllWorks());
-            model.addAttribute("numberOfScheduledAppointments",appointmentService.getNumberOfScheduledAppointmentsForUser(providerId));
-            model.addAttribute("numberOfCanceledAppointments",appointmentService.getNumberOfCanceledAppointmentsForUser(providerId));
+            model.addAttribute("numberOfScheduledAppointments", appointmentService.getNumberOfScheduledAppointmentsForUser(providerId));
+            model.addAttribute("numberOfCanceledAppointments", appointmentService.getNumberOfCanceledAppointmentsForUser(providerId));
             return "users/updateUserForm";
 
-        } else{
+        } else {
             throw new org.springframework.security.access.AccessDeniedException("Unauthorized");
         }
     }
 
     @PostMapping("/update/profile")
-    public String processProviderUpdate(@Validated({UpdateUser.class,UpdateProvider.class}) @ModelAttribute("user") UserForm userUpdateData, BindingResult bindingResult, RedirectAttributes redirectAttributes) {
-        if(bindingResult.hasErrors()){
-            redirectAttributes.addFlashAttribute("org.springframework.validation.BindingResult.user",bindingResult);
-            redirectAttributes.addFlashAttribute("user",userUpdateData);
-            return "redirect:/providers/"+userUpdateData.getId();
+    public String processProviderUpdate(@Validated({UpdateUser.class, UpdateProvider.class}) @ModelAttribute("user") UserForm userUpdateData, BindingResult bindingResult, RedirectAttributes redirectAttributes) {
+        if (bindingResult.hasErrors()) {
+            redirectAttributes.addFlashAttribute("org.springframework.validation.BindingResult.user", bindingResult);
+            redirectAttributes.addFlashAttribute("user", userUpdateData);
+            return "redirect:/providers/" + userUpdateData.getId();
         }
         userService.updateProviderProfile(userUpdateData);
-        return "redirect:/providers/"+userUpdateData.getId();
+        return "redirect:/providers/" + userUpdateData.getId();
     }
 
     @GetMapping("/new")
     public String showProviderRegistrationForm(Model model) {
-        if(!model.containsAttribute("user"))model.addAttribute("user", new UserForm());
-        model.addAttribute("account_type","provider");
-        model.addAttribute("registerAction","/providers/new");
-        model.addAttribute("allWorks",workService.getAllWorks());
+        if (!model.containsAttribute("user")) model.addAttribute("user", new UserForm());
+        model.addAttribute("account_type", "provider");
+        model.addAttribute("registerAction", "/providers/new");
+        model.addAttribute("allWorks", workService.getAllWorks());
         return "users/createUserForm";
     }
 
     @PostMapping("/new")
-    public String processProviderRegistrationForm(@Validated({CreateUser.class,CreateProvider.class}) @ModelAttribute("user") UserForm userForm, BindingResult bindingResult, RedirectAttributes redirectAttributes) {
-        if(bindingResult.hasErrors()){
-            redirectAttributes.addFlashAttribute("org.springframework.validation.BindingResult.user",bindingResult);
-            redirectAttributes.addFlashAttribute("user",userForm);
+    public String processProviderRegistrationForm(@Validated({CreateUser.class, CreateProvider.class}) @ModelAttribute("user") UserForm userForm, BindingResult bindingResult, RedirectAttributes redirectAttributes) {
+        if (bindingResult.hasErrors()) {
+            redirectAttributes.addFlashAttribute("org.springframework.validation.BindingResult.user", bindingResult);
+            redirectAttributes.addFlashAttribute("user", userForm);
             return "redirect:/providers/new";
         }
         userService.saveNewProvider(userForm);
@@ -103,45 +102,45 @@ public class ProviderController {
     }
 
     @PostMapping("/delete")
-    public String processDeleteProviderRequest(@RequestParam("providerId") int providerId){
+    public String processDeleteProviderRequest(@RequestParam("providerId") int providerId) {
         userService.deleteUserById(providerId);
         return "redirect:/providers/all";
     }
 
     @GetMapping("/availability")
-    public String showProviderAvailability(Model model,@AuthenticationPrincipal CustomUserDetails currentUser){
-        model.addAttribute("plan",workingPlanService.getWorkingPlanByProviderId(currentUser.getId()));
+    public String showProviderAvailability(Model model, @AuthenticationPrincipal CustomUserDetails currentUser) {
+        model.addAttribute("plan", workingPlanService.getWorkingPlanByProviderId(currentUser.getId()));
         model.addAttribute("breakModel", new TimePeroid());
         return "users/showOrUpdateProviderAvailability";
     }
 
     @PostMapping("/availability")
-    public String processProviderWorkingPlanUpdate(@ModelAttribute("plan") WorkingPlan plan){
+    public String processProviderWorkingPlanUpdate(@ModelAttribute("plan") WorkingPlan plan) {
         workingPlanService.updateWorkingPlan(plan);
         return "redirect:/providers/availability";
     }
 
     @PostMapping("/availability/breakes/add")
-    public String processProviderAddBreak(@ModelAttribute("breakModel") TimePeroid breakToAdd,@RequestParam("planId") int planId,@RequestParam("dayOfWeek") String dayOfWeek ){
-        workingPlanService.addBreakToWorkingPlan(breakToAdd,planId,dayOfWeek);
+    public String processProviderAddBreak(@ModelAttribute("breakModel") TimePeroid breakToAdd, @RequestParam("planId") int planId, @RequestParam("dayOfWeek") String dayOfWeek) {
+        workingPlanService.addBreakToWorkingPlan(breakToAdd, planId, dayOfWeek);
         return "redirect:/providers/availability";
     }
 
     @PostMapping("/availability/breakes/delete")
-    public String processProviderDeleteBreak(@ModelAttribute("breakModel") TimePeroid breakToDelete,@RequestParam("planId") int planId,@RequestParam("dayOfWeek") String dayOfWeek ){
-        workingPlanService.deleteBreakFromWorkingPlan(breakToDelete,planId,dayOfWeek);
+    public String processProviderDeleteBreak(@ModelAttribute("breakModel") TimePeroid breakToDelete, @RequestParam("planId") int planId, @RequestParam("dayOfWeek") String dayOfWeek) {
+        workingPlanService.deleteBreakFromWorkingPlan(breakToDelete, planId, dayOfWeek);
         return "redirect:/providers/availability";
     }
 
     @PostMapping("/update/password")
     public String processProviderPasswordUpate(@Valid @ModelAttribute("passwordChange") ChangePasswordForm passwordChange, BindingResult bindingResult, @AuthenticationPrincipal CustomUserDetails currentUser, RedirectAttributes redirectAttributes) {
-        if(bindingResult.hasErrors()){
-            redirectAttributes.addFlashAttribute("org.springframework.validation.BindingResult.passwordChange",bindingResult);
-            redirectAttributes.addFlashAttribute("passwordChange",passwordChange);
-            return "redirect:/providers/"+passwordChange.getId();
+        if (bindingResult.hasErrors()) {
+            redirectAttributes.addFlashAttribute("org.springframework.validation.BindingResult.passwordChange", bindingResult);
+            redirectAttributes.addFlashAttribute("passwordChange", passwordChange);
+            return "redirect:/providers/" + passwordChange.getId();
         }
-       userService.updateUserPassword(passwordChange);
-        return "redirect:/providers/"+passwordChange.getId();
+        userService.updateUserPassword(passwordChange);
+        return "redirect:/providers/" + passwordChange.getId();
     }
 
 

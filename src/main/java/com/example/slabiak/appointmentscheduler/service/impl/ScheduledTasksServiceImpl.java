@@ -18,9 +18,9 @@ public class ScheduledTasksServiceImpl implements ScheduledTasksService {
     private InvoiceService invoiceService;
 
     // runs every 30 minutes
-    @Scheduled(fixedDelay = 30*60*1000)
+    @Scheduled(fixedDelay = 30 * 60 * 1000)
     @Override
-    public void updateAllAppointmentsStatuses(){
+    public void updateAllAppointmentsStatuses() {
         appointmentService.updateAppointmentsStatusesWithExpiredExchangeRequest();
         appointmentService.updateAllAppointmentsStatuses();
     }
@@ -28,8 +28,8 @@ public class ScheduledTasksServiceImpl implements ScheduledTasksService {
     // runs on the first day of each month
     @Scheduled(cron = "0 0 0 1 * ?")
     @Override
-    public void issueInvoicesForCurrentMonth(){
-       invoiceService.issueInvoicesForConfirmedAppointments();
+    public void issueInvoicesForCurrentMonth() {
+        invoiceService.issueInvoicesForConfirmedAppointments();
     }
 
 

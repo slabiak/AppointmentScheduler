@@ -10,7 +10,7 @@ import java.util.List;
 
 
 @Entity
-@Table(name="users")
+@Table(name = "users")
 @Inheritance(strategy = InheritanceType.JOINED)
 public class User extends BaseEntity {
 
@@ -48,10 +48,10 @@ public class User extends BaseEntity {
     @JoinTable(name = "users_roles", joinColumns = @JoinColumn(name = "user_id"), inverseJoinColumns = @JoinColumn(name = "role_id"))
     private Collection<Role> roles;
 
-    public User(){
+    public User() {
     }
 
-    public User(UserForm newUserForm, String encryptedPassword, Collection<Role> roles){
+    public User(UserForm newUserForm, String encryptedPassword, Collection<Role> roles) {
         this.setUserName(newUserForm.getUserName());
         this.setFirstName(newUserForm.getFirstName());
         this.setLastName(newUserForm.getLastName());
@@ -64,7 +64,7 @@ public class User extends BaseEntity {
         this.roles = roles;
     }
 
-    public void update(UserForm updateData){
+    public void update(UserForm updateData) {
         this.setEmail(updateData.getEmail());
         this.setFirstName(updateData.getFirstName());
         this.setLastName(updateData.getLastName());
@@ -156,9 +156,9 @@ public class User extends BaseEntity {
         this.postcode = postcode;
     }
 
-    public boolean hasRole(String roleName){
-        for(Role role: roles){
-            if(role.getName().equals(roleName)){
+    public boolean hasRole(String roleName) {
+        for (Role role : roles) {
+            if (role.getName().equals(roleName)) {
                 return true;
             }
         }
@@ -168,7 +168,7 @@ public class User extends BaseEntity {
     @Override
     public boolean equals(Object user) {
         User compareUser = (User) user;
-        if(compareUser.getId().equals(this.getId()))   return true;
+        if (compareUser.getId().equals(this.getId())) return true;
 
         else return false;
 

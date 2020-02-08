@@ -6,32 +6,32 @@ import javax.persistence.*;
 import java.util.List;
 
 @Entity
-@Table(name="works")
+@Table(name = "works")
 public class Work extends BaseEntity {
 
-    @Column(name="name")
+    @Column(name = "name")
     private String name;
 
-    @Column(name="description")
+    @Column(name = "description")
     private String description;
 
-    @Column(name="price")
+    @Column(name = "price")
     private double price;
 
-    @Column(name="duration")
+    @Column(name = "duration")
     private int duration;
 
-    @Column(name="editable")
+    @Column(name = "editable")
     private boolean editable;
 
-    @Column(name="target")
+    @Column(name = "target")
     private String targetCustomer;
 
     @ManyToMany
-    @JoinTable(name="works_providers", joinColumns=@JoinColumn(name="id_work"), inverseJoinColumns=@JoinColumn(name="id_user"))
+    @JoinTable(name = "works_providers", joinColumns = @JoinColumn(name = "id_work"), inverseJoinColumns = @JoinColumn(name = "id_user"))
     private List<User> providers;
 
-    public Work(){
+    public Work() {
     }
 
     public String getName() {
@@ -95,7 +95,7 @@ public class Work extends BaseEntity {
         if (this == o) return true;
         if (!(o instanceof Work)) return false;
         Work work = (Work) o;
-        return super.getId()==work.getId();
+        return super.getId() == work.getId();
     }
 
 }

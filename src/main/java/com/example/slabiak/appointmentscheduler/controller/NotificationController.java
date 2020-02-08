@@ -25,19 +25,19 @@ public class NotificationController {
 
     @GetMapping()
     public String showUserNotificationList(Model model, @AuthenticationPrincipal CustomUserDetails currentUser) {
-        model.addAttribute("notifications",userService.getUserById(currentUser.getId()).getNotifications());
+        model.addAttribute("notifications", userService.getUserById(currentUser.getId()).getNotifications());
         return "notifications/listNotifications";
     }
 
     @GetMapping("/{notificationId}")
-    public String showNotification(@PathVariable("notificationId") int notificationId,@AuthenticationPrincipal CustomUserDetails currentUser){
+    public String showNotification(@PathVariable("notificationId") int notificationId, @AuthenticationPrincipal CustomUserDetails currentUser) {
         Notification notification = notificationService.getNotificationById(notificationId);
-        notificationService.markAsRead(notificationId,currentUser.getId());
-        return "redirect:"+ notification.getUrl();
+        notificationService.markAsRead(notificationId, currentUser.getId());
+        return "redirect:" + notification.getUrl();
     }
 
     @PostMapping("/markAllAsRead")
-    public String processMarkAllAsRead(@AuthenticationPrincipal CustomUserDetails currentUser){
+    public String processMarkAllAsRead(@AuthenticationPrincipal CustomUserDetails currentUser) {
         notificationService.markAllAsRead(currentUser.getId());
         return "redirect:/notifications";
     }

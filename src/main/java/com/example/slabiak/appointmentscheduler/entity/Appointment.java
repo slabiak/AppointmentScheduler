@@ -20,52 +20,52 @@ scheduled   =>  finished    =>  confirmed   =>  invoiced.
 
 
 @Entity
-@Table(name="appointments")
+@Table(name = "appointments")
 @JsonSerialize(using = AppointmentSerializer.class)
 public class Appointment extends BaseEntity implements Comparable<Appointment> {
 
-    @Column(name="start")
+    @Column(name = "start")
     @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm")
     private LocalDateTime start;
 
     @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm")
-    @Column(name="end")
+    @Column(name = "end")
     private LocalDateTime end;
 
     @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm")
-    @Column(name="canceled_at")
+    @Column(name = "canceled_at")
     private LocalDateTime canceledAt;
 
     @OneToOne
-    @JoinColumn(name="id_canceler")
+    @JoinColumn(name = "id_canceler")
     private User canceler;
 
-    @Column(name="status")
+    @Column(name = "status")
     private String status;
 
     @ManyToOne
-    @JoinColumn(name="id_customer")
+    @JoinColumn(name = "id_customer")
     private Customer customer;
 
     @ManyToOne
-    @JoinColumn(name="id_provider")
+    @JoinColumn(name = "id_provider")
     private Provider provider;
 
     @ManyToOne
-    @JoinColumn(name="id_work")
+    @JoinColumn(name = "id_work")
     private Work work;
 
     @OneToMany(mappedBy = "appointment")
     private List<ChatMessage> chatMessages;
 
     @ManyToOne
-    @JoinColumn(name="id_invoice")
+    @JoinColumn(name = "id_invoice")
     private Invoice invoice;
 
-    @OneToOne(mappedBy="requested", cascade = {CascadeType.ALL})
+    @OneToOne(mappedBy = "requested", cascade = {CascadeType.ALL})
     private ExchangeRequest exchangeRequest;
 
-    public Appointment(){
+    public Appointment() {
     }
 
     public Appointment(LocalDateTime start, LocalDateTime end, Customer customer, Provider provider, Work work) {

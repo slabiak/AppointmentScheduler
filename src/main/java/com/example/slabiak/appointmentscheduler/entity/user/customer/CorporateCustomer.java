@@ -10,7 +10,7 @@ import javax.persistence.Table;
 import java.util.Collection;
 
 @Entity
-@Table(name="corporate_customers")
+@Table(name = "corporate_customers")
 @PrimaryKeyJoinColumn(name = "id_customer")
 public class CorporateCustomer extends Customer {
 
@@ -21,11 +21,11 @@ public class CorporateCustomer extends Customer {
     private String vatNumber;
 
 
-    public CorporateCustomer(){
+    public CorporateCustomer() {
     }
 
-    public CorporateCustomer(UserForm userFormDTO, String encryptedPassword, Collection<Role> roles){
-        super(userFormDTO,encryptedPassword,roles);
+    public CorporateCustomer(UserForm userFormDTO, String encryptedPassword, Collection<Role> roles) {
+        super(userFormDTO, encryptedPassword, roles);
         this.companyName = userFormDTO.getCompanyName();
         this.vatNumber = userFormDTO.getVatNumber();
     }

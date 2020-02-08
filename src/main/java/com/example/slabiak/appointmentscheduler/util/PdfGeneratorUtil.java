@@ -23,11 +23,11 @@ public class PdfGeneratorUtil {
     public File generatePdfFromInvoice(Invoice invoice) {
 
         Context ctx = new Context();
-        ctx.setVariable("invoice",invoice);
+        ctx.setVariable("invoice", invoice);
         String processedHtml = templateEngine.process("email/pdf/invoice", ctx);
 
         ITextRenderer renderer = new ITextRenderer();
-        renderer.setDocumentFromString(processedHtml,"http://localhost:8080");
+        renderer.setDocumentFromString(processedHtml, "http://localhost:8080");
         renderer.layout();
 
         String fileName = UUID.randomUUID().toString();
@@ -38,18 +38,18 @@ public class PdfGeneratorUtil {
             renderer.createPDF(os, false);
             renderer.finishPDF();
             return outputFile;
-        } catch (FileNotFoundException e){
+        } catch (FileNotFoundException e) {
             e.printStackTrace();
-        } catch (IOException e){
+        } catch (IOException e) {
             e.printStackTrace();
         } catch (DocumentException e) {
             e.printStackTrace();
         } finally {
-            if(os !=null){
-                try{
+            if (os != null) {
+                try {
                     os.close();
 
-                } catch (IOException e){
+                } catch (IOException e) {
                     e.printStackTrace();
                 }
             }

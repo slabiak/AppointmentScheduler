@@ -13,34 +13,34 @@ import java.util.List;
 // statuses: issued,paid
 
 @Entity
-@Table(name="invoices")
+@Table(name = "invoices")
 public class Invoice extends BaseEntity {
 
-    @Column(name="number")
+    @Column(name = "number")
     private String number;
 
-    @Column(name="status")
+    @Column(name = "status")
     private String status;
 
-    @Column(name="total_amount")
+    @Column(name = "total_amount")
     private double totalAmount;
 
     @DateTimeFormat(pattern = "MM/dd/yyyy")
-    @Column(name="issued")
+    @Column(name = "issued")
     private LocalDateTime issued;
 
     @OneToMany(mappedBy = "invoice")
     private List<Appointment> appointments;
 
-    public Invoice(){
+    public Invoice() {
     }
 
     public Invoice(String number, String status, LocalDateTime issued, List<Appointment> appointments2) {
         this.number = number;
         this.status = status;
         this.issued = issued;
-        this.appointments  = new ArrayList<>();
-        for(Appointment a:appointments2){
+        this.appointments = new ArrayList<>();
+        for (Appointment a : appointments2) {
             this.appointments.add(a);
             a.setInvoice(this);
             totalAmount += a.getWork().getPrice();

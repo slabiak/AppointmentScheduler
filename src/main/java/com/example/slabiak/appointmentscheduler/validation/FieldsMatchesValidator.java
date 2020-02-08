@@ -19,16 +19,16 @@ public class FieldsMatchesValidator implements ConstraintValidator<FieldsMatches
 
     @Override
     public boolean isValid(final Object obj, final ConstraintValidatorContext context) {
-            Object field1Value = new BeanWrapperImpl(obj)
-                    .getPropertyValue(field);
-            Object field2Value = new BeanWrapperImpl(obj)
-                    .getPropertyValue(matchingField);
+        Object field1Value = new BeanWrapperImpl(obj)
+                .getPropertyValue(field);
+        Object field2Value = new BeanWrapperImpl(obj)
+                .getPropertyValue(matchingField);
 
-            if (field1Value != null) {
-                return field1Value.equals(field2Value);
-            } else {
-                return field2Value == null;
-            }
+        if (field1Value != null) {
+            return field1Value.equals(field2Value);
+        } else {
+            return field2Value == null;
         }
+    }
 
 }

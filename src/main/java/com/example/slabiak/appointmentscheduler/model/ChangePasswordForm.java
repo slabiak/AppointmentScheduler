@@ -16,18 +16,18 @@ public class ChangePasswordForm {
     @NotNull
     private int id;
 
-    @Size(min=5, max=10, message = "Password should have 5-15 letters")
+    @Size(min = 5, max = 10, message = "Password should have 5-15 letters")
     @NotBlank()
     private String password;
 
-    @Size(min=5, max=10, message = "Password should have 5-15 letters")
+    @Size(min = 5, max = 10, message = "Password should have 5-15 letters")
     @NotBlank()
     private String matchingPassword;
 
     private String currentPassword;
 
     public ChangePasswordForm(int id) {
-    this.id = id;
+        this.id = id;
     }
 
     public int getId() {
