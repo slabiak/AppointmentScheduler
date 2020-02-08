@@ -77,7 +77,6 @@ public class UserServiceImpl implements UserService {
 
 
     @Override
-    //@PreAuthorize("#providerId == principal.id")
     public Provider getProviderById(int providerId) {
         Optional<Provider> optionalProvider = providerRepository.findById(providerId);
         Provider provider = null;

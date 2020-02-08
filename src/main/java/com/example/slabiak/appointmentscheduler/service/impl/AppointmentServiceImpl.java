@@ -129,13 +129,10 @@ public class AppointmentServiceImpl implements AppointmentService {
         List<Appointment> providerAppointments = getAppointmentsByProviderAtDay(providerId, date);
         List<Appointment> customerAppointments = getAppointmentsByCustomerAtDay(customerId, date);
         List<TimePeroid> availablePeroids = new ArrayList<TimePeroid>();
-        // get peroids from working hours for selected day excluding breaks
 
         availablePeroids = selectedDay.getTimePeroidsWithBreaksExcluded();
-        // exclude provider's appointments from available peroids
         availablePeroids = excludeAppointmentsFromTimePeroids(availablePeroids, providerAppointments);
 
-        //exclude customer's appointments from available peroids
         availablePeroids = excludeAppointmentsFromTimePeroids(availablePeroids, customerAppointments);
         return calculateAvailableHours(availablePeroids, workService.getWorkById(workId));
     }
@@ -218,18 +215,11 @@ public class AppointmentServiceImpl implements AppointmentService {
 
     @Override
     public void updateUserAppointmentsStatuses(int userId) {
-        /*
-         * find appointments which requires status change from scheudled to finished and change their status
-         * (all appointments which have status 'scheduled' and their end date is before current timestamp)
-         * */
         for (Appointment appointment : appointmentRepository.findScheduledByUserIdWithEndBeforeDate(LocalDateTime.now(), userId)) {
             appointment.setStatus("finished");
             updateAppointment(appointment);
         }
-        /*
-         * find appointments which requires status change from finished to confirmed and change their status
-         * (all appointments which have status 'finished' and their end date is more than 24 hours before current timestamp)
-         * */
+
         for (Appointment appointment : appointmentRepository.findFinishedByUserIdWithEndBeforeDate(LocalDateTime.now().minusDays(1), userId)) {
 
             appointment.setStatus("invoiced");
@@ -370,12 +360,10 @@ public class AppointmentServiceImpl implements AppointmentService {
         User user = userService.getUserById(userId);
         Appointment appointment = getAppointmentById(appointmentId);
 
-        // conditions for admin
         if (user.hasRole("ROLE_ADMIN")) {
             return "Only customer or provider can cancel appointments";
         }
 
-        // conditions for provider
         if (appointment.getProvider().equals(user)) {
             if (!appointment.getStatus().equals("scheduled")) {
                 return "Only appoinmtents with scheduled status can be cancelled.";
@@ -384,7 +372,6 @@ public class AppointmentServiceImpl implements AppointmentService {
             }
         }
 
-        // conditions for provider
         if (appointment.getCustomer().equals(user)) {
             if (!appointment.getStatus().equals("scheduled")) {
                 return "Only appoinmtents with scheduled status can be cancelled.";

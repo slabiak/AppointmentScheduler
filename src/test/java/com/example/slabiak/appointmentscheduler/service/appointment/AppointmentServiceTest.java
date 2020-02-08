@@ -89,9 +89,8 @@ public class AppointmentServiceTest {
 
     @Test
     public void shouldBookAppointmentWhenAllConditionsMet() {
-        // default working plan set provider availability from 06:00 to 18:00 so set start of new appointment at 6:00
         LocalDateTime startOfNewAppointment = LocalDateTime.of(2019, 01, 01, 6, 0);
-        // assume that work type is the same as customer type
+
         when(workService.isWorkForCustomer(workId, customerId)).thenReturn(true);
         when(workService.getWorkById(workId)).thenReturn(work);
         when(userService.getProviderById(providerId)).thenReturn(provider);
@@ -105,9 +104,8 @@ public class AppointmentServiceTest {
 
     @Test(expected = RuntimeException.class)
     public void shouldNotBookAppointmentWhenAppointmentStartIsNotWithinProviderWorkingHours() {
-        // default working plan set provider availability from 06:00 to 18:00 so set start of new appointment at 5:59
         LocalDateTime startOfNewAppointment = LocalDateTime.of(2019, 01, 01, 5, 59);
-        // assume that work type is the same as customer type
+
         when(workService.isWorkForCustomer(workId, customerId)).thenReturn(true);
         when(workService.getWorkById(workId)).thenReturn(work);
         when(userService.getProviderById(providerId)).thenReturn(provider);
@@ -119,10 +117,8 @@ public class AppointmentServiceTest {
 
     @Test(expected = RuntimeException.class)
     public void shouldNotBookNewAppointmentWhenCollidingWithProviderAlreadyBookedAppointments() {
-        // default working plan set provider availability from 06:00 to 18:00 so set start of new appointment at 6:00
         LocalDateTime startOfNewAppointment = LocalDateTime.of(2019, 01, 01, 6, 0);
 
-        // prepare fake already booked appoinment that will be colliding with new appointment
         Appointment existingAppointment = new Appointment();
         LocalDateTime startOfExistingAppointment = LocalDateTime.of(2019, 01, 01, 6, 0);
         LocalDateTime endOfExistingAppointment = LocalDateTime.of(2019, 01, 01, 7, 0);
@@ -144,10 +140,8 @@ public class AppointmentServiceTest {
 
     @Test(expected = RuntimeException.class)
     public void shouldNotBookNewAppointmentWhenCollidingWithCustomerAlreadyBookedAppointments() {
-        // default working plan set provider availability from 06:00 to 18:00 so set start of new appointment at 6:00
         LocalDateTime startOfNewAppointment = LocalDateTime.of(2019, 01, 01, 6, 0);
 
-        // prepare fake already booked appoinment that will be colliding with new appointment
         Appointment existingAppointment = new Appointment();
         LocalDateTime startOfExistingAppointment = LocalDateTime.of(2019, 01, 01, 6, 0);
         LocalDateTime endOfExistingAppointment = LocalDateTime.of(2019, 01, 01, 7, 0);
