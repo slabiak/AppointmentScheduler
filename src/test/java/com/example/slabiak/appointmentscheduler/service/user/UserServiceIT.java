@@ -27,7 +27,7 @@ public class UserServiceIT {
 
         userService.saveNewRetailCustomer(userForm);
 
-        assertThat(userService.getAllRetailCustomers()).hasSize(1);
+        assertThat(userService.getAllRetailCustomers()).hasSize(2);
     }
 
 }
