@@ -63,6 +63,6 @@ jobs:
       - run:
           name: Publish Docker image with Jib
           command: |
-            ./mvnw compile jib:build -B -DskipTests=true \
+            mvn compile jib:build -B -DskipTests=true \
               -Djib.to.auth.username=${docker_login} \
                   -Djib.to.auth.password=${docker_password}
