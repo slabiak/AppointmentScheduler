@@ -4,6 +4,14 @@
 #
 version: 2
 executorType: machine
+workflows:
+  version: 2
+  build-deploy:
+    jobs:
+      - build
+      - publish-docker:
+          requires:
+            - build
 jobs:
   build:
     docker:
@@ -40,3 +48,21 @@ jobs:
 
       # run tests!
       - run: mvn verify
+
+  publish-docker:
+    docker:
+      - image: circleci/openjdk:8-jdk
+    working_directory: ~/repo
+    steps:
+      - checkout
+      - restore_cache:
+          keys:
+            - v1-dependencies-{{ checksum "pom.xml" }}
+            - v1-dependencies
+      - run: mvn dependency:go-offline
+      - run:
+          name: Publish Docker image with Jib
+          command: |
+            ./mvnw compile jib:build -B -DskipTests=true \
+              -Djib.to.auth.username=${docker_login} \
+                  -Djib.to.auth.password=${docker_password}
