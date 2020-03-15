@@ -41,7 +41,7 @@ public class LoginPageIT {
     @Test
     public void shouldShowLoginPageAndSuccessfullyLoginToAdminAccountUsingAdminCredentials() {
         RemoteWebDriver driver = chrome.getWebDriver();
-        String url = "http://host.docker.internal:" + port + "/";
+        String url = "http://host.testcontainers.internal:" + port + "/";
 
         driver.get(url);
 
