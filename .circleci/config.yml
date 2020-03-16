@@ -50,6 +50,10 @@ jobs:
       - run: mvn verify
 
   publish-docker:
+    filters:
+      branches:
+        only:
+          - master
     docker:
       - image: circleci/openjdk:8-jdk
     working_directory: ~/repo
