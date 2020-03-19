@@ -3,6 +3,7 @@ package com.example.slabiak.appointmentscheduler.ui;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.remote.RemoteWebDriver;
@@ -20,7 +21,9 @@ import org.testcontainers.Testcontainers;
 import org.testcontainers.containers.BrowserWebDriverContainer;
 
 import java.io.File;
+import java.util.concurrent.TimeUnit;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
 @RunWith(SpringRunner.class)
@@ -42,7 +45,6 @@ public class LoginPageIT {
     public void shouldShowLoginPageAndSuccessfullyLoginToAdminAccountUsingAdminCredentials() {
         RemoteWebDriver driver = chrome.getWebDriver();
         String url = "http://host.testcontainers.internal:" + port + "/";
-
         driver.get(url);
 
         WebElement elementById = driver.findElementById("login-form");
@@ -54,6 +56,32 @@ public class LoginPageIT {
 
         assertNotNull(elementById);
         assertNotNull(appointments);
+    }
+
+    @Test
+    public void shouldLoginAsRetailCustomerAndSuccessfullyBookNewAppointment() {
+        RemoteWebDriver driver = chrome.getWebDriver();
+        String url = "http://host.testcontainers.internal:" + port + "/";
+
+        driver.get(url);
+        driver.manage().timeouts().implicitlyWait(30, TimeUnit.SECONDS);
+
+        driver.findElementById("username").sendKeys("customer_r");
+        driver.findElementById("password").sendKeys("qwerty123");
+        driver.findElementByTagName("button").click();
+
+        driver.findElementByLinkText("Appointments").click();
+        driver.findElementByLinkText("New appointment").click();
+        driver.findElementByLinkText("Select").click();
+        driver.findElementByLinkText("Select").click();
+        driver.findElementByXPath("//*[@id=\"calendar\"]/div[1]/div[2]/div/button[2]/span\n").click();
+        driver.findElementByXPath("//*[@id=\"calendar\"]/div[2]/div/div/table/tbody/tr[2]/td[1]").click();
+        driver.findElementByXPath("/html/body/div[2]/div/div/table/tbody/tr[8]/td/form/button").click();
+
+        WebElement table = driver.findElement(By.id("appointments"));
+        WebElement tableBody = table.findElement(By.tagName("tbody"));
+        int rowCount = tableBody.findElements(By.tagName("tr")).size();
+        assertEquals(1, rowCount);
     }
 
     public static class Initializer implements ApplicationContextInitializer<ConfigurableApplicationContext> {
