@@ -13,6 +13,7 @@ import java.lang.annotation.Target;
 public @interface FieldsMatches {
 
     String field();
+
     String matchingField();
 
     String message() default "Passwords don't match";

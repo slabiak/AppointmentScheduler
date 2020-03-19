@@ -8,7 +8,7 @@ public class TimePeroid implements Comparable<TimePeroid> {
     private LocalTime start;
     private LocalTime end;
 
-    public TimePeroid(){
+    public TimePeroid() {
 
     }
 

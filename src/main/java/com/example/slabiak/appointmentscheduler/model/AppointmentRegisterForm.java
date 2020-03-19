@@ -16,7 +16,7 @@ public class AppointmentRegisterForm {
     @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm")
     private LocalDateTime end;
 
-    public AppointmentRegisterForm(){
+    public AppointmentRegisterForm() {
     }
 
     public AppointmentRegisterForm(int workId, int providerId, LocalDateTime start, LocalDateTime end) {

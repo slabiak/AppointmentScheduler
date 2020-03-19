@@ -14,7 +14,7 @@ import java.util.List;
 import java.util.Objects;
 
 @Entity
-@Table(name="providers")
+@Table(name = "providers")
 @PrimaryKeyJoinColumn(name = "id_provider")
 public class Provider extends User {
 
@@ -22,17 +22,17 @@ public class Provider extends User {
     private List<Appointment> appointments;
 
     @ManyToMany
-    @JoinTable(name="works_providers", joinColumns=@JoinColumn(name="id_user"), inverseJoinColumns=@JoinColumn(name="id_work"))
+    @JoinTable(name = "works_providers", joinColumns = @JoinColumn(name = "id_user"), inverseJoinColumns = @JoinColumn(name = "id_work"))
     private List<Work> works;
 
-    @OneToOne(mappedBy="provider", cascade = {CascadeType.ALL})
+    @OneToOne(mappedBy = "provider", cascade = {CascadeType.ALL})
     private WorkingPlan workingPlan;
 
-    public Provider(){
+    public Provider() {
     }
 
     public Provider(UserForm userFormDTO, String encryptedPassword, Collection<Role> roles, WorkingPlan workingPlan) {
-        super(userFormDTO,encryptedPassword,roles);
+        super(userFormDTO, encryptedPassword, roles);
         this.workingPlan = workingPlan;
         workingPlan.setProvider(this);
         this.works = userFormDTO.getWorks();
@@ -68,20 +68,20 @@ public class Provider extends User {
         this.workingPlan = workingPlan;
     }
 
-    public List<Work> getCorporateWorks(){
+    public List<Work> getCorporateWorks() {
         List<Work> corporateWorks = new ArrayList<>();
-        for(Work w: works){
-            if(w.getTargetCustomer().equals("corporate")){
+        for (Work w : works) {
+            if (w.getTargetCustomer().equals("corporate")) {
                 corporateWorks.add(w);
             }
         }
         return corporateWorks;
     }
 
-    public List<Work> getRetailWorks(){
+    public List<Work> getRetailWorks() {
         List<Work> retailWorks = new ArrayList<>();
-        for(Work w: works){
-            if(w.getTargetCustomer().equals("retail")){
+        for (Work w : works) {
+            if (w.getTargetCustomer().equals("retail")) {
                 retailWorks.add(w);
             }
         }

@@ -7,6 +7,7 @@ import com.example.slabiak.appointmentscheduler.entity.WorkingPlan;
 import com.example.slabiak.appointmentscheduler.entity.user.customer.Customer;
 import com.example.slabiak.appointmentscheduler.entity.user.provider.Provider;
 import com.example.slabiak.appointmentscheduler.service.EmailService;
+import com.example.slabiak.appointmentscheduler.service.NotificationService;
 import com.example.slabiak.appointmentscheduler.service.UserService;
 import com.example.slabiak.appointmentscheduler.service.WorkService;
 import com.example.slabiak.appointmentscheduler.service.impl.AppointmentServiceImpl;
@@ -29,7 +30,7 @@ import static org.mockito.Mockito.when;
 import static org.mockito.internal.verification.VerificationModeFactory.times;
 
 @RunWith(MockitoJUnitRunner.class)
-public class AppointmentServiceTests {
+public class AppointmentServiceTest {
 
     @Mock
     private AppointmentRepository appointmentRepository;
@@ -42,6 +43,9 @@ public class AppointmentServiceTests {
 
     @Mock
     private UserService userService;
+
+    @Mock
+    private NotificationService notificationService;
 
 
     @InjectMocks
@@ -61,7 +65,7 @@ public class AppointmentServiceTests {
     private Customer customer;
 
     @Before
-    public void initObjects(){
+    public void initObjects() {
 
         customerId = 1;
         providerId = 2;
@@ -84,98 +88,91 @@ public class AppointmentServiceTests {
     }
 
     @Test
-    public void shouldBookAppointmentWhenAllConditionsMet(){
-        // default working plan set provider availability from 06:00 to 18:00 so set start of new appointment at 6:00
-        LocalDateTime startOfNewAppointment = LocalDateTime.of(2019,01,01,6,0);
-        // assume that work type is the same as customer type
-        when(workService.isWorkForCustomer(workId,customerId)).thenReturn(true);
+    public void shouldBookAppointmentWhenAllConditionsMet() {
+        LocalDateTime startOfNewAppointment = LocalDateTime.of(2019, 01, 01, 6, 0);
+
+        when(workService.isWorkForCustomer(workId, customerId)).thenReturn(true);
         when(workService.getWorkById(workId)).thenReturn(work);
         when(userService.getProviderById(providerId)).thenReturn(provider);
         when(userService.getCustomerById(customerId)).thenReturn(customer);
 
         ArgumentCaptor<Appointment> argumentCaptor = ArgumentCaptor.forClass(Appointment.class);
-        appointmentService.createNewAppointment(workId,providerId,customerId,startOfNewAppointment);
+        appointmentService.createNewAppointment(workId, providerId, customerId, startOfNewAppointment);
 
-        verify(appointmentRepository,times(1)).save(argumentCaptor.capture());
+        verify(appointmentRepository, times(1)).save(argumentCaptor.capture());
     }
 
     @Test(expected = RuntimeException.class)
-    public void shouldNotBookAppointmentWhenAppointmentStartIsNotWithinProviderWorkingHours(){
-        // default working plan set provider availability from 06:00 to 18:00 so set start of new appointment at 5:59
-        LocalDateTime startOfNewAppointment = LocalDateTime.of(2019,01,01,5,59);
-        // assume that work type is the same as customer type
-        when(workService.isWorkForCustomer(workId,customerId)).thenReturn(true);
+    public void shouldNotBookAppointmentWhenAppointmentStartIsNotWithinProviderWorkingHours() {
+        LocalDateTime startOfNewAppointment = LocalDateTime.of(2019, 01, 01, 5, 59);
+
+        when(workService.isWorkForCustomer(workId, customerId)).thenReturn(true);
         when(workService.getWorkById(workId)).thenReturn(work);
         when(userService.getProviderById(providerId)).thenReturn(provider);
 
         ArgumentCaptor<Appointment> argumentCaptor = ArgumentCaptor.forClass(Appointment.class);
-        appointmentService.createNewAppointment(workId,providerId,customerId,startOfNewAppointment);
-        verify(appointmentRepository,times(1)).save(argumentCaptor.capture());
+        appointmentService.createNewAppointment(workId, providerId, customerId, startOfNewAppointment);
+        verify(appointmentRepository, times(1)).save(argumentCaptor.capture());
     }
 
     @Test(expected = RuntimeException.class)
-    public void shouldNotBookNewAppointmentWhenCollidingWithProviderAlreadyBookedAppointments(){
-        // default working plan set provider availability from 06:00 to 18:00 so set start of new appointment at 6:00
-        LocalDateTime startOfNewAppointment = LocalDateTime.of(2019,01,01,6,0);
+    public void shouldNotBookNewAppointmentWhenCollidingWithProviderAlreadyBookedAppointments() {
+        LocalDateTime startOfNewAppointment = LocalDateTime.of(2019, 01, 01, 6, 0);
 
-        // prepare fake already booked appoinment that will be colliding with new appointment
         Appointment existingAppointment = new Appointment();
-        LocalDateTime startOfExistingAppointment = LocalDateTime.of(2019,01,01,6,0);
-        LocalDateTime endOfExistingAppointment = LocalDateTime.of(2019,01,01,7,0);
+        LocalDateTime startOfExistingAppointment = LocalDateTime.of(2019, 01, 01, 6, 0);
+        LocalDateTime endOfExistingAppointment = LocalDateTime.of(2019, 01, 01, 7, 0);
         existingAppointment.setStart(startOfExistingAppointment);
         existingAppointment.setEnd(endOfExistingAppointment);
         List<Appointment> providerBookedAppointments = new ArrayList<>();
         providerBookedAppointments.add(existingAppointment);
 
-        when(workService.isWorkForCustomer(workId,customerId)).thenReturn(true);
-        when(appointmentRepository.findByProviderIdWithStartInPeroid(providerId,startOfNewAppointment.toLocalDate().atStartOfDay(),startOfNewAppointment.toLocalDate().atStartOfDay().plusDays(1))).thenReturn(providerBookedAppointments);
+        when(workService.isWorkForCustomer(workId, customerId)).thenReturn(true);
+        when(appointmentRepository.findByProviderIdWithStartInPeroid(providerId, startOfNewAppointment.toLocalDate().atStartOfDay(), startOfNewAppointment.toLocalDate().atStartOfDay().plusDays(1))).thenReturn(providerBookedAppointments);
         when(workService.getWorkById(workId)).thenReturn(work);
         when(userService.getProviderById(providerId)).thenReturn(provider);
 
         ArgumentCaptor<Appointment> argumentCaptor = ArgumentCaptor.forClass(Appointment.class);
-        appointmentService.createNewAppointment(workId,providerId,customerId,startOfNewAppointment);
+        appointmentService.createNewAppointment(workId, providerId, customerId, startOfNewAppointment);
 
-        verify(appointmentRepository,times(1)).save(argumentCaptor.capture());
+        verify(appointmentRepository, times(1)).save(argumentCaptor.capture());
     }
 
     @Test(expected = RuntimeException.class)
-    public void shouldNotBookNewAppointmentWhenCollidingWithCustomerAlreadyBookedAppointments(){
-        // default working plan set provider availability from 06:00 to 18:00 so set start of new appointment at 6:00
-        LocalDateTime startOfNewAppointment = LocalDateTime.of(2019,01,01,6,0);
+    public void shouldNotBookNewAppointmentWhenCollidingWithCustomerAlreadyBookedAppointments() {
+        LocalDateTime startOfNewAppointment = LocalDateTime.of(2019, 01, 01, 6, 0);
 
-        // prepare fake already booked appoinment that will be colliding with new appointment
         Appointment existingAppointment = new Appointment();
-        LocalDateTime startOfExistingAppointment = LocalDateTime.of(2019,01,01,6,0);
-        LocalDateTime endOfExistingAppointment = LocalDateTime.of(2019,01,01,7,0);
+        LocalDateTime startOfExistingAppointment = LocalDateTime.of(2019, 01, 01, 6, 0);
+        LocalDateTime endOfExistingAppointment = LocalDateTime.of(2019, 01, 01, 7, 0);
         existingAppointment.setStart(startOfExistingAppointment);
         existingAppointment.setEnd(endOfExistingAppointment);
         List<Appointment> customerBookedAppointments = new ArrayList<>();
         customerBookedAppointments.add(existingAppointment);
 
-        when(workService.isWorkForCustomer(workId,customerId)).thenReturn(true);
-        when(appointmentRepository.findByCustomerIdWithStartInPeroid(customerId,startOfNewAppointment.toLocalDate().atStartOfDay(),startOfNewAppointment.toLocalDate().atStartOfDay().plusDays(1))).thenReturn(customerBookedAppointments);
+        when(workService.isWorkForCustomer(workId, customerId)).thenReturn(true);
+        when(appointmentRepository.findByCustomerIdWithStartInPeroid(customerId, startOfNewAppointment.toLocalDate().atStartOfDay(), startOfNewAppointment.toLocalDate().atStartOfDay().plusDays(1))).thenReturn(customerBookedAppointments);
         when(workService.getWorkById(workId)).thenReturn(work);
         when(userService.getProviderById(providerId)).thenReturn(provider);
 
         ArgumentCaptor<Appointment> argumentCaptor = ArgumentCaptor.forClass(Appointment.class);
-        appointmentService.createNewAppointment(workId,providerId,customerId,startOfNewAppointment);
+        appointmentService.createNewAppointment(workId, providerId, customerId, startOfNewAppointment);
 
-        verify(appointmentRepository,times(1)).save(argumentCaptor.capture());
+        verify(appointmentRepository, times(1)).save(argumentCaptor.capture());
     }
-
 
 
     @Test
     public void shouldFindAppointmentById() {
         when(appointmentRepository.findById(1)).thenReturn(optionalAppointment);
         assertEquals(optionalAppointment.get().getId(), appointmentService.getAppointmentById(1).getId());
-        verify(appointmentRepository,times(1)).findById(1);
+        verify(appointmentRepository, times(1)).findById(1);
     }
 
     @Test
-    public void shouldFindAllAppointments(){
+    public void shouldFindAllAppointments() {
         when(appointmentRepository.findAll()).thenReturn(appointments);
-        assertEquals(appointments,appointmentService.getAllAppointments());
+        assertEquals(appointments, appointmentService.getAllAppointments());
         verify(appointmentRepository).findAll();
     }
 
@@ -184,7 +181,6 @@ public class AppointmentServiceTests {
         appointmentService.deleteAppointmentById(1);
         verify(appointmentRepository).deleteById(1);
     }
-
 
 
 }

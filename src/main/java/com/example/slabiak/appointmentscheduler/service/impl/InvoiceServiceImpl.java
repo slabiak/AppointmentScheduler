@@ -3,15 +3,16 @@ package com.example.slabiak.appointmentscheduler.service.impl;
 import com.example.slabiak.appointmentscheduler.dao.InvoiceRepository;
 import com.example.slabiak.appointmentscheduler.entity.Appointment;
 import com.example.slabiak.appointmentscheduler.entity.Invoice;
-import com.example.slabiak.appointmentscheduler.entity.user.User;
 import com.example.slabiak.appointmentscheduler.entity.user.customer.Customer;
 import com.example.slabiak.appointmentscheduler.security.CustomUserDetails;
-import com.example.slabiak.appointmentscheduler.service.*;
+import com.example.slabiak.appointmentscheduler.service.AppointmentService;
+import com.example.slabiak.appointmentscheduler.service.InvoiceService;
+import com.example.slabiak.appointmentscheduler.service.NotificationService;
+import com.example.slabiak.appointmentscheduler.service.UserService;
 import com.example.slabiak.appointmentscheduler.util.PdfGeneratorUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -43,9 +44,9 @@ public class InvoiceServiceImpl implements InvoiceService {
     @Override
     public String generateInvoiceNumber() {
         List<Invoice> invoices = invoiceRepository.findAllIssuedInCurrentMonth(LocalDate.now().with(TemporalAdjusters.firstDayOfMonth()).atStartOfDay());
-        int nextInvoiceNumber = invoices.size()+1;
+        int nextInvoiceNumber = invoices.size() + 1;
         LocalDateTime today = LocalDateTime.now();
-        String invoiceNumber = "FV/"+today.getYear() +"/"+today.getMonthValue()+"/"+nextInvoiceNumber;
+        String invoiceNumber = "FV/" + today.getYear() + "/" + today.getMonthValue() + "/" + nextInvoiceNumber;
         return invoiceNumber;
     }
 
@@ -62,12 +63,11 @@ public class InvoiceServiceImpl implements InvoiceService {
     @Override
     public Invoice getInvoiceById(int invoiceId) {
         Optional<Invoice> result = invoiceRepository.findById(invoiceId);
-       Invoice invoice = null;
+        Invoice invoice = null;
 
         if (result.isPresent()) {
             invoice = result.get();
-        }
-        else {
+        } else {
             // todo throw new excep
         }
 
@@ -82,9 +82,9 @@ public class InvoiceServiceImpl implements InvoiceService {
 
     @Override
     public File generatePdfForInvoice(int invoiceId) {
-        CustomUserDetails currentUser =(CustomUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        CustomUserDetails currentUser = (CustomUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         Invoice invoice = invoiceRepository.getOne(invoiceId);
-        if(!isUserAllowedToDownloadInvoice(currentUser,invoice)){
+        if (!isUserAllowedToDownloadInvoice(currentUser, invoice)) {
             throw new org.springframework.security.access.AccessDeniedException("Unauthorized");
         }
         File invoicePdf = pdfGeneratorUtil.generatePdfFromInvoice(invoice);
@@ -94,11 +94,11 @@ public class InvoiceServiceImpl implements InvoiceService {
     @Override
     public boolean isUserAllowedToDownloadInvoice(CustomUserDetails user, Invoice invoice) {
         int userId = user.getId();
-        if(user.hasRole("ROLE_ADMIN")){
+        if (user.hasRole("ROLE_ADMIN")) {
             return true;
         }
-        for(Appointment a : invoice.getAppointments()){
-            if(a.getProvider().getId()==userId || a.getCustomer().getId()==userId){
+        for (Appointment a : invoice.getAppointments()) {
+            if (a.getProvider().getId() == userId || a.getCustomer().getId() == userId) {
                 return true;
             }
         }
@@ -117,16 +117,16 @@ public class InvoiceServiceImpl implements InvoiceService {
     @Override
     public void issueInvoicesForConfirmedAppointments() {
         List<Customer> customers = userService.getAllCustomers();
-        for(Customer customer:customers){
+        for (Customer customer : customers) {
             List<Appointment> appointmentsToIssueInvoice = appointmentService.getConfirmedAppointmentsByCustomerId(customer.getId());
-            if(appointmentsToIssueInvoice.size()>0){
-                for(Appointment a: appointmentsToIssueInvoice){
+            if (appointmentsToIssueInvoice.size() > 0) {
+                for (Appointment a : appointmentsToIssueInvoice) {
                     a.setStatus("invoiced");
                     appointmentService.updateAppointment(a);
                 }
-                Invoice invoice = new Invoice(generateInvoiceNumber(),"issued",LocalDateTime.now(),appointmentsToIssueInvoice);
+                Invoice invoice = new Invoice(generateInvoiceNumber(), "issued", LocalDateTime.now(), appointmentsToIssueInvoice);
                 invoiceRepository.save(invoice);
-                notificationService.newInvoice(invoice,true);
+                notificationService.newInvoice(invoice, true);
             }
 
         }

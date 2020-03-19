@@ -22,11 +22,11 @@ public class CustomAuthenticationSuccessHandler implements AuthenticationSuccess
             throws IOException, ServletException {
         CustomUserDetails currentUser = (CustomUserDetails) authentication.getPrincipal();
         /*
-        * if admin logged in, updateAppointment all appointments statuses, otherwise update only user related appointments statuses
-        * */
-        if(currentUser.hasRole("ROLE_ADMIN")){
+         * if admin logged in, updateAppointment all appointments statuses, otherwise update only user related appointments statuses
+         * */
+        if (currentUser.hasRole("ROLE_ADMIN")) {
             appointmentService.updateAllAppointmentsStatuses();
-        }else {
+        } else {
             appointmentService.updateUserAppointmentsStatuses(currentUser.getId());
         }
         response.sendRedirect(request.getContextPath() + "/");

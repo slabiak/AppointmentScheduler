@@ -7,10 +7,15 @@ import java.util.Date;
 
 public interface JwtTokenService {
     String generateAppointmentRejectionToken(Appointment appointment);
+
     String generateAcceptRejectionToken(Appointment appointment);
+
     boolean validateToken(String token);
+
     int getAppointmentIdFromToken(String token);
+
     int getCustomerIdFromToken(String token);
+
     int getProviderIdFromToken(String token);
 
     ////

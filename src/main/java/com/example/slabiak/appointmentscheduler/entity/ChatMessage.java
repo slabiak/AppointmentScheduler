@@ -6,24 +6,24 @@ import javax.persistence.*;
 import java.time.LocalDateTime;
 
 @Entity
-@Table(name="messages")
-public class ChatMessage extends BaseEntity implements Comparable<ChatMessage>{
+@Table(name = "messages")
+public class ChatMessage extends BaseEntity implements Comparable<ChatMessage> {
 
-    @Column(name="created_at")
+    @Column(name = "created_at")
     private LocalDateTime createdAt;
 
-    @Column(name="message")
+    @Column(name = "message")
     private String message;
 
     @ManyToOne
-    @JoinColumn(name="id_author")
+    @JoinColumn(name = "id_author")
     private User author;
 
     @ManyToOne
-    @JoinColumn(name="id_appointment")
+    @JoinColumn(name = "id_appointment")
     private Appointment appointment;
 
-    public ChatMessage(){
+    public ChatMessage() {
 
     }
 

@@ -1,7 +1,6 @@
 package com.example.slabiak.appointmentscheduler.validation;
 
 import com.example.slabiak.appointmentscheduler.model.UserForm;
-import com.example.slabiak.appointmentscheduler.validation.groups.UpdateProvider;
 import com.example.slabiak.appointmentscheduler.validation.groups.UpdateUser;
 import org.junit.Before;
 import org.junit.Test;
@@ -14,21 +13,22 @@ import java.util.Set;
 
 import static org.junit.Assert.assertEquals;
 
-public class UpdateProviderValidationTests {
+public class UpdateUserValidationTest {
 
     private ValidatorFactory factory;
     private Validator validator;
 
     @Before
-    public void stup(){
+    public void stup() {
         factory = Validation.buildDefaultValidatorFactory();
         validator = factory.getValidator();
     }
 
     @Test
-    public void shouldHave9ViolationsForEmptyFormWhenUpdateProvider(){
+    public void shouldHave8ViolationsForEmptyFormWhenUpdateUser() {
         UserForm form = new UserForm();
-        Set<ConstraintViolation<UserForm>> violations = validator.validate(form,UpdateUser.class,UpdateProvider.class);
-        assertEquals(violations.size(),9);
+        Set<ConstraintViolation<UserForm>> violations = validator.validate(form, UpdateUser.class);
+        assertEquals(violations.size(), 8);
     }
+
 }

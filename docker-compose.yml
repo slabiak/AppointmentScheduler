@@ -1,0 +1,35 @@
+version: '3.7'
+
+services:
+
+  backend:
+    image: slabiak/appointmentscheduler:0.0.1-SNAPSHOT
+    ports:
+      - "8080:8080"
+    restart: always
+    depends_on:
+      - appointmentscheduler_db
+    networks:
+      - appointmentscheduler_network
+
+  appointmentscheduler_db:
+    image: mysql:5.7
+    ports:
+      - "3306:3306"
+    restart: always
+    environment:
+      MYSQL_DATABASE: appointmentscheduler
+      MYSQL_USER: user
+      MYSQL_PASSWORD: password
+      MYSQL_ROOT_PASSWORD: root_pass
+    volumes:
+      - appointmentscheduler_volume:/var/lib/mysql
+      - ./src/main/resources:/docker-entrypoint-initdb.d
+    networks:
+      - appointmentscheduler_network
+
+volumes:
+  appointmentscheduler_volume:
+
+networks:
+  appointmentscheduler_network:

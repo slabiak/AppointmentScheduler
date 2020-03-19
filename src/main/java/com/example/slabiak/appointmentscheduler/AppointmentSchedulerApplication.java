@@ -10,8 +10,8 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 @SpringBootApplication
 public class AppointmentSchedulerApplication {
 
-	public static void main(String[] args) {
-		SpringApplication.run(AppointmentSchedulerApplication.class, args);
-	}
+    public static void main(String[] args) {
+        SpringApplication.run(AppointmentSchedulerApplication.class, args);
+    }
 
 }

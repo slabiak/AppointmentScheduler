@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" th:replace="~{fragments/layout :: layout (~{::body},'exchange','Appointment Exchange Summary')}"
+      xmlns:sec="http://www.w3.org/1999/xhtml">
+
+<body>
+<div class="row" style="margin-top: 50px">
+
+    <div class="container">
+        <div class="row justify-content-center">
+            <div clas="col-md-1">
+            </div>
+            <div>
+               <p>You are gonna send request to exchange this appointment: </p>
+            </div>
+        </div>
+
+        <div class="row">
+            <table id="appointments" class="table" width="500px">
+
+                <tr>
+                    <td><span th:text="${#temporals.format(oldAppointment.start, 'dd-MM-yyyy HH:mm')}">10-01-2019 12:40</span></td>
+                    <td><span th:text="${oldAppointment.work.name}">english lesson</span></td>
+                    <td><span th:text="${oldAppointment.provider.firstName}">Name LastName</span></td>
+
+                </tr>
+                <tr>
+                    <td></td>
+                    <td><b>into:</b></td>
+                    <td></td>
+                </tr>
+
+                <tr>
+                    <td><span th:text="${#temporals.format(newAppointment.start, 'dd-MM-yyyy HH:mm')}">10-01-2019 12:40</span></td>
+                    <td><span th:text="${newAppointment.work.name}">english lesson</span></td>
+                    <td><span th:text="${newAppointment.provider.firstName}">Name LastName</span></td>
+
+                </tr>
+                <tr>
+                    <td>
+                        <form th:action="@{/exchange}" method='POST'>
+                            <input type="hidden" name="oldAppointmentId" th:value="${oldAppointment.id}">
+                            <input type="hidden" name="newAppointmentId" th:value="${newAppointment.id}">
+                            <input type="submit" class="btn btn-primary" value="Send request" />
+                        </form>
+                    </td>
+                </tr>
+            </table>
+        </div>
+    </div>
+
+
+</body>
+
+</html>

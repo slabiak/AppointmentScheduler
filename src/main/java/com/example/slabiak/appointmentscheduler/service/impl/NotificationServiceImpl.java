@@ -1,10 +1,7 @@
 package com.example.slabiak.appointmentscheduler.service.impl;
 
 import com.example.slabiak.appointmentscheduler.dao.NotificationRepository;
-import com.example.slabiak.appointmentscheduler.entity.Appointment;
-import com.example.slabiak.appointmentscheduler.entity.ChatMessage;
-import com.example.slabiak.appointmentscheduler.entity.Invoice;
-import com.example.slabiak.appointmentscheduler.entity.Notification;
+import com.example.slabiak.appointmentscheduler.entity.*;
 import com.example.slabiak.appointmentscheduler.entity.user.User;
 import com.example.slabiak.appointmentscheduler.service.EmailService;
 import com.example.slabiak.appointmentscheduler.service.NotificationService;
@@ -45,10 +42,10 @@ public class NotificationServiceImpl implements NotificationService {
     @Override
     public void markAsRead(int notificationId, int userId) {
         Notification notification = notificationRepository.getOne(notificationId);
-        if(notification.getUser().getId()==userId) {
+        if (notification.getUser().getId() == userId) {
             notification.setRead(true);
             notificationRepository.save(notification);
-        } else{
+        } else {
             throw new org.springframework.security.access.AccessDeniedException("Unauthorized");
         }
     }
@@ -56,7 +53,7 @@ public class NotificationServiceImpl implements NotificationService {
     @Override
     public void markAllAsRead(int userId) {
         List<Notification> notifications = notificationRepository.getAllUnreadNotifications(userId);
-        for(Notification notification : notifications){
+        for (Notification notification : notifications) {
             notification.setRead(true);
             notificationRepository.save(notification);
         }
@@ -80,10 +77,10 @@ public class NotificationServiceImpl implements NotificationService {
     @Override
     public void newAppointmentFinishedNotification(Appointment appointment, boolean sendEmail) {
         String title = "Appointment Finished";
-        String message = "Appointment finished, you can reject that it took place until "+ appointment.getEnd().plusHours(24).toString();
+        String message = "Appointment finished, you can reject that it took place until " + appointment.getEnd().plusHours(24).toString();
         String url = "/appointments/" + appointment.getId();
-        newNotification(title,message,url,appointment.getCustomer());
-        if(sendEmail){
+        newNotification(title, message, url, appointment.getCustomer());
+        if (sendEmail) {
             emailService.sendAppointmentFinishedNotification(appointment);
         }
 
@@ -92,10 +89,10 @@ public class NotificationServiceImpl implements NotificationService {
     @Override
     public void newAppointmentRejectionRequestedNotification(Appointment appointment, boolean sendEmail) {
         String title = "Appointment Rejected";
-        String message =  appointment.getCustomer().getFirstName()+ " " + appointment.getCustomer().getLastName()+ "rejected an appointment. Your approval is required";
+        String message = appointment.getCustomer().getFirstName() + " " + appointment.getCustomer().getLastName() + "rejected an appointment. Your approval is required";
         String url = "/appointments/" + appointment.getId();
-        newNotification(title,message,url,appointment.getProvider());
-        if(sendEmail){
+        newNotification(title, message, url, appointment.getProvider());
+        if (sendEmail) {
             emailService.sendAppointmentRejectionRequestedNotification(appointment);
         }
     }
@@ -104,9 +101,9 @@ public class NotificationServiceImpl implements NotificationService {
     public void newNewAppointmentScheduledNotification(Appointment appointment, boolean sendEmail) {
         String title = "New appointment scheduled";
         String message = "New appointment scheduled with" + appointment.getCustomer().getFirstName() + " " + appointment.getProvider().getLastName() + " on " + appointment.getStart().toString();
-        String url = "/appointments/"+appointment.getId();
-        newNotification(title,message,url,appointment.getProvider());
-        if(sendEmail){
+        String url = "/appointments/" + appointment.getId();
+        newNotification(title, message, url, appointment.getProvider());
+        if (sendEmail) {
             emailService.sendNewAppointmentScheduledNotification(appointment);
         }
     }
@@ -114,10 +111,10 @@ public class NotificationServiceImpl implements NotificationService {
     @Override
     public void newAppointmentCanceledByCustomerNotification(Appointment appointment, boolean sendEmail) {
         String title = "Appointment Canceled";
-        String message = appointment.getCustomer().getFirstName() + " " + appointment.getCustomer().getLastName() +" cancelled appointment scheduled at "+ appointment.getStart().toString();
+        String message = appointment.getCustomer().getFirstName() + " " + appointment.getCustomer().getLastName() + " cancelled appointment scheduled at " + appointment.getStart().toString();
         String url = "/appointments/" + appointment.getId();
-        newNotification(title,message,url,appointment.getProvider());
-        if(sendEmail){
+        newNotification(title, message, url, appointment.getProvider());
+        if (sendEmail) {
             emailService.sendAppointmentCanceledByCustomerNotification(appointment);
         }
     }
@@ -125,10 +122,10 @@ public class NotificationServiceImpl implements NotificationService {
     @Override
     public void newAppointmentCanceledByProviderNotification(Appointment appointment, boolean sendEmail) {
         String title = "Appointment Canceled";
-        String message = appointment.getProvider().getFirstName() + " " + appointment.getProvider().getLastName() +" cancelled appointment scheduled at "+ appointment.getStart().toString();
+        String message = appointment.getProvider().getFirstName() + " " + appointment.getProvider().getLastName() + " cancelled appointment scheduled at " + appointment.getStart().toString();
         String url = "/appointments/" + appointment.getId();
-        newNotification(title,message,url,appointment.getCustomer());
-        if(sendEmail){
+        newNotification(title, message, url, appointment.getCustomer());
+        if (sendEmail) {
             emailService.sendAppointmentCanceledByProviderNotification(appointment);
         }
     }
@@ -136,10 +133,43 @@ public class NotificationServiceImpl implements NotificationService {
     public void newInvoice(Invoice invoice, boolean sendEmail) {
         String title = "New invoice";
         String message = "New invoice has been issued for you";
-        String url = "/invoices/"+invoice.getId();
-        newNotification(title,message,url,invoice.getAppointments().get(0).getCustomer());
-        if(sendEmail){
+        String url = "/invoices/" + invoice.getId();
+        newNotification(title, message, url, invoice.getAppointments().get(0).getCustomer());
+        if (sendEmail) {
             emailService.sendInvoice(invoice);
+        }
+    }
+
+    @Override
+    public void newExchangeRequestedNotification(Appointment oldAppointment, Appointment newAppointment, boolean sendEmail) {
+        String title = "Request for exchange";
+        String message = "One of the users sent you a request to exchange his appointment with your appointment";
+        String url = "/appointments/" + newAppointment.getId();
+        newNotification(title, message, url, newAppointment.getCustomer());
+        if (sendEmail) {
+            emailService.sendNewExchangeRequestedNotification(oldAppointment, newAppointment);
+        }
+    }
+
+    @Override
+    public void newExchangeAcceptedNotification(ExchangeRequest exchangeRequest, boolean sendEmail) {
+        String title = "Exchange request accepted";
+        String message = "Someone accepted your appointment exchange request from " + exchangeRequest.getRequested().getStart() + " to " + exchangeRequest.getRequestor().getStart();
+        String url = "/appointments/" + exchangeRequest.getRequested();
+        newNotification(title, message, url, exchangeRequest.getRequested().getCustomer());
+        if (sendEmail) {
+            emailService.sendExchangeRequestAcceptedNotification(exchangeRequest);
+        }
+    }
+
+    @Override
+    public void newExchangeRejectedNotification(ExchangeRequest exchangeRequest, boolean sendEmail) {
+        String title = "Exchange request rejected";
+        String message = "Someone rejected your appointment exchange request from " + exchangeRequest.getRequestor().getStart() + " to " + exchangeRequest.getRequested().getStart();
+        String url = "/appointments/" + exchangeRequest.getRequestor();
+        newNotification(title, message, url, exchangeRequest.getRequestor().getCustomer());
+        if (sendEmail) {
+            emailService.sendExchangeRequestRejectedNotification(exchangeRequest);
         }
     }
 
@@ -147,9 +177,9 @@ public class NotificationServiceImpl implements NotificationService {
     public void newAppointmentRejectionAcceptedNotification(Appointment appointment, boolean sendEmail) {
         String title = "Rejection accepted";
         String message = "You provider accepted your rejection request";
-        String url = "/appointments/"+appointment.getId();
-        newNotification(title,message,url,appointment.getCustomer());
-        if(sendEmail){
+        String url = "/appointments/" + appointment.getId();
+        newNotification(title, message, url, appointment.getCustomer());
+        if (sendEmail) {
             emailService.sendAppointmentRejectionAcceptedNotification(appointment);
         }
     }
@@ -157,10 +187,10 @@ public class NotificationServiceImpl implements NotificationService {
     @Override
     public void newChatMessageNotification(ChatMessage chatMessage, boolean sendEmail) {
         String title = "New chat message";
-        String message = "You have new chat message from " +chatMessage.getAuthor().getFirstName() +" regarding appointment scheduled at "+ chatMessage.getAppointment().getStart();
-        String url = "/appointments/"+chatMessage.getAppointment().getId();
-        newNotification(title,message,url,chatMessage.getAuthor() == chatMessage.getAppointment().getProvider()? chatMessage.getAppointment().getCustomer(): chatMessage.getAppointment().getProvider());
-        if(sendEmail){
+        String message = "You have new chat message from " + chatMessage.getAuthor().getFirstName() + " regarding appointment scheduled at " + chatMessage.getAppointment().getStart();
+        String url = "/appointments/" + chatMessage.getAppointment().getId();
+        newNotification(title, message, url, chatMessage.getAuthor() == chatMessage.getAppointment().getProvider() ? chatMessage.getAppointment().getCustomer() : chatMessage.getAppointment().getProvider());
+        if (sendEmail) {
             emailService.sendNewChatMessageNotification(chatMessage);
         }
     }

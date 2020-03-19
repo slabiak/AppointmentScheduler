@@ -15,7 +15,7 @@ import java.time.LocalTime;
 @TypeDefs(@TypeDef(name = "json", typeClass = JsonStringType.class))
 @Entity
 @Table(name = "working_plans")
-public class WorkingPlan{
+public class WorkingPlan {
 
     @Id
     @Column(name = "id_provider")
@@ -27,33 +27,32 @@ public class WorkingPlan{
     private Provider provider;
 
     @Type(type = "json")
-    @Column(columnDefinition = "json", name="monday")
+    @Column(columnDefinition = "json", name = "monday")
     private DayPlan monday;
 
     @Type(type = "json")
-    @Column(columnDefinition = "json", name="tuesday")
+    @Column(columnDefinition = "json", name = "tuesday")
     private DayPlan tuesday;
 
     @Type(type = "json")
-    @Column(columnDefinition = "json", name="wednesday")
+    @Column(columnDefinition = "json", name = "wednesday")
     private DayPlan wednesday;
 
     @Type(type = "json")
-    @Column(columnDefinition = "json", name="thursday")
+    @Column(columnDefinition = "json", name = "thursday")
     private DayPlan thursday;
 
     @Type(type = "json")
-    @Column(columnDefinition = "json", name="friday")
+    @Column(columnDefinition = "json", name = "friday")
     private DayPlan friday;
 
     @Type(type = "json")
-    @Column(columnDefinition = "json", name="saturday")
+    @Column(columnDefinition = "json", name = "saturday")
     private DayPlan saturday;
 
     @Type(type = "json")
-    @Column(columnDefinition = "json", name="sunday")
+    @Column(columnDefinition = "json", name = "sunday")
     private DayPlan sunday;
-
 
 
     public WorkingPlan() {
@@ -75,13 +74,13 @@ public class WorkingPlan{
         this.provider = provider;
     }
 
-    public DayPlan getDay(String day){
-        switch(day){
+    public DayPlan getDay(String day) {
+        switch (day) {
             case "monday":
-            return monday;
+                return monday;
 
             case "tuesday":
-            return tuesday;
+                return tuesday;
 
             case "wednesday":
                 return wednesday;
@@ -98,8 +97,8 @@ public class WorkingPlan{
             case "sunday":
                 return sunday;
 
-                default:
-                    return null;
+            default:
+                return null;
         }
     }
 
@@ -161,7 +160,7 @@ public class WorkingPlan{
 
 
     public static WorkingPlan generateDefaultWorkingPlan() {
-        WorkingPlan wp= new WorkingPlan();
+        WorkingPlan wp = new WorkingPlan();
         LocalTime defaultStartHour = LocalTime.parse("06:00");
         LocalTime defaultEndHour = LocalTime.parse("18:00");
         TimePeroid defaultWorkingPeroid = new TimePeroid(defaultStartHour, defaultEndHour);

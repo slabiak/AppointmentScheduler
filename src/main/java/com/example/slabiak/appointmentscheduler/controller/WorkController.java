@@ -34,16 +34,16 @@ public class WorkController {
 
     @PostMapping("/new")
     public String saveWork(@ModelAttribute("work") Work work) {
-        if(work.getId()!=null){
+        if (work.getId() != null) {
             workService.updateWork(work);
-        }else {
+        } else {
             workService.createNewWork(work);
         }
         return "redirect:/works/all";
     }
 
     @PostMapping("/delete")
-    public String deleteWork(@RequestParam("workId") int workId){
+    public String deleteWork(@RequestParam("workId") int workId) {
         workService.deleteWorkById(workId);
         return "redirect:/works/all";
     }

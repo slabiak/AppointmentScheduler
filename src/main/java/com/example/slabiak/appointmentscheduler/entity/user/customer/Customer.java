@@ -20,18 +20,18 @@ public class Customer extends User {
     @OneToMany(mappedBy = "customer")
     private List<Appointment> appointments;
 
-    public Customer(){
+    public Customer() {
     }
 
-    public Customer(UserForm userFormDTO, String encryptedPassword, Collection<Role> roles){
-        super(userFormDTO,encryptedPassword,roles);
+    public Customer(UserForm userFormDTO, String encryptedPassword, Collection<Role> roles) {
+        super(userFormDTO, encryptedPassword, roles);
     }
 
 
-    public String getType(){
-        if (super.hasRole("ROLE_CUSTOMER_CORPORATE")){
+    public String getType() {
+        if (super.hasRole("ROLE_CUSTOMER_CORPORATE")) {
             return "corporate";
-        } else if(super.hasRole("ROLE_CUSTOMER_RETAIL")){
+        } else if (super.hasRole("ROLE_CUSTOMER_RETAIL")) {
             return "retail";
         }
         return "";
