@@ -275,6 +275,8 @@ INSERT INTO `users` (id, username, password)
 VALUES (2, 'provider', '$2a$10$EqKcp1WFKVQISheBxkQJoOqFbsWDzGJXRz/tjkGq85IZKJJ1IipYi');
 INSERT INTO `providers` (id_provider)
 VALUES (2);
+INSERT INTO `users_roles` (user_id, role_id)
+VALUES (2, 2);
 
 
 -- INSERT retail customer account with username: 'customer_r' and password 'qwerty123'
@@ -284,6 +286,10 @@ INSERT INTO `customers` (id_customer)
 VALUES (3);
 INSERT INTO `retail_customers` (id_customer)
 VALUES (3);
+INSERT INTO `users_roles` (user_id, role_id)
+VALUES (3, 3);
+INSERT INTO `users_roles` (user_id, role_id)
+VALUES (3, 5);
 
 -- INSERT corporate customer account with username: 'customer_c' and password 'qwerty123'
 INSERT INTO `users` (id, username, password)
@@ -292,6 +298,10 @@ INSERT INTO `customers` (id_customer)
 VALUES (4);
 INSERT INTO `corporate_customers` (id_customer, vat_number, company_name)
 VALUES (4, '123456789', 'Company name');
+INSERT INTO `users_roles` (user_id, role_id)
+VALUES (4, 3);
+INSERT INTO `users_roles` (user_id, role_id)
+VALUES (4, 4);
 
 INSERT INTO `works` (id, name, duration, price, editable, target, description)
 VALUES (1, 'English lesson', 60, 100.00, true, 'retail',
