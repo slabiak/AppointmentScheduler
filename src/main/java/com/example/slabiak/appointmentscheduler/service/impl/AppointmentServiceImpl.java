@@ -29,6 +29,7 @@ import java.util.Optional;
 
 @Service
 public class AppointmentServiceImpl implements AppointmentService {
+    private final int NUMBER_OF_ALLOWED_CANCELATIONS_PER_MONTH = 1;
 
     @Autowired
     private AppointmentRepository appointmentRepository;
@@ -60,21 +61,12 @@ public class AppointmentServiceImpl implements AppointmentService {
 
     @Override
     @PostAuthorize("returnObject.provider.id == principal.id or returnObject.customer.id == principal.id or hasRole('ADMIN') ")
-    public Appointment getAppointmentById(int id) {
-        Optional<Appointment> result = appointmentRepository.findById(id);
-        Appointment appointment = null;
-
-        if (result.isPresent()) {
-            appointment = result.get();
-        } else {
-            // todo throw new excep
-        }
-
-        return appointment;
+    public Appointment getAppointmentByIdWithAuthorization(int id) {
+        return getAppointmentById(id);
     }
 
     @Override
-    public Appointment getAppointmentByIdWithoutAuthorization(int id) {
+    public Appointment getAppointmentById(int id) {
         Optional<Appointment> result = appointmentRepository.findById(id);
         Appointment appointment = null;
 
@@ -128,9 +120,8 @@ public class AppointmentServiceImpl implements AppointmentService {
 
         List<Appointment> providerAppointments = getAppointmentsByProviderAtDay(providerId, date);
         List<Appointment> customerAppointments = getAppointmentsByCustomerAtDay(customerId, date);
-        List<TimePeroid> availablePeroids = new ArrayList<TimePeroid>();
 
-        availablePeroids = selectedDay.getTimePeroidsWithBreaksExcluded();
+        List<TimePeroid> availablePeroids = selectedDay.getTimePeroidsWithBreaksExcluded();
         availablePeroids = excludeAppointmentsFromTimePeroids(availablePeroids, providerAppointments);
 
         availablePeroids = excludeAppointmentsFromTimePeroids(availablePeroids, customerAppointments);
@@ -158,7 +149,7 @@ public class AppointmentServiceImpl implements AppointmentService {
 
     @Override
     public void addMessageToAppointmentChat(int appointmentId, int authorId, ChatMessage chatMessage) {
-        Appointment appointment = getAppointmentById(appointmentId);
+        Appointment appointment = getAppointmentByIdWithAuthorization(appointmentId);
         if (appointment.getProvider().getId() == authorId || appointment.getCustomer().getId() == authorId) {
             chatMessage.setAuthor(userService.getUserById(authorId));
             chatMessage.setAppointment(appointment);
@@ -172,7 +163,7 @@ public class AppointmentServiceImpl implements AppointmentService {
 
     @Override
     public List<TimePeroid> calculateAvailableHours(List<TimePeroid> availableTimePeroids, Work work) {
-        ArrayList<TimePeroid> availableHours = new ArrayList<TimePeroid>();
+        ArrayList<TimePeroid> availableHours = new ArrayList();
         for (TimePeroid peroid : availableTimePeroids) {
             TimePeroid workPeroid = new TimePeroid(peroid.getStart(), peroid.getStart().plusMinutes(work.getDuration()));
             while (workPeroid.getEnd().isBefore(peroid.getEnd()) || workPeroid.getEnd().equals(peroid.getEnd())) {
@@ -187,7 +178,7 @@ public class AppointmentServiceImpl implements AppointmentService {
     @Override
     public List<TimePeroid> excludeAppointmentsFromTimePeroids(List<TimePeroid> peroids, List<Appointment> appointments) {
 
-        List<TimePeroid> toAdd = new ArrayList<TimePeroid>();
+        List<TimePeroid> toAdd = new ArrayList();
         Collections.sort(appointments);
         for (Appointment appointment : appointments) {
             for (TimePeroid peroid : peroids) {
@@ -279,13 +270,9 @@ public class AppointmentServiceImpl implements AppointmentService {
     @Override
     public boolean isCustomerAllowedToRejectAppointment(int userId, int appointmentId) {
         User user = userService.getUserById(userId);
-        Appointment appointment = getAppointmentById(appointmentId);
+        Appointment appointment = getAppointmentByIdWithAuthorization(appointmentId);
 
-        if (!appointment.getCustomer().equals(user)) {
-            return false;
-        } else if (!appointment.getStatus().equals("finished")) {
-            return false;
-        } else if (LocalDateTime.now().isAfter(appointment.getEnd().plusDays(1))) {
+        if (!appointment.getCustomer().equals(user) || !appointment.getStatus().equals("finished") || LocalDateTime.now().isAfter(appointment.getEnd().plusDays(1))) {
             return false;
         } else {
             return true;
@@ -295,7 +282,7 @@ public class AppointmentServiceImpl implements AppointmentService {
     @Override
     public boolean requestAppointmentRejection(int appointmentId, int customerId) {
         if (isCustomerAllowedToRejectAppointment(customerId, appointmentId)) {
-            Appointment appointment = getAppointmentById(appointmentId);
+            Appointment appointment = getAppointmentByIdWithAuthorization(appointmentId);
             appointment.setStatus("rejection requested");
             notificationService.newAppointmentRejectionRequestedNotification(appointment, true);
             updateAppointment(appointment);
@@ -321,11 +308,9 @@ public class AppointmentServiceImpl implements AppointmentService {
     @Override
     public boolean isProviderAllowedToAcceptRejection(int providerId, int appointmentId) {
         User user = userService.getUserById(providerId);
-        Appointment appointment = getAppointmentById(appointmentId);
+        Appointment appointment = getAppointmentByIdWithAuthorization(appointmentId);
 
-        if (!appointment.getProvider().equals(user)) {
-            return false;
-        } else if (!appointment.getStatus().equals("rejection requested")) {
+        if (!appointment.getProvider().equals(user) || !appointment.getStatus().equals("rejection requested")) {
             return false;
         } else {
             return true;
@@ -335,7 +320,7 @@ public class AppointmentServiceImpl implements AppointmentService {
     @Override
     public boolean acceptRejection(int appointmentId, int customerId) {
         if (isProviderAllowedToAcceptRejection(customerId, appointmentId)) {
-            Appointment appointment = getAppointmentById(appointmentId);
+            Appointment appointment = getAppointmentByIdWithAuthorization(appointmentId);
             appointment.setStatus("rejected");
             updateAppointment(appointment);
             notificationService.newAppointmentRejectionAcceptedNotification(appointment, true);
@@ -358,7 +343,7 @@ public class AppointmentServiceImpl implements AppointmentService {
     @Override
     public String getCancelNotAllowedReason(int userId, int appointmentId) {
         User user = userService.getUserById(userId);
-        Appointment appointment = getAppointmentById(appointmentId);
+        Appointment appointment = getAppointmentByIdWithAuthorization(appointmentId);
 
         if (user.hasRole("ROLE_ADMIN")) {
             return "Only customer or provider can cancel appointments";
@@ -379,7 +364,7 @@ public class AppointmentServiceImpl implements AppointmentService {
                 return "Appointments which will be in less than 24 hours cannot be canceled.";
             } else if (!appointment.getWork().getEditable()) {
                 return "This type of appointment can be canceled only by Provider.";
-            } else if (getCanceledAppointmentsByCustomerIdForCurrentMonth(userId).size() >= 1) {
+            } else if (getCanceledAppointmentsByCustomerIdForCurrentMonth(userId).size() >= NUMBER_OF_ALLOWED_CANCELATIONS_PER_MONTH) {
                 return "You can't cancel this appointment because you exceeded maximum number of cancellations in this month.";
             } else {
                 return null;

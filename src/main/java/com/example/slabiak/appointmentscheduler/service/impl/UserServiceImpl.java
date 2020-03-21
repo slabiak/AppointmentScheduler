@@ -231,7 +231,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public Collection<Role> getRolesForRetailCustomer() {
-        HashSet<Role> roles = new HashSet<Role>();
+        HashSet<Role> roles = new HashSet();
         roles.add(roleRepository.findByName("ROLE_CUSTOMER_RETAIL"));
         roles.add(roleRepository.findByName("ROLE_CUSTOMER"));
         return roles;
@@ -240,7 +240,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public Collection<Role> getRoleForCorporateCustomers() {
-        HashSet<Role> roles = new HashSet<Role>();
+        HashSet<Role> roles = new HashSet();
         roles.add(roleRepository.findByName("ROLE_CUSTOMER_CORPORATE"));
         roles.add(roleRepository.findByName("ROLE_CUSTOMER"));
         return roles;
@@ -248,7 +248,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public Collection<Role> getRolesForProvider() {
-        HashSet<Role> roles = new HashSet<Role>();
+        HashSet<Role> roles = new HashSet();
         roles.add(roleRepository.findByName("ROLE_PROVIDER"));
         return roles;
     }

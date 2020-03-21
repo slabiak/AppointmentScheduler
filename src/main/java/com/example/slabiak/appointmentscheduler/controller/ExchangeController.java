@@ -34,8 +34,8 @@ public class ExchangeController {
     @GetMapping("/{oldAppointmentId}/{newAppointmentId}")
     public String showExchangeSummaryScreen(@PathVariable("oldAppointmentId") int oldAppointmentId, @PathVariable("newAppointmentId") int newAppointmentId, Model model, @AuthenticationPrincipal CustomUserDetails currentUser) {
         if (exchangeService.checkIfExchangeIsPossible(oldAppointmentId, newAppointmentId, currentUser.getId())) {
-            model.addAttribute("oldAppointment", appointmentService.getAppointmentById(oldAppointmentId));
-            model.addAttribute("newAppointment", appointmentService.getAppointmentByIdWithoutAuthorization(newAppointmentId));
+            model.addAttribute("oldAppointment", appointmentService.getAppointmentByIdWithAuthorization(oldAppointmentId));
+            model.addAttribute("newAppointment", appointmentService.getAppointmentById(newAppointmentId));
         } else {
             return "redirect:/appointments/all";
         }

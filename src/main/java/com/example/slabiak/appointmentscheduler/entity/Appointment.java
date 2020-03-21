@@ -76,6 +76,11 @@ public class Appointment extends BaseEntity implements Comparable<Appointment> {
         this.work = work;
     }
 
+    @Override
+    public int compareTo(Appointment o) {
+        return this.getStart().compareTo(o.getStart());
+    }
+
     public LocalDateTime getStart() {
         return start;
     }
@@ -147,11 +152,6 @@ public class Appointment extends BaseEntity implements Comparable<Appointment> {
 
     public void setCanceledAt(LocalDateTime canceledAt) {
         this.canceledAt = canceledAt;
-    }
-
-    @Override
-    public int compareTo(Appointment o) {
-        return this.getStart().compareTo(o.getStart());
     }
 
     public Invoice getInvoice() {

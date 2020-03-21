@@ -31,12 +31,6 @@ public class Notification extends BaseEntity {
     public Notification() {
     }
 
-    public Notification(String title, String message, Date createdAt, String url, User user) {
-        this.message = message;
-        this.createdAt = createdAt;
-        this.user = user;
-    }
-
     public String getTitle() {
         return title;
     }
