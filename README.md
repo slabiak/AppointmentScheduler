@@ -3,7 +3,7 @@
 
 >This is a Spring Boot Web Application to manage and schedule appointments between providers and customers. It has many features such as automatic invoicing, email notifications, appointments cancelation, providers individual working plans with brakes etc.
 
-<a href="https://www.appointmentscheduler.tslabiak.me/"><img src="https://tslabiak.me/images/appointmentscheduler/calendar.png" width="600"></a>
+<a href="https://github.com/slabiak/slabiak.github.io/blob/master/images/appointmentscheduler/calendar.png?raw=true"><img src="https://github.com/slabiak/slabiak.github.io/blob/master/images/appointmentscheduler/calendar.png?raw=true" width="600"></a>
 ## Demo
 
 The live demo of this app is deployed and can be found [here](https://appointmentscheudler.herokuapp.com/) 
