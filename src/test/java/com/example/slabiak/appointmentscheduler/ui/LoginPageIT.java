@@ -1,6 +1,5 @@
 package com.example.slabiak.appointmentscheduler.ui;
 
-import com.example.slabiak.appointmentscheduler.service.EmailService;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -10,7 +9,6 @@ import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.remote.RemoteWebDriver;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.boot.web.context.WebServerInitializedEvent;
 import org.springframework.boot.web.server.LocalServerPort;
 import org.springframework.context.ApplicationContextInitializer;
@@ -37,9 +35,6 @@ public class LoginPageIT {
 
     @LocalServerPort
     private int port;
-
-    @MockBean
-    EmailService emailService;
 
     @Rule
     public BrowserWebDriverContainer chrome = new BrowserWebDriverContainer()
