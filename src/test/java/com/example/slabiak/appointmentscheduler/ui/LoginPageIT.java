@@ -4,6 +4,7 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.openqa.selenium.By;
+import org.openqa.selenium.StaleElementReferenceException;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.remote.RemoteWebDriver;
@@ -23,8 +24,7 @@ import org.testcontainers.containers.BrowserWebDriverContainer;
 import java.io.File;
 import java.util.concurrent.TimeUnit;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.*;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
@@ -75,14 +75,25 @@ public class LoginPageIT {
         driver.findElementByLinkText("Select").click();
         driver.findElementByLinkText("Select").click();
         driver.findElementByXPath("//*[@id=\"calendar\"]/div[1]/div[2]/div/button[2]/span\n").click();
-        driver.manage().timeouts().implicitlyWait(2, TimeUnit.SECONDS);
-        driver.findElementByXPath("//*[@id=\"calendar\"]/div[2]/div/div/table/tbody/tr[2]/td[1]").click();
-        driver.manage().timeouts().implicitlyWait(2, TimeUnit.SECONDS);
+
+        boolean result = false;
+        int attempts = 0;
+        while (attempts < 3) {
+            try {
+                driver.findElementByXPath("//*[@id=\"calendar\"]/div[2]/div/div/table/tbody/tr[2]/td[1]").click();
+                result = true;
+                break;
+            } catch (StaleElementReferenceException e) {
+            }
+            attempts++;
+        }
+
         driver.findElementByXPath("/html/body/div[2]/div/div/table/tbody/tr[8]/td/form/button").click();
 
         WebElement table = driver.findElement(By.id("appointments"));
         WebElement tableBody = table.findElement(By.tagName("tbody"));
         int rowCount = tableBody.findElements(By.tagName("tr")).size();
+        assertTrue(result);
         assertEquals(1, rowCount);
     }
 
