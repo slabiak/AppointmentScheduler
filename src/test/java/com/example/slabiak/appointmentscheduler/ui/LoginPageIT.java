@@ -1,5 +1,6 @@
 package com.example.slabiak.appointmentscheduler.ui;
 
+import com.example.slabiak.appointmentscheduler.service.EmailService;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -9,6 +10,7 @@ import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.remote.RemoteWebDriver;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.boot.web.context.WebServerInitializedEvent;
 import org.springframework.boot.web.server.LocalServerPort;
 import org.springframework.context.ApplicationContextInitializer;
@@ -35,6 +37,9 @@ public class LoginPageIT {
 
     @LocalServerPort
     private int port;
+
+    @MockBean
+    EmailService emailService;
 
     @Rule
     public BrowserWebDriverContainer chrome = new BrowserWebDriverContainer()
@@ -75,7 +80,9 @@ public class LoginPageIT {
         driver.findElementByLinkText("Select").click();
         driver.findElementByLinkText("Select").click();
         driver.findElementByXPath("//*[@id=\"calendar\"]/div[1]/div[2]/div/button[2]/span\n").click();
+        driver.manage().timeouts().implicitlyWait(2, TimeUnit.SECONDS);
         driver.findElementByXPath("//*[@id=\"calendar\"]/div[2]/div/div/table/tbody/tr[2]/td[1]").click();
+        driver.manage().timeouts().implicitlyWait(2, TimeUnit.SECONDS);
         driver.findElementByXPath("/html/body/div[2]/div/div/table/tbody/tr[8]/td/form/button").click();
 
         WebElement table = driver.findElement(By.id("appointments"));
