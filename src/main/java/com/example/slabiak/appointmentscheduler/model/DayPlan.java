@@ -10,21 +10,21 @@ public class DayPlan {
     private List<TimePeroid> breaks;
 
     public DayPlan() {
-        breaks = new ArrayList<TimePeroid>();
+        breaks = new ArrayList();
     }
 
     public DayPlan(TimePeroid workingHours) {
         this.workingHours = workingHours;
-        this.breaks = new ArrayList<TimePeroid>();
+        this.breaks = new ArrayList();
     }
 
-    public ArrayList<TimePeroid> getTimePeroidsWithBreaksExcluded() {
+    public List<TimePeroid> getTimePeroidsWithBreaksExcluded() {
         ArrayList<TimePeroid> timePeroidsWithBreaksExcluded = new ArrayList<>();
         timePeroidsWithBreaksExcluded.add(getWorkingHours());
         List<TimePeroid> breaks = getBreaks();
 
-        if (breaks.size() > 0) {
-            ArrayList<TimePeroid> toAdd = new ArrayList<TimePeroid>();
+        if (!breaks.isEmpty()) {
+            ArrayList<TimePeroid> toAdd = new ArrayList();
             for (TimePeroid break1 : breaks) {
                 if (break1.getStart().isBefore(workingHours.getStart())) {
                     break1.setStart(workingHours.getStart());

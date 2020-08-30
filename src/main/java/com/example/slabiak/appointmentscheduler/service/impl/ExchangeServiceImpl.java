@@ -46,8 +46,8 @@ public class ExchangeServiceImpl implements ExchangeService {
         Appointment oldAppointment = appointmentRepository.getOne(oldAppointmentId);
         Appointment newAppointment = appointmentRepository.getOne(newAppointmentId);
         if (oldAppointment.getCustomer().getId() == userId) {
-            return oldAppointment.getWork().getId() == newAppointment.getWork().getId()
-                    && oldAppointment.getProvider().getId() == newAppointment.getProvider().getId()
+            return oldAppointment.getWork().getId().equals(newAppointment.getWork().getId())
+                    && oldAppointment.getProvider().getId().equals(newAppointment.getProvider().getId())
                     && oldAppointment.getStart().minusHours(24).isAfter(LocalDateTime.now())
                     && newAppointment.getStart().minusHours(24).isAfter(LocalDateTime.now());
         } else {

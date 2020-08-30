@@ -7,6 +7,7 @@ import com.example.slabiak.appointmentscheduler.model.UserForm;
 import javax.persistence.*;
 import java.util.Collection;
 import java.util.List;
+import java.util.Objects;
 
 
 @Entity
@@ -166,12 +167,11 @@ public class User extends BaseEntity {
     }
 
     @Override
-    public boolean equals(Object user) {
-        User compareUser = (User) user;
-        if (compareUser.getId().equals(this.getId())) return true;
-
-        else return false;
-
+    public boolean equals(Object compareUser) {
+        if (this == compareUser) return true;
+        if (!(compareUser instanceof User)) return false;
+        User user = (User) compareUser;
+        return Objects.equals(this.getId(),  user.getId());
     }
 
     public List<Notification> getNotifications() {

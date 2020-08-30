@@ -22,9 +22,9 @@ public interface AppointmentService {
 
     void deleteAppointmentById(int appointmentId);
 
-    Appointment getAppointmentById(int id);
+    Appointment getAppointmentByIdWithAuthorization(int id);
 
-    Appointment getAppointmentByIdWithoutAuthorization(int id);
+    Appointment getAppointmentById(int id);
 
     List<Appointment> getAllAppointments();
 

@@ -14,6 +14,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import java.io.File;
@@ -34,19 +35,19 @@ public class InvoiceController {
         return "invoices/listInvoices";
     }
 
-    @RequestMapping("/paid/{invoiceId}")
+    @PostMapping("/paid/{invoiceId}")
     public String changeStatusToPaid(@PathVariable("invoiceId") int invoiceId) {
         invoiceService.changeInvoiceStatusToPaid(invoiceId);
         return "redirect:/invoices/all";
     }
 
-    @RequestMapping("/issue")
+    @GetMapping("/issue")
     public String issueInvoicesManually(Model model) {
         invoiceService.issueInvoicesForConfirmedAppointments();
         return "redirect:/invoices/all";
     }
 
-    @RequestMapping("/download/{invoiceId}")
+    @GetMapping("/download/{invoiceId}")
     public ResponseEntity<InputStreamResource> downloadInvoice(@PathVariable("invoiceId") int invoiceId, @AuthenticationPrincipal CustomUserDetails currentUser) {
         try {
             File invoicePdf = invoiceService.generatePdfForInvoice(invoiceId);

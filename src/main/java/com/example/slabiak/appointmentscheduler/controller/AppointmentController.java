@@ -20,6 +20,8 @@ import java.time.LocalDateTime;
 @RequestMapping("/appointments")
 public class AppointmentController {
 
+    private final String REJECTION_CONFIRMATION_VIEW = "appointments/rejectionConfirmation";
+
     @Autowired
     private WorkService workService;
 
@@ -32,22 +34,23 @@ public class AppointmentController {
     @Autowired
     private ExchangeService exchangeService;
 
-
     @GetMapping("/all")
     public String showAllAppointments(Model model, @AuthenticationPrincipal CustomUserDetails currentUser) {
+        String appointmentsModelName = "appointments";
+
         if (currentUser.hasRole("ROLE_CUSTOMER")) {
-            model.addAttribute("appointments", appointmentService.getAppointmentByCustomerId(currentUser.getId()));
+            model.addAttribute(appointmentsModelName, appointmentService.getAppointmentByCustomerId(currentUser.getId()));
         } else if (currentUser.hasRole("ROLE_PROVIDER")) {
-            model.addAttribute("appointments", appointmentService.getAppointmentByProviderId(currentUser.getId()));
+            model.addAttribute(appointmentsModelName, appointmentService.getAppointmentByProviderId(currentUser.getId()));
         } else if (currentUser.hasRole("ROLE_ADMIN")) {
-            model.addAttribute("appointments", appointmentService.getAllAppointments());
+            model.addAttribute(appointmentsModelName, appointmentService.getAllAppointments());
         }
         return "appointments/listAppointments";
     }
 
     @GetMapping("/{id}")
     public String showAppointmentDetail(@PathVariable("id") int appointmentId, Model model, @AuthenticationPrincipal CustomUserDetails currentUser) {
-        Appointment appointment = appointmentService.getAppointmentById(appointmentId);
+        Appointment appointment = appointmentService.getAppointmentByIdWithAuthorization(appointmentId);
         model.addAttribute("appointment", appointment);
         model.addAttribute("chatMessage", new ChatMessage());
         boolean allowedToRequestRejection = appointmentService.isCustomerAllowedToRejectAppointment(currentUser.getId(), appointmentId);
@@ -69,33 +72,33 @@ public class AppointmentController {
     @PostMapping("/reject")
     public String processAppointmentRejectionRequest(@RequestParam("appointmentId") int appointmentId, @AuthenticationPrincipal CustomUserDetails currentUser, Model model) {
         boolean result = appointmentService.requestAppointmentRejection(appointmentId, currentUser.getId());
-        model.addAttribute("result", result);
+        model.addAttribute(result);
         model.addAttribute("type", "request");
-        return "appointments/rejectionConfirmation";
+        return REJECTION_CONFIRMATION_VIEW;
     }
 
     @GetMapping("/reject")
     public String processAppointmentRejectionRequest(@RequestParam("token") String token, Model model) {
         boolean result = appointmentService.requestAppointmentRejection(token);
-        model.addAttribute("result", result);
+        model.addAttribute(result);
         model.addAttribute("type", "request");
-        return "appointments/rejectionConfirmation";
+        return REJECTION_CONFIRMATION_VIEW;
     }
 
     @PostMapping("/acceptRejection")
     public String acceptAppointmentRejectionRequest(@RequestParam("appointmentId") int appointmentId, @AuthenticationPrincipal CustomUserDetails currentUser, Model model) {
         boolean result = appointmentService.acceptRejection(appointmentId, currentUser.getId());
-        model.addAttribute("result", result);
+        model.addAttribute(result);
         model.addAttribute("type", "accept");
-        return "appointments/rejectionConfirmation";
+        return REJECTION_CONFIRMATION_VIEW;
     }
 
     @GetMapping("/acceptRejection")
     public String acceptAppointmentRejectionRequest(@RequestParam("token") String token, Model model) {
         boolean result = appointmentService.acceptRejection(token);
-        model.addAttribute("result", result);
+        model.addAttribute(result);
         model.addAttribute("type", "accept");
-        return "appointments/rejectionConfirmation";
+        return REJECTION_CONFIRMATION_VIEW;
     }
 
     @PostMapping("/messages/new")
@@ -122,14 +125,14 @@ public class AppointmentController {
         } else if (currentUser.hasRole("ROLE_CUSTOMER_CORPORATE")) {
             model.addAttribute("works", workService.getWorksForCorporateCustomerByProviderId(providerId));
         }
-        model.addAttribute("providerId", providerId);
+        model.addAttribute(providerId);
         return "appointments/selectService";
     }
 
     @GetMapping("/new/{providerId}/{workId}")
     public String selectDate(@PathVariable("workId") int workId, @PathVariable("providerId") int providerId, Model model, @AuthenticationPrincipal CustomUserDetails currentUser) {
         if (workService.isWorkForCustomer(workId, currentUser.getId())) {
-            model.addAttribute("providerId", providerId);
+            model.addAttribute(providerId);
             model.addAttribute("workId", workId);
             return "appointments/selectDate";
         } else {
@@ -143,7 +146,7 @@ public class AppointmentController {
         if (appointmentService.isAvailable(workId, providerId, currentUser.getId(), LocalDateTime.parse(start))) {
             model.addAttribute("work", workService.getWorkById(workId));
             model.addAttribute("provider", userService.getProviderById(providerId).getFirstName() + " " + userService.getProviderById(providerId).getLastName());
-            model.addAttribute("providerId", providerId);
+            model.addAttribute(providerId);
             model.addAttribute("start", LocalDateTime.parse(start));
             model.addAttribute("end", LocalDateTime.parse(start).plusMinutes(workService.getWorkById(workId).getDuration()));
             return "appointments/newAppointmentSummary";

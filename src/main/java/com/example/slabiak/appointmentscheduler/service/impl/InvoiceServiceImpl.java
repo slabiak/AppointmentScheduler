@@ -46,8 +46,7 @@ public class InvoiceServiceImpl implements InvoiceService {
         List<Invoice> invoices = invoiceRepository.findAllIssuedInCurrentMonth(LocalDate.now().with(TemporalAdjusters.firstDayOfMonth()).atStartOfDay());
         int nextInvoiceNumber = invoices.size() + 1;
         LocalDateTime today = LocalDateTime.now();
-        String invoiceNumber = "FV/" + today.getYear() + "/" + today.getMonthValue() + "/" + nextInvoiceNumber;
-        return invoiceNumber;
+        return  "FV/" + today.getYear() + "/" + today.getMonthValue() + "/" + nextInvoiceNumber;
     }
 
     @Override
@@ -87,8 +86,7 @@ public class InvoiceServiceImpl implements InvoiceService {
         if (!isUserAllowedToDownloadInvoice(currentUser, invoice)) {
             throw new org.springframework.security.access.AccessDeniedException("Unauthorized");
         }
-        File invoicePdf = pdfGeneratorUtil.generatePdfFromInvoice(invoice);
-        return invoicePdf;
+        return pdfGeneratorUtil.generatePdfFromInvoice(invoice);
     }
 
     @Override
@@ -119,7 +117,7 @@ public class InvoiceServiceImpl implements InvoiceService {
         List<Customer> customers = userService.getAllCustomers();
         for (Customer customer : customers) {
             List<Appointment> appointmentsToIssueInvoice = appointmentService.getConfirmedAppointmentsByCustomerId(customer.getId());
-            if (appointmentsToIssueInvoice.size() > 0) {
+            if (!appointmentsToIssueInvoice.isEmpty()) {
                 for (Appointment a : appointmentsToIssueInvoice) {
                     a.setStatus("invoiced");
                     appointmentService.updateAppointment(a);

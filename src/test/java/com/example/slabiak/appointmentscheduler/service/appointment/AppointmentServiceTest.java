@@ -165,7 +165,7 @@ public class AppointmentServiceTest {
     @Test
     public void shouldFindAppointmentById() {
         when(appointmentRepository.findById(1)).thenReturn(optionalAppointment);
-        assertEquals(optionalAppointment.get().getId(), appointmentService.getAppointmentById(1).getId());
+        assertEquals(optionalAppointment.get().getId(), appointmentService.getAppointmentByIdWithAuthorization(1).getId());
         verify(appointmentRepository, times(1)).findById(1);
     }
 
