@@ -16,6 +16,12 @@ workflows:
                 - master
           requires:
             - build
+      - heroku-deploy:
+          requires:
+            - build # only run deploy-via-git job if the build job has completed
+          filters:
+            branches:
+              only: master # only run deploy-via-git job on master branch
 jobs:
   build:
     docker:
@@ -52,6 +58,14 @@ jobs:
 
       # run tests!
       - run: mvn verify
+
+  heroku-deploy:
+    steps:
+      - checkout
+      - run:
+          name: Deploy Master to Heroku
+          command: |
+            git push https://heroku:$HEROKU_API_KEY@git.heroku.com/$HEROKU_APP_NAME.git master
 
   publish-docker:
     docker:
