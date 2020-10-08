@@ -20,9 +20,11 @@ import java.util.Date;
 @Component
 public class JwtTokenServiceImpl implements JwtTokenService {
 
-    @Value(value = "${app.jwtSecret}")
     private String jwtSecret;
 
+    public JwtTokenServiceImpl(@Value(value = "${app.jwtSecret}") String jwtSecret) {
+        this.jwtSecret = jwtSecret;
+    }
 
     @Override
     public String generateAppointmentRejectionToken(Appointment appointment) {

@@ -13,7 +13,6 @@ import com.example.slabiak.appointmentscheduler.validation.groups.CreateProvider
 import com.example.slabiak.appointmentscheduler.validation.groups.CreateUser;
 import com.example.slabiak.appointmentscheduler.validation.groups.UpdateProvider;
 import com.example.slabiak.appointmentscheduler.validation.groups.UpdateUser;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -29,17 +28,17 @@ import javax.validation.Valid;
 @RequestMapping("/providers")
 public class ProviderController {
 
-    @Autowired
-    private UserService userService;
+    private final UserService userService;
+    private final WorkService workService;
+    private final WorkingPlanService workingPlanService;
+    private final AppointmentService appointmentService;
 
-    @Autowired
-    private WorkService workService;
-
-    @Autowired
-    private WorkingPlanService workingPlanService;
-
-    @Autowired
-    private AppointmentService appointmentService;
+    public ProviderController(UserService userService, WorkService workService, WorkingPlanService workingPlanService, AppointmentService appointmentService) {
+        this.userService = userService;
+        this.workService = workService;
+        this.workingPlanService = workingPlanService;
+        this.appointmentService = appointmentService;
+    }
 
 
     @GetMapping("/all")

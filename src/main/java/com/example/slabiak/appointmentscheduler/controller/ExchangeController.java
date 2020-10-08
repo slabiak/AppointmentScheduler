@@ -4,7 +4,6 @@ import com.example.slabiak.appointmentscheduler.entity.Appointment;
 import com.example.slabiak.appointmentscheduler.security.CustomUserDetails;
 import com.example.slabiak.appointmentscheduler.service.AppointmentService;
 import com.example.slabiak.appointmentscheduler.service.ExchangeService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -16,11 +15,13 @@ import java.util.List;
 @RequestMapping("/exchange")
 public class ExchangeController {
 
-    @Autowired
-    private ExchangeService exchangeService;
+    private final ExchangeService exchangeService;
+    private final AppointmentService appointmentService;
 
-    @Autowired
-    private AppointmentService appointmentService;
+    public ExchangeController(ExchangeService exchangeService, AppointmentService appointmentService) {
+        this.exchangeService = exchangeService;
+        this.appointmentService = appointmentService;
+    }
 
     @GetMapping("/{oldAppointmentId}")
     public String showEligibleAppointmentsToExchange(@PathVariable("oldAppointmentId") int oldAppointmentId, Model model) {

@@ -6,7 +6,6 @@ import com.example.slabiak.appointmentscheduler.entity.user.User;
 import com.example.slabiak.appointmentscheduler.service.EmailService;
 import com.example.slabiak.appointmentscheduler.service.NotificationService;
 import com.example.slabiak.appointmentscheduler.service.UserService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
@@ -16,20 +15,17 @@ import java.util.List;
 @Service
 public class NotificationServiceImpl implements NotificationService {
 
-    @Autowired
-    private NotificationRepository notificationRepository;
+    private final NotificationRepository notificationRepository;
+    private final UserService userService;
+    private final EmailService emailService;
+    private final boolean mailingEnabled;
 
-    @Autowired
-    private UserService userService;
-
-    @Autowired
-    private EmailService emailService;
-
-    @Autowired
-    private JwtTokenServiceImpl jwtTokenService;
-    
-    @Value("${mailing.enabled}")
-    boolean mailingEnabled;
+    public NotificationServiceImpl(@Value("${mailing.enabled}") boolean mailingEnabled, NotificationRepository notificationRepository, UserService userService, EmailService emailService) {
+        this.mailingEnabled = mailingEnabled;
+        this.notificationRepository = notificationRepository;
+        this.userService = userService;
+        this.emailService = emailService;
+    }
 
     @Override
     public void newNotification(String title, String message, String url, User user) {

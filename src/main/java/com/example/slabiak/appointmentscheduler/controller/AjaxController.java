@@ -7,7 +7,6 @@ import com.example.slabiak.appointmentscheduler.security.CustomUserDetails;
 import com.example.slabiak.appointmentscheduler.service.AppointmentService;
 import com.example.slabiak.appointmentscheduler.service.NotificationService;
 import com.google.common.collect.Lists;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -22,15 +21,17 @@ import java.util.List;
 @RestController
 public class AjaxController {
 
-    @Autowired
-    private AppointmentService appointmentService;
+    private final AppointmentService appointmentService;
+    private final NotificationService notificationService;
 
-    @Autowired
-    private NotificationService notificationService;
+    public AjaxController(AppointmentService appointmentService, NotificationService notificationService) {
+        this.appointmentService = appointmentService;
+        this.notificationService = notificationService;
+    }
 
 
     @GetMapping("/user/{userId}/appointments")
-    public List<Appointment>  getAppointmentsForUser(@PathVariable("userId") int userId, @AuthenticationPrincipal CustomUserDetails currentUser) {
+    public List<Appointment> getAppointmentsForUser(@PathVariable("userId") int userId, @AuthenticationPrincipal CustomUserDetails currentUser) {
         if (currentUser.hasRole("ROLE_CUSTOMER")) {
             return appointmentService.getAppointmentByCustomerId(userId);
         } else if (currentUser.hasRole("ROLE_PROVIDER"))

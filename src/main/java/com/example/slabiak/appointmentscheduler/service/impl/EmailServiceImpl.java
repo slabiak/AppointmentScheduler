@@ -8,7 +8,6 @@ import com.example.slabiak.appointmentscheduler.entity.user.User;
 import com.example.slabiak.appointmentscheduler.service.EmailService;
 import com.example.slabiak.appointmentscheduler.util.PdfGeneratorUtil;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.scheduling.annotation.Async;
@@ -25,17 +24,17 @@ import java.nio.charset.StandardCharsets;
 @Service
 public class EmailServiceImpl implements EmailService {
 
-    @Autowired
-    private JavaMailSender javaMailSender;
+    private final JavaMailSender javaMailSender;
+    private final SpringTemplateEngine templateEngine;
+    private final JwtTokenServiceImpl jwtTokenService;
+    private final PdfGeneratorUtil pdfGenaratorUtil;
 
-    @Autowired
-    private SpringTemplateEngine templateEngine;
-
-    @Autowired
-    private JwtTokenServiceImpl jwtTokenService;
-
-    @Autowired
-    private PdfGeneratorUtil pdfGenaratorUtil;
+    public EmailServiceImpl(JavaMailSender javaMailSender, SpringTemplateEngine templateEngine, JwtTokenServiceImpl jwtTokenService, PdfGeneratorUtil pdfGenaratorUtil) {
+        this.javaMailSender = javaMailSender;
+        this.templateEngine = templateEngine;
+        this.jwtTokenService = jwtTokenService;
+        this.pdfGenaratorUtil = pdfGenaratorUtil;
+    }
 
     @Async
     @Override

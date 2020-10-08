@@ -8,7 +8,6 @@ import com.example.slabiak.appointmentscheduler.entity.ExchangeStatus;
 import com.example.slabiak.appointmentscheduler.entity.user.customer.Customer;
 import com.example.slabiak.appointmentscheduler.service.ExchangeService;
 import com.example.slabiak.appointmentscheduler.service.NotificationService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -17,14 +16,15 @@ import java.util.List;
 @Service
 public class ExchangeServiceImpl implements ExchangeService {
 
-    @Autowired
-    private AppointmentRepository appointmentRepository;
+    private final AppointmentRepository appointmentRepository;
+    private final NotificationService notificationService;
+    private final ExchangeRequestRepository exchangeRequestRepository;
 
-    @Autowired
-    private NotificationService notificationService;
-
-    @Autowired
-    private ExchangeRequestRepository exchangeRequestRepository;
+    public ExchangeServiceImpl(AppointmentRepository appointmentRepository, NotificationService notificationService, ExchangeRequestRepository exchangeRequestRepository) {
+        this.appointmentRepository = appointmentRepository;
+        this.notificationService = notificationService;
+        this.exchangeRequestRepository = exchangeRequestRepository;
+    }
 
     @Override
     public boolean checkIfEligibleForExchange(int userId, int appointmentId) {

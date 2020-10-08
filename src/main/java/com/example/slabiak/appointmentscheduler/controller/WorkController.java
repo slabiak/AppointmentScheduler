@@ -2,7 +2,6 @@ package com.example.slabiak.appointmentscheduler.controller;
 
 import com.example.slabiak.appointmentscheduler.entity.Work;
 import com.example.slabiak.appointmentscheduler.service.WorkService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -11,8 +10,11 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/works")
 public class WorkController {
 
-    @Autowired
-    private WorkService workService;
+    private final WorkService workService;
+
+    public WorkController(WorkService workService) {
+        this.workService = workService;
+    }
 
     @GetMapping("/all")
     public String showAllWorks(Model model) {

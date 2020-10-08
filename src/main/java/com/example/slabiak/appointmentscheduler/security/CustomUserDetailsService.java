@@ -1,8 +1,7 @@
 package com.example.slabiak.appointmentscheduler.security;
 
+import com.example.slabiak.appointmentscheduler.dao.user.UserRepository;
 import com.example.slabiak.appointmentscheduler.entity.user.User;
-import com.example.slabiak.appointmentscheduler.service.UserService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
@@ -10,12 +9,15 @@ import org.springframework.stereotype.Service;
 @Service
 public class CustomUserDetailsService implements UserDetailsService {
 
-    @Autowired
-    private UserService userService;
+    private final UserRepository userRepository;
+
+    public CustomUserDetailsService(UserRepository userRepository) {
+        this.userRepository = userRepository;
+    }
 
     @Override
     public CustomUserDetails loadUserByUsername(String userName) throws UsernameNotFoundException {
-        User user = userService.getUserByUsername(userName);
+        User user = userRepository.findByUserName(userName).get();
         if (user == null) {
             throw new UsernameNotFoundException("Invalid username or password.");
         }
