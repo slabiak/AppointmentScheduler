@@ -17,10 +17,8 @@ import com.example.slabiak.appointmentscheduler.entity.user.provider.Provider;
 import com.example.slabiak.appointmentscheduler.model.ChangePasswordForm;
 import com.example.slabiak.appointmentscheduler.model.UserForm;
 import com.example.slabiak.appointmentscheduler.service.UserService;
-import com.example.slabiak.appointmentscheduler.service.WorkingPlanService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.Collection;
@@ -31,30 +29,23 @@ import java.util.Optional;
 @Service
 public class UserServiceImpl implements UserService {
 
-    @Autowired
-    private ProviderRepository providerRepository;
+    private final ProviderRepository providerRepository;
+    private final CustomerRepository customerRepository;
+    private final CorporateCustomerRepository corporateCustomerRepository;
+    private final RetailCustomerRepository retailCustomerRepository;
+    private final UserRepository userRepository;
+    private final RoleRepository roleRepository;
+    private final PasswordEncoder passwordEncoder;
 
-    @Autowired
-    private CustomerRepository customerRepository;
-
-    @Autowired
-    private CorporateCustomerRepository corporateCustomerRepository;
-
-    @Autowired
-    private RetailCustomerRepository retailCustomerRepository;
-
-    @Autowired
-    private UserRepository userRepository;
-
-    @Autowired
-    private RoleRepository roleRepository;
-
-    @Autowired
-    private BCryptPasswordEncoder passwordEncoder;
-
-    @Autowired
-    private WorkingPlanService workingPlanService;
-
+    public UserServiceImpl(ProviderRepository providerRepository, CustomerRepository customerRepository, CorporateCustomerRepository corporateCustomerRepository, RetailCustomerRepository retailCustomerRepository, UserRepository userRepository, RoleRepository roleRepository, PasswordEncoder passwordEncoder) {
+        this.providerRepository = providerRepository;
+        this.customerRepository = customerRepository;
+        this.corporateCustomerRepository = corporateCustomerRepository;
+        this.retailCustomerRepository = retailCustomerRepository;
+        this.userRepository = userRepository;
+        this.roleRepository = roleRepository;
+        this.passwordEncoder = passwordEncoder;
+    }
 
     @Override
     @PreAuthorize("#userId == principal.id")
@@ -74,7 +65,6 @@ public class UserServiceImpl implements UserService {
     public Customer getCustomerById(int customerId) {
         return customerRepository.getOne(customerId);
     }
-
 
     @Override
     public Provider getProviderById(int providerId) {

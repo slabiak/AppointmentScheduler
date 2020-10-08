@@ -5,7 +5,6 @@ import com.example.slabiak.appointmentscheduler.entity.WorkingPlan;
 import com.example.slabiak.appointmentscheduler.model.TimePeroid;
 import com.example.slabiak.appointmentscheduler.security.CustomUserDetails;
 import com.example.slabiak.appointmentscheduler.service.WorkingPlanService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
@@ -13,9 +12,11 @@ import org.springframework.stereotype.Service;
 @Service
 public class WorkingPlanServiceImpl implements WorkingPlanService {
 
-    @Autowired
-    private WorkingPlanRepository workingPlanRepository;
+    private final WorkingPlanRepository workingPlanRepository;
 
+    public WorkingPlanServiceImpl(WorkingPlanRepository workingPlanRepository) {
+        this.workingPlanRepository = workingPlanRepository;
+    }
 
     @Override
     @PreAuthorize("#updateData.provider.id == principal.id")

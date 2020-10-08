@@ -14,7 +14,6 @@ import com.example.slabiak.appointmentscheduler.service.AppointmentService;
 import com.example.slabiak.appointmentscheduler.service.NotificationService;
 import com.example.slabiak.appointmentscheduler.service.UserService;
 import com.example.slabiak.appointmentscheduler.service.WorkService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PostAuthorize;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
@@ -29,30 +28,23 @@ import java.util.Optional;
 
 @Service
 public class AppointmentServiceImpl implements AppointmentService {
+
     private final int NUMBER_OF_ALLOWED_CANCELATIONS_PER_MONTH = 1;
+    private final AppointmentRepository appointmentRepository;
+    private final UserService userService;
+    private final WorkService workService;
+    private final ChatMessageRepository chatMessageRepository;
+    private final NotificationService notificationService;
+    private final JwtTokenServiceImpl jwtTokenService;
 
-    @Autowired
-    private AppointmentRepository appointmentRepository;
-
-    @Autowired
-    private UserService userService;
-
-    @Autowired
-    private WorkService workService;
-
-    @Autowired
-    private ChatMessageRepository chatMessageRepository;
-
-    @Autowired
-    private NotificationService notificationService;
-
-    @Autowired
-    private JwtTokenServiceImpl jwtTokenService;
-
-
-    public AppointmentServiceImpl() {
+    public AppointmentServiceImpl(AppointmentRepository appointmentRepository, UserService userService, WorkService workService, ChatMessageRepository chatMessageRepository, NotificationService notificationService, JwtTokenServiceImpl jwtTokenService) {
+        this.appointmentRepository = appointmentRepository;
+        this.userService = userService;
+        this.workService = workService;
+        this.chatMessageRepository = chatMessageRepository;
+        this.notificationService = notificationService;
+        this.jwtTokenService = jwtTokenService;
     }
-
 
     @Override
     public void updateAppointment(Appointment appointment) {

@@ -10,7 +10,6 @@ import com.example.slabiak.appointmentscheduler.validation.groups.CreateCorporat
 import com.example.slabiak.appointmentscheduler.validation.groups.CreateUser;
 import com.example.slabiak.appointmentscheduler.validation.groups.UpdateCorporateCustomer;
 import com.example.slabiak.appointmentscheduler.validation.groups.UpdateUser;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -25,11 +24,13 @@ import javax.validation.Valid;
 @RequestMapping("/customers")
 public class CustomerController {
 
-    @Autowired
-    private UserService userService;
+    private final UserService userService;
+    private final AppointmentService appointmentService;
 
-    @Autowired
-    private AppointmentService appointmentService;
+    public CustomerController(UserService userService, AppointmentService appointmentService) {
+        this.userService = userService;
+        this.appointmentService = appointmentService;
+    }
 
     @GetMapping("/all")
     public String showAllCustomers(Model model) {

@@ -2,7 +2,6 @@ package com.example.slabiak.appointmentscheduler.util;
 
 import com.example.slabiak.appointmentscheduler.entity.Invoice;
 import com.itextpdf.text.DocumentException;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.thymeleaf.context.Context;
 import org.thymeleaf.spring5.SpringTemplateEngine;
@@ -17,8 +16,11 @@ import java.util.UUID;
 @Component
 public class PdfGeneratorUtil {
 
-    @Autowired
-    private SpringTemplateEngine templateEngine;
+    private final SpringTemplateEngine templateEngine;
+
+    public PdfGeneratorUtil(SpringTemplateEngine templateEngine) {
+        this.templateEngine = templateEngine;
+    }
 
     public File generatePdfFromInvoice(Invoice invoice) {
 

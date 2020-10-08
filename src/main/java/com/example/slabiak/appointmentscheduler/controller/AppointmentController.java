@@ -7,7 +7,6 @@ import com.example.slabiak.appointmentscheduler.service.AppointmentService;
 import com.example.slabiak.appointmentscheduler.service.ExchangeService;
 import com.example.slabiak.appointmentscheduler.service.UserService;
 import com.example.slabiak.appointmentscheduler.service.WorkService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -22,17 +21,17 @@ public class AppointmentController {
 
     private final String REJECTION_CONFIRMATION_VIEW = "appointments/rejectionConfirmation";
 
-    @Autowired
-    private WorkService workService;
+    private final WorkService workService;
+    private final UserService userService;
+    private final AppointmentService appointmentService;
+    private final ExchangeService exchangeService;
 
-    @Autowired
-    private UserService userService;
-
-    @Autowired
-    private AppointmentService appointmentService;
-
-    @Autowired
-    private ExchangeService exchangeService;
+    public AppointmentController(WorkService workService, UserService userService, AppointmentService appointmentService, ExchangeService exchangeService) {
+        this.workService = workService;
+        this.userService = userService;
+        this.appointmentService = appointmentService;
+        this.exchangeService = exchangeService;
+    }
 
     @GetMapping("/all")
     public String showAllAppointments(Model model, @AuthenticationPrincipal CustomUserDetails currentUser) {

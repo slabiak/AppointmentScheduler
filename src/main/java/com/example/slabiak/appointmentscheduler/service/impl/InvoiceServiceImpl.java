@@ -10,7 +10,6 @@ import com.example.slabiak.appointmentscheduler.service.InvoiceService;
 import com.example.slabiak.appointmentscheduler.service.NotificationService;
 import com.example.slabiak.appointmentscheduler.service.UserService;
 import com.example.slabiak.appointmentscheduler.util.PdfGeneratorUtil;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
@@ -26,27 +25,26 @@ import java.util.Optional;
 @Service
 public class InvoiceServiceImpl implements InvoiceService {
 
-    @Autowired
-    private InvoiceRepository invoiceRepository;
+    private final InvoiceRepository invoiceRepository;
+    private final PdfGeneratorUtil pdfGeneratorUtil;
+    private final UserService userService;
+    private final AppointmentService appointmentService;
+    private final NotificationService notificationService;
 
-    @Autowired
-    private PdfGeneratorUtil pdfGeneratorUtil;
-
-    @Autowired
-    private UserService userService;
-
-    @Autowired
-    private AppointmentService appointmentService;
-
-    @Autowired
-    private NotificationService notificationService;
+    public InvoiceServiceImpl(InvoiceRepository invoiceRepository, PdfGeneratorUtil pdfGeneratorUtil, UserService userService, AppointmentService appointmentService, NotificationService notificationService) {
+        this.invoiceRepository = invoiceRepository;
+        this.pdfGeneratorUtil = pdfGeneratorUtil;
+        this.userService = userService;
+        this.appointmentService = appointmentService;
+        this.notificationService = notificationService;
+    }
 
     @Override
     public String generateInvoiceNumber() {
         List<Invoice> invoices = invoiceRepository.findAllIssuedInCurrentMonth(LocalDate.now().with(TemporalAdjusters.firstDayOfMonth()).atStartOfDay());
         int nextInvoiceNumber = invoices.size() + 1;
         LocalDateTime today = LocalDateTime.now();
-        return  "FV/" + today.getYear() + "/" + today.getMonthValue() + "/" + nextInvoiceNumber;
+        return "FV/" + today.getYear() + "/" + today.getMonthValue() + "/" + nextInvoiceNumber;
     }
 
     @Override

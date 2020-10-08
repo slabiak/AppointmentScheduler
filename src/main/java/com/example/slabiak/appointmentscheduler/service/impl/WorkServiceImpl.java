@@ -5,7 +5,6 @@ import com.example.slabiak.appointmentscheduler.entity.Work;
 import com.example.slabiak.appointmentscheduler.entity.user.customer.Customer;
 import com.example.slabiak.appointmentscheduler.service.UserService;
 import com.example.slabiak.appointmentscheduler.service.WorkService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 
@@ -15,11 +14,13 @@ import java.util.Optional;
 @Service
 public class WorkServiceImpl implements WorkService {
 
-    @Autowired
-    private WorkRepository workRepository;
+    private final WorkRepository workRepository;
+    private final UserService userService;
 
-    @Autowired
-    private UserService userService;
+    public WorkServiceImpl(WorkRepository workRepository, UserService userService) {
+        this.workRepository = workRepository;
+        this.userService = userService;
+    }
 
     @Override
     @PreAuthorize("hasRole('ADMIN')")

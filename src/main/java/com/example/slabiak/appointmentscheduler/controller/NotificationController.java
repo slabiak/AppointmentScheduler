@@ -4,7 +4,6 @@ import com.example.slabiak.appointmentscheduler.entity.Notification;
 import com.example.slabiak.appointmentscheduler.security.CustomUserDetails;
 import com.example.slabiak.appointmentscheduler.service.NotificationService;
 import com.example.slabiak.appointmentscheduler.service.UserService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -17,11 +16,13 @@ import org.springframework.web.bind.annotation.RequestMapping;
 @RequestMapping("/notifications")
 public class NotificationController {
 
-    @Autowired
-    private NotificationService notificationService;
+    private final NotificationService notificationService;
+    private final UserService userService;
 
-    @Autowired
-    private UserService userService;
+    public NotificationController(NotificationService notificationService, UserService userService) {
+        this.notificationService = notificationService;
+        this.userService = userService;
+    }
 
     @GetMapping()
     public String showUserNotificationList(Model model, @AuthenticationPrincipal CustomUserDetails currentUser) {
