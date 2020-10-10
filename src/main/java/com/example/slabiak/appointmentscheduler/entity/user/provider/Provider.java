@@ -99,7 +99,6 @@ public class Provider extends User {
 
     @Override
     public int hashCode() {
-
         return Objects.hash(appointments, works, workingPlan);
     }
 

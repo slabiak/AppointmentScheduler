@@ -5,7 +5,6 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.stereotype.Component;
 
-import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
@@ -21,11 +20,9 @@ public class CustomAuthenticationSuccessHandler implements AuthenticationSuccess
 
     @Override
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication)
-            throws IOException, ServletException {
+            throws IOException {
         CustomUserDetails currentUser = (CustomUserDetails) authentication.getPrincipal();
-        /*
-         * if admin logged in, updateAppointment all appointments statuses, otherwise update only user related appointments statuses
-         * */
+
         if (currentUser.hasRole("ROLE_ADMIN")) {
             appointmentService.updateAllAppointmentsStatuses();
         } else {
