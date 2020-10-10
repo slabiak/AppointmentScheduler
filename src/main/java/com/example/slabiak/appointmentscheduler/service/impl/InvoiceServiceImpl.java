@@ -20,7 +20,6 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.temporal.TemporalAdjusters;
 import java.util.List;
-import java.util.Optional;
 
 @Service
 public class InvoiceServiceImpl implements InvoiceService {
@@ -59,16 +58,8 @@ public class InvoiceServiceImpl implements InvoiceService {
 
     @Override
     public Invoice getInvoiceById(int invoiceId) {
-        Optional<Invoice> result = invoiceRepository.findById(invoiceId);
-        Invoice invoice = null;
-
-        if (result.isPresent()) {
-            invoice = result.get();
-        } else {
-            // todo throw new excep
-        }
-
-        return invoice;
+        return invoiceRepository.findById(invoiceId)
+                .orElseThrow(() -> new RuntimeException());
     }
 
     @Override

@@ -8,6 +8,7 @@ import com.example.slabiak.appointmentscheduler.entity.Work;
 import com.example.slabiak.appointmentscheduler.entity.WorkingPlan;
 import com.example.slabiak.appointmentscheduler.entity.user.User;
 import com.example.slabiak.appointmentscheduler.entity.user.provider.Provider;
+import com.example.slabiak.appointmentscheduler.exception.AppointmentNotFoundException;
 import com.example.slabiak.appointmentscheduler.model.DayPlan;
 import com.example.slabiak.appointmentscheduler.model.TimePeroid;
 import com.example.slabiak.appointmentscheduler.service.AppointmentService;
@@ -24,7 +25,6 @@ import java.time.temporal.TemporalAdjusters;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.Optional;
 
 @Service
 public class AppointmentServiceImpl implements AppointmentService {
@@ -59,16 +59,8 @@ public class AppointmentServiceImpl implements AppointmentService {
 
     @Override
     public Appointment getAppointmentById(int id) {
-        Optional<Appointment> result = appointmentRepository.findById(id);
-        Appointment appointment = null;
-
-        if (result.isPresent()) {
-            appointment = result.get();
-        } else {
-            // todo throw new excep
-        }
-
-        return appointment;
+        return appointmentRepository.findById(id)
+                .orElseThrow(AppointmentNotFoundException::new);
     }
 
     @Override

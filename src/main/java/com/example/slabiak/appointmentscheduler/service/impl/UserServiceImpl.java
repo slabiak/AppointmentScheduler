@@ -18,13 +18,13 @@ import com.example.slabiak.appointmentscheduler.model.ChangePasswordForm;
 import com.example.slabiak.appointmentscheduler.model.UserForm;
 import com.example.slabiak.appointmentscheduler.service.UserService;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Optional;
 
 @Service
 public class UserServiceImpl implements UserService {
@@ -50,14 +50,8 @@ public class UserServiceImpl implements UserService {
     @Override
     @PreAuthorize("#userId == principal.id")
     public User getUserById(int userId) {
-        Optional<User> result = userRepository.findById(userId);
-        User user = null;
-        if (result.isPresent()) {
-            user = result.get();
-        } else {
-            // todo throw new excep
-        }
-        return user;
+        return userRepository.findById(userId)
+                .orElseThrow(() -> new UsernameNotFoundException("User not found"));
     }
 
     @Override
@@ -68,40 +62,23 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public Provider getProviderById(int providerId) {
-        Optional<Provider> optionalProvider = providerRepository.findById(providerId);
-        Provider provider = null;
-        if (optionalProvider.isPresent()) {
-            provider = optionalProvider.get();
-        } else {
-            // todo throw new excep
-        }
-        return provider;
+        return providerRepository.findById(providerId)
+                .orElseThrow(() -> new UsernameNotFoundException("User not found!"));
     }
 
     @Override
     @PreAuthorize("#retailCustomerId == principal.id or hasRole('ADMIN')")
     public RetailCustomer getRetailCustomerById(int retailCustomerId) {
-        Optional<RetailCustomer> optionalRetailCustomer = retailCustomerRepository.findById(retailCustomerId);
-        RetailCustomer retailCustomer = null;
-        if (optionalRetailCustomer.isPresent()) {
-            retailCustomer = optionalRetailCustomer.get();
-        } else {
-            // todo throw new excep
-        }
-        return retailCustomer;
+        return retailCustomerRepository.findById(retailCustomerId)
+                .orElseThrow(() -> new UsernameNotFoundException("User not found!"));
+
     }
 
     @Override
     @PreAuthorize("#corporateCustomerId == principal.id or hasRole('ADMIN')")
     public CorporateCustomer getCorporateCustomerById(int corporateCustomerId) {
-        Optional<CorporateCustomer> optionalCorporateCustomer = corporateCustomerRepository.findById(corporateCustomerId);
-        CorporateCustomer corporateCustomer = null;
-        if (optionalCorporateCustomer.isPresent()) {
-            corporateCustomer = optionalCorporateCustomer.get();
-        } else {
-            // todo throw new excep
-        }
-        return corporateCustomer;
+        return corporateCustomerRepository.findById(corporateCustomerId)
+                .orElseThrow(() -> new UsernameNotFoundException("User not found!"));
     }
 
     @Override
@@ -123,16 +100,8 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User getUserByUsername(String userName) {
-        Optional<User> result = userRepository.findByUserName(userName);
-
-        User user = null;
-
-        if (result.isPresent()) {
-            user = result.get();
-        } else {
-            // todo throw new excep
-        }
-        return user;
+        return userRepository.findByUserName(userName)
+                .orElseThrow(() -> new UsernameNotFoundException("User not found!"));
     }
 
     @Override
