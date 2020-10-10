@@ -29,10 +29,7 @@ public class ExchangeServiceImpl implements ExchangeService {
     @Override
     public boolean checkIfEligibleForExchange(int userId, int appointmentId) {
         Appointment appointment = appointmentRepository.getOne(appointmentId);
-        if (appointment.getStart().minusHours(24).isAfter(LocalDateTime.now()) && appointment.getStatus().equals("scheduled") && appointment.getCustomer().getId() == userId) {
-            return true;
-        }
-        return false;
+        return appointment.getStart().minusHours(24).isAfter(LocalDateTime.now()) && appointment.getStatus().equals("scheduled") && appointment.getCustomer().getId() == userId;
     }
 
     @Override

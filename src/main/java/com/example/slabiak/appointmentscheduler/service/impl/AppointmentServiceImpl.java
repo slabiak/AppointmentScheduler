@@ -264,11 +264,7 @@ public class AppointmentServiceImpl implements AppointmentService {
         User user = userService.getUserById(userId);
         Appointment appointment = getAppointmentByIdWithAuthorization(appointmentId);
 
-        if (!appointment.getCustomer().equals(user) || !appointment.getStatus().equals("finished") || LocalDateTime.now().isAfter(appointment.getEnd().plusDays(1))) {
-            return false;
-        } else {
-            return true;
-        }
+        return appointment.getCustomer().equals(user) && appointment.getStatus().equals("finished") && !LocalDateTime.now().isAfter(appointment.getEnd().plusDays(1));
     }
 
     @Override
@@ -302,11 +298,7 @@ public class AppointmentServiceImpl implements AppointmentService {
         User user = userService.getUserById(providerId);
         Appointment appointment = getAppointmentByIdWithAuthorization(appointmentId);
 
-        if (!appointment.getProvider().equals(user) || !appointment.getStatus().equals("rejection requested")) {
-            return false;
-        } else {
-            return true;
-        }
+        return appointment.getProvider().equals(user) && appointment.getStatus().equals("rejection requested");
     }
 
     @Override
@@ -382,10 +374,7 @@ public class AppointmentServiceImpl implements AppointmentService {
         }
         Work work = workService.getWorkById(workId);
         TimePeroid timePeroid = new TimePeroid(start.toLocalTime(), start.toLocalTime().plusMinutes(work.getDuration()));
-        if (!getAvailableHours(providerId, customerId, workId, start.toLocalDate()).contains(timePeroid)) {
-            return false;
-        }
-        return true;
+        return getAvailableHours(providerId, customerId, workId, start.toLocalDate()).contains(timePeroid);
     }
 
     @Override

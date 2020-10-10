@@ -74,10 +74,7 @@ public class WorkServiceImpl implements WorkService {
         Work work = getWorkById(workId);
         if (customer.hasRole("ROLE_CUSTOMER_RETAIL") && !work.getTargetCustomer().equals("retail")) {
             return false;
-        } else if (customer.hasRole("ROLE_CUSTOMER_CORPORATE") && !work.getTargetCustomer().equals("corporate")) {
-            return false;
-        }
-        return true;
+        } else return !customer.hasRole("ROLE_CUSTOMER_CORPORATE") || work.getTargetCustomer().equals("corporate");
     }
 
     @Override
