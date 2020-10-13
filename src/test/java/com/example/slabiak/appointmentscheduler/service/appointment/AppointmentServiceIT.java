@@ -1,6 +1,7 @@
 package com.example.slabiak.appointmentscheduler.service.appointment;
 
 import com.example.slabiak.appointmentscheduler.entity.Appointment;
+import com.example.slabiak.appointmentscheduler.entity.AppointmentStatus;
 import com.example.slabiak.appointmentscheduler.service.AppointmentService;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -35,7 +36,7 @@ public class AppointmentServiceIT {
 
         List<Appointment> appointmentByProviderId = appointmentService.getAllAppointments();
         assertThat(appointmentByProviderId).hasSize(1);
-        assertEquals("scheduled", appointmentByProviderId.get(0).getStatus());
+        assertEquals(AppointmentStatus.SCHEDULED, appointmentByProviderId.get(0).getStatus());
 
     }
 

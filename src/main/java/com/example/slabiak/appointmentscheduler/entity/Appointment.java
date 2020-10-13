@@ -12,12 +12,6 @@ import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.List;
 
-/*
-statuses:
-scheduled   =>  finished    =>  confirmed   =>  invoiced.
-            | => canceled.  |=> denied.
-*/
-
 
 @Entity
 @Table(name = "appointments")
@@ -41,7 +35,7 @@ public class Appointment extends BaseEntity implements Comparable<Appointment> {
     private User canceler;
 
     @Column(name = "status")
-    private String status;
+    private AppointmentStatus status;
 
     @ManyToOne
     @JoinColumn(name = "id_customer")
@@ -121,11 +115,11 @@ public class Appointment extends BaseEntity implements Comparable<Appointment> {
         this.work = work;
     }
 
-    public String getStatus() {
+    public AppointmentStatus getStatus() {
         return status;
     }
 
-    public void setStatus(String status) {
+    public void setStatus(AppointmentStatus status) {
         this.status = status;
     }
 
