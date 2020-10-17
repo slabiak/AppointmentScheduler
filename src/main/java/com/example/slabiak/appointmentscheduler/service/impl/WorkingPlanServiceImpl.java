@@ -36,7 +36,7 @@ public class WorkingPlanServiceImpl implements WorkingPlanService {
     public void addBreakToWorkingPlan(TimePeroid breakToAdd, int planId, String dayOfWeek) {
         CustomUserDetails currentUser = (CustomUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         WorkingPlan workingPlan = workingPlanRepository.getOne(planId);
-        if (workingPlan.getProvider().getId() != currentUser.getId()) {
+        if (workingPlan.getProvider().getId().equals(currentUser.getId())) {
             throw new org.springframework.security.access.AccessDeniedException("Unauthorized");
         }
         workingPlan.getDay(dayOfWeek).getBreaks().add(breakToAdd);
@@ -47,7 +47,7 @@ public class WorkingPlanServiceImpl implements WorkingPlanService {
     public void deleteBreakFromWorkingPlan(TimePeroid breakToDelete, int planId, String dayOfWeek) {
         CustomUserDetails currentUser = (CustomUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         WorkingPlan workingPlan = workingPlanRepository.getOne(planId);
-        if (workingPlan.getProvider().getId() != currentUser.getId()) {
+        if (workingPlan.getProvider().getId().equals(currentUser.getId())) {
             throw new org.springframework.security.access.AccessDeniedException("Unauthorized");
         }
         workingPlan.getDay(dayOfWeek).getBreaks().remove(breakToDelete);

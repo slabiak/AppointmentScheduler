@@ -167,11 +167,16 @@ public class User extends BaseEntity {
     }
 
     @Override
-    public boolean equals(Object compareUser) {
-        if (this == compareUser) return true;
-        if (!(compareUser instanceof User)) return false;
-        User user = (User) compareUser;
-        return Objects.equals(this.getId(),  user.getId());
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof User)) return false;
+        User user = (User) o;
+        return this.getId().equals(user.getId());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(super.getId());
     }
 
     public List<Notification> getNotifications() {

@@ -59,7 +59,7 @@ public class EmailServiceImpl implements EmailService {
             javaMailSender.send(message);
 
         } catch (MessagingException e) {
-            log.error("Error while adding attachment to email, error is {}", e);
+            log.error("Error while adding attachment to email, error is {}", e.getLocalizedMessage());
         }
 
     }
@@ -117,7 +117,7 @@ public class EmailServiceImpl implements EmailService {
             File invoicePdf = pdfGenaratorUtil.generatePdfFromInvoice(invoice);
             sendEmail(invoice.getAppointments().get(0).getCustomer().getEmail(), "Appointment invoice", "appointmentInvoice", context, invoicePdf);
         } catch (Exception e) {
-            log.error("Error while generating pdf, error is {}", e);
+            log.error("Error while generating pdf, error is {}", e.getLocalizedMessage());
         }
 
     }

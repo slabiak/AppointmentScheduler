@@ -60,7 +60,7 @@ public class InvoiceServiceImpl implements InvoiceService {
     @Override
     public Invoice getInvoiceById(int invoiceId) {
         return invoiceRepository.findById(invoiceId)
-                .orElseThrow(() -> new RuntimeException());
+                .orElseThrow(RuntimeException::new);
     }
 
     @Override
