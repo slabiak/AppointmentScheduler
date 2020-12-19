@@ -8,6 +8,7 @@ import com.example.slabiak.appointmentscheduler.entity.user.User;
 import com.example.slabiak.appointmentscheduler.service.EmailService;
 import com.example.slabiak.appointmentscheduler.util.PdfGeneratorUtil;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.scheduling.annotation.Async;
@@ -28,12 +29,14 @@ public class EmailServiceImpl implements EmailService {
     private final SpringTemplateEngine templateEngine;
     private final JwtTokenServiceImpl jwtTokenService;
     private final PdfGeneratorUtil pdfGenaratorUtil;
+    private final String baseUrl;
 
-    public EmailServiceImpl(JavaMailSender javaMailSender, SpringTemplateEngine templateEngine, JwtTokenServiceImpl jwtTokenService, PdfGeneratorUtil pdfGenaratorUtil) {
+    public EmailServiceImpl(JavaMailSender javaMailSender, SpringTemplateEngine templateEngine, JwtTokenServiceImpl jwtTokenService, PdfGeneratorUtil pdfGenaratorUtil, @Value("${base.url}") String baseUrl) {
         this.javaMailSender = javaMailSender;
         this.templateEngine = templateEngine;
         this.jwtTokenService = jwtTokenService;
         this.pdfGenaratorUtil = pdfGenaratorUtil;
+        this.baseUrl = baseUrl;
     }
 
     @Async
@@ -48,7 +51,7 @@ public class EmailServiceImpl implements EmailService {
             String html = templateEngine.process("email/" + templateName, templateContext);
 
             helper.setTo(to);
-            helper.setFrom("AppointmentScheduler");
+            helper.setFrom("appointmentscheduler@gmail.com");
             helper.setSubject(subject);
             helper.setText(html, true);
 
@@ -69,7 +72,7 @@ public class EmailServiceImpl implements EmailService {
     public void sendAppointmentFinishedNotification(Appointment appointment) {
         Context context = new Context();
         context.setVariable("appointment", appointment);
-        context.setVariable("url", "http://localhost:8080/appointments/reject?token=" + jwtTokenService.generateAppointmentRejectionToken(appointment));
+        context.setVariable("url", baseUrl + "/appointments/reject?token=" + jwtTokenService.generateAppointmentRejectionToken(appointment));
         sendEmail(appointment.getCustomer().getEmail(), "Finished appointment summary", "appointmentFinished", context, null);
     }
 
@@ -78,7 +81,7 @@ public class EmailServiceImpl implements EmailService {
     public void sendAppointmentRejectionRequestedNotification(Appointment appointment) {
         Context context = new Context();
         context.setVariable("appointment", appointment);
-        context.setVariable("url", "http://localhost:8080/appointments/acceptRejection?token=" + jwtTokenService.generateAcceptRejectionToken(appointment));
+        context.setVariable("url", baseUrl + "/appointments/acceptRejection?token=" + jwtTokenService.generateAcceptRejectionToken(appointment));
         sendEmail(appointment.getProvider().getEmail(), "Rejection requested", "appointmentRejectionRequested", context, null);
     }
 
@@ -137,7 +140,7 @@ public class EmailServiceImpl implements EmailService {
         User recipent = chatMessage.getAuthor() == chatMessage.getAppointment().getProvider() ? chatMessage.getAppointment().getCustomer() : chatMessage.getAppointment().getProvider();
         context.setVariable("recipent", recipent);
         context.setVariable("appointment", chatMessage.getAppointment());
-        context.setVariable("url", "http://localhost:8080/appointments/" + chatMessage.getAppointment().getId());
+        context.setVariable("url", baseUrl + "/appointments/" + chatMessage.getAppointment().getId());
         sendEmail(recipent.getEmail(), "New chat message", "newChatMessage", context, null);
     }
 
@@ -147,7 +150,7 @@ public class EmailServiceImpl implements EmailService {
         Context context = new Context();
         context.setVariable("oldAppointment", oldAppointment);
         context.setVariable("newAppointment", newAppointment);
-        context.setVariable("url", "http://localhost:8080/appointments/" + newAppointment.getId());
+        context.setVariable("url", baseUrl + "/appointments/" + newAppointment.getId());
         sendEmail(newAppointment.getCustomer().getEmail(), "New Appointment Exchange Request", "newExchangeRequest", context, null);
     }
 
@@ -155,7 +158,7 @@ public class EmailServiceImpl implements EmailService {
     public void sendExchangeRequestAcceptedNotification(ExchangeRequest exchangeRequest) {
         Context context = new Context();
         context.setVariable("exchangeRequest", exchangeRequest);
-        context.setVariable("url", "http://localhost:8080/appointments/" + exchangeRequest.getRequested().getId());
+        context.setVariable("url", baseUrl + "/appointments/" + exchangeRequest.getRequested().getId());
         sendEmail(exchangeRequest.getRequested().getCustomer().getEmail(), "Exchange request accepted", "exchangeRequestAccepted", context, null);
     }
 
@@ -163,7 +166,7 @@ public class EmailServiceImpl implements EmailService {
     public void sendExchangeRequestRejectedNotification(ExchangeRequest exchangeRequest) {
         Context context = new Context();
         context.setVariable("exchangeRequest", exchangeRequest);
-        context.setVariable("url", "http://localhost:8080/appointments/" + exchangeRequest.getRequestor().getId());
+        context.setVariable("url", baseUrl + "/appointments/" + exchangeRequest.getRequestor().getId());
         sendEmail(exchangeRequest.getRequestor().getCustomer().getEmail(), "Exchange request rejected", "exchangeRequestRejected", context, null);
     }
 }

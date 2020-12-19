@@ -2,6 +2,7 @@ package com.example.slabiak.appointmentscheduler.util;
 
 import com.example.slabiak.appointmentscheduler.entity.Invoice;
 import com.itextpdf.text.DocumentException;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.thymeleaf.context.Context;
 import org.thymeleaf.spring5.SpringTemplateEngine;
@@ -17,9 +18,11 @@ import java.util.UUID;
 public class PdfGeneratorUtil {
 
     private final SpringTemplateEngine templateEngine;
+    private final String baseUrl;
 
-    public PdfGeneratorUtil(SpringTemplateEngine templateEngine) {
+    public PdfGeneratorUtil(SpringTemplateEngine templateEngine, @Value("${base.url}") String baseUrl) {
         this.templateEngine = templateEngine;
+        this.baseUrl = baseUrl;
     }
 
     public File generatePdfFromInvoice(Invoice invoice) {
@@ -29,7 +32,7 @@ public class PdfGeneratorUtil {
         String processedHtml = templateEngine.process("email/pdf/invoice", ctx);
 
         ITextRenderer renderer = new ITextRenderer();
-        renderer.setDocumentFromString(processedHtml, "http://localhost:8080");
+        renderer.setDocumentFromString(processedHtml, baseUrl);
         renderer.layout();
 
         String fileName = UUID.randomUUID().toString();
