@@ -34,6 +34,7 @@ public class Appointment extends BaseEntity implements Comparable<Appointment> {
     @JoinColumn(name = "id_canceler")
     private User canceler;
 
+    @Enumerated(EnumType.STRING)
     @Column(name = "status")
     private AppointmentStatus status;
 
