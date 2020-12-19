@@ -95,7 +95,11 @@ public class Work extends BaseEntity {
         if (this == o) return true;
         if (!(o instanceof Work)) return false;
         Work work = (Work) o;
-        return super.getId() == work.getId();
+        return super.getId().equals(work.getId());
     }
 
+    @Override
+    public int hashCode() {
+        return this.getId().hashCode();
+    }
 }

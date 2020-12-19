@@ -19,7 +19,7 @@ import java.time.LocalDateTime;
 @RequestMapping("/appointments")
 public class AppointmentController {
 
-    private final String REJECTION_CONFIRMATION_VIEW = "appointments/rejectionConfirmation";
+    private static final String REJECTION_CONFIRMATION_VIEW = "appointments/rejectionConfirmation";
 
     private final WorkService workService;
     private final UserService userService;

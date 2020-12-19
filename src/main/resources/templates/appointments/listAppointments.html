@@ -26,7 +26,7 @@
                 <td colspan="2"> No Appointments Available</td>
             </tr>
             <tr th:each="appointment : ${appointments}"
-                th:classappend="${appointment.status == 'canceled' || appointment.status == 'finished' || appointment.status == 'invoiced' || appointment.status == 'rejection requested' || appointment.status == 'rejected'} ? table-secondary : table-success">
+                th:classappend="${appointment.status.name() == 'CANCELED' || appointment.status.name()  == 'FINISHED' || appointment.status.name()  == 'INVOICED' || appointment.status.name()  == 'REJECTION_REQUESTED' || appointment.status.name()  == 'REJECTED'} ? table-secondary : table-success">
                 <td><span th:text="${appointment.work.name}"> Work </span></td>
                 <td><span th:text="${appointment.status}"> scheduled </span></td>
                 <td><span th:text="${#temporals.format(appointment.start, 'dd-MM-yyyy HH:mm')}"> 21-01-2019 15:00</span>

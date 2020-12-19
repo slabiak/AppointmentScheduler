@@ -3,13 +3,13 @@ package com.example.slabiak.appointmentscheduler.service.impl;
 import com.example.slabiak.appointmentscheduler.dao.WorkRepository;
 import com.example.slabiak.appointmentscheduler.entity.Work;
 import com.example.slabiak.appointmentscheduler.entity.user.customer.Customer;
+import com.example.slabiak.appointmentscheduler.exception.WorkNotFoundException;
 import com.example.slabiak.appointmentscheduler.service.UserService;
 import com.example.slabiak.appointmentscheduler.service.WorkService;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
 
 @Service
 public class WorkServiceImpl implements WorkService {
@@ -43,19 +43,8 @@ public class WorkServiceImpl implements WorkService {
 
     @Override
     public Work getWorkById(int workId) {
-        Optional<Work> result = workRepository.findById(workId);
-
-        Work work = null;
-
-        if (result.isPresent()) {
-            work = result.get();
-        } else {
-            // todo throw new excep
-        }
-
-        return work;
+        return workRepository.findById(workId).orElseThrow(WorkNotFoundException::new);
     }
-
 
     @Override
     public List<Work> getAllWorks() {
@@ -74,10 +63,7 @@ public class WorkServiceImpl implements WorkService {
         Work work = getWorkById(workId);
         if (customer.hasRole("ROLE_CUSTOMER_RETAIL") && !work.getTargetCustomer().equals("retail")) {
             return false;
-        } else if (customer.hasRole("ROLE_CUSTOMER_CORPORATE") && !work.getTargetCustomer().equals("corporate")) {
-            return false;
-        }
-        return true;
+        } else return !customer.hasRole("ROLE_CUSTOMER_CORPORATE") || work.getTargetCustomer().equals("corporate");
     }
 
     @Override

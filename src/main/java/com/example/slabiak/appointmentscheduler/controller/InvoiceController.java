@@ -59,10 +59,10 @@ public class InvoiceController {
             respHeaders.setContentLength(invoicePdf.length());
             respHeaders.setContentDispositionFormData("attachment", invoicePdf.getName());
             InputStreamResource isr = new InputStreamResource(new FileInputStream(invoicePdf));
-            return new ResponseEntity<InputStreamResource>(isr, respHeaders, HttpStatus.OK);
+            return new ResponseEntity<>(isr, respHeaders, HttpStatus.OK);
         } catch (FileNotFoundException e) {
             log.error("Error while generating pdf for download, error: {} ", e);
-            return new ResponseEntity<InputStreamResource>(HttpStatus.INTERNAL_SERVER_ERROR);
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 }

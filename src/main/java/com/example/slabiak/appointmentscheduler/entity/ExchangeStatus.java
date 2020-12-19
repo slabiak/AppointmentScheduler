@@ -4,9 +4,7 @@ public enum ExchangeStatus {
     PENDING,
     ACCEPTED,
     REJECTED,
-    EXPIRED;
-
-
+    EXPIRED
 }
 
 

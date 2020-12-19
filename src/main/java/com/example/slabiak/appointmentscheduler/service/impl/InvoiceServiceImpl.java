@@ -2,6 +2,7 @@ package com.example.slabiak.appointmentscheduler.service.impl;
 
 import com.example.slabiak.appointmentscheduler.dao.InvoiceRepository;
 import com.example.slabiak.appointmentscheduler.entity.Appointment;
+import com.example.slabiak.appointmentscheduler.entity.AppointmentStatus;
 import com.example.slabiak.appointmentscheduler.entity.Invoice;
 import com.example.slabiak.appointmentscheduler.entity.user.customer.Customer;
 import com.example.slabiak.appointmentscheduler.security.CustomUserDetails;
@@ -20,7 +21,6 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.temporal.TemporalAdjusters;
 import java.util.List;
-import java.util.Optional;
 
 @Service
 public class InvoiceServiceImpl implements InvoiceService {
@@ -59,16 +59,8 @@ public class InvoiceServiceImpl implements InvoiceService {
 
     @Override
     public Invoice getInvoiceById(int invoiceId) {
-        Optional<Invoice> result = invoiceRepository.findById(invoiceId);
-        Invoice invoice = null;
-
-        if (result.isPresent()) {
-            invoice = result.get();
-        } else {
-            // todo throw new excep
-        }
-
-        return invoice;
+        return invoiceRepository.findById(invoiceId)
+                .orElseThrow(RuntimeException::new);
     }
 
     @Override
@@ -117,7 +109,7 @@ public class InvoiceServiceImpl implements InvoiceService {
             List<Appointment> appointmentsToIssueInvoice = appointmentService.getConfirmedAppointmentsByCustomerId(customer.getId());
             if (!appointmentsToIssueInvoice.isEmpty()) {
                 for (Appointment a : appointmentsToIssueInvoice) {
-                    a.setStatus("invoiced");
+                    a.setStatus(AppointmentStatus.INVOICED);
                     appointmentService.updateAppointment(a);
                 }
                 Invoice invoice = new Invoice(generateInvoiceNumber(), "issued", LocalDateTime.now(), appointmentsToIssueInvoice);

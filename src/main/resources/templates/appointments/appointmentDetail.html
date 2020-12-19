@@ -53,7 +53,7 @@
                         <td><b>status</b></td>
                         <td><span th:text="${appointment.status}"> scheduled </span></td>
                     </tr>
-                    <tr th:if="${appointment.status=='canceled'}">
+                    <tr th:if="${appointment.status.name()=='CANCELED'}">
                         <td><b>canceled by</b></td>
                         <td><span
                                 th:text="${appointment.canceler.firstName+' '+appointment.canceler.lastName}">Canceller
@@ -96,7 +96,7 @@
                         <td><b>price</b></td>
                         <td><span th:text="${appointment.work.price}"> 50 </span> pln</td>
                     </tr>
-                    <tr th:if="${appointment.status=='invoiced'}">
+                    <tr th:if="${appointment.status.name()=='INVOICED'}">
                         <td><b>invoice</b></td>
                         <td><a th:href="@{'/invoices/download/'+${appointment.invoice.id}}">download</a></td>
                     </tr>

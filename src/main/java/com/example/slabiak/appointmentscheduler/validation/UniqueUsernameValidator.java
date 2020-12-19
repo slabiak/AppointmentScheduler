@@ -20,10 +20,7 @@ public class UniqueUsernameValidator implements ConstraintValidator<UniqueUserna
     public boolean isValid(final Object obj, final ConstraintValidatorContext context) {
         String userName = (String) obj;
         User user = userService.getUserByUsername(userName);
-        if (user == null) {
-            return true;
-        }
-        return false;
+        return user == null;
     }
 
 }
