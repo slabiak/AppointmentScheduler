@@ -104,6 +104,9 @@
 <!-- Page Content -->
 <div class="container">
     <th:block th:include="${content}"/>
+    <div class="row align-items-center justify-content-center" style="margin-top: 50px">
+        <p>AppointmentScheduler, v<span th:text="${currentVersion}">1.0</span></p>
+    </div>
 </div>
 
 <script th:inline="javascript">
