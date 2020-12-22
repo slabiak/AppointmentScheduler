@@ -29,7 +29,7 @@
                 th:classappend="${appointment.status.name() == 'CANCELED' || appointment.status.name()  == 'FINISHED' || appointment.status.name()  == 'INVOICED' || appointment.status.name()  == 'REJECTION_REQUESTED' || appointment.status.name()  == 'REJECTED'} ? table-secondary : table-success">
                 <td><span th:text="${appointment.work.name}"> Work </span></td>
                 <td><span th:text="${appointment.status}"> scheduled </span></td>
-                <td><span th:text="${#temporals.format(appointment.start, 'dd-MM-yyyy HH:mm')}"> 21-01-2019 15:00</span>
+                <td><span th:text="${#temporals.format(appointment.start, 'yyyy-MM-dd HH:mm')}"> 21-01-2019 15:00</span>
                 </td>
                 <td sec:authorize="!hasRole('ROLE_PROVIDER')"><span
                         th:text="${appointment.provider.firstName + ' ' + appointment.provider.lastName}">
@@ -44,6 +44,17 @@
                        role="button">Details</a></td>
             </tr>
             </tbody>
+            <tfoot class="text-primary">
+            <tr>
+                <th></th>
+                <th></th>
+                <th></th>
+                <th></th>
+                <th></th>
+                <th></th>
+                <th></th>
+            </tr>
+            </tfoot>
         </table>
         <div sec:authorize="hasRole('ROLE_CUSTOMER')" class="text-center">
             <a class="btn btn-primary mt-2" th:href="@{/appointments/new}" role="button">New appointment</a>
@@ -51,17 +62,48 @@
 
     </div>
 
-
-</div>
-<script>
-    $(document).ready(function () {
-        $('#appointments').DataTable({
-            "order": [
-                [2, "desc"]
-            ]
+    <script>
+        $(document).ready(function () {
+            $('#appointments').DataTable({
+                "dom": '<"toolbar">lrtip',
+                "bFilter": true,
+                "bLengthChange": false,
+                "order": [
+                    [2, "asc"]
+                ],
+                "initComplete": function () {
+                    this.api().columns([1]).every(function () {
+                        $("div.toolbar").html('<div id="my_filter" style="margin-bottom: 10px">Status filter: </div>');
+                        var column = this;
+                        column.search('^SCHEDULED$', true, false).draw();
+                        var select = $('<select name="statuses"><option value="SCHEDULED">SCHEDULED</option></select>')
+                            .appendTo('#my_filter')
+                            .on('change', function () {
+                                var searchString = $(this).val();
+                                searchString = searchString.replace('<span>', '');
+                                searchString = searchString.replace('</span>', '');
+                                var val = $.fn.dataTable.util.escapeRegex(searchString);
+                                column.search(val ? '^' + val + '$' : '', true, false).draw();
+                            });
+                        statuses.forEach(function (d) {
+                            select.append('<option value="' + d + '">' + d + '</option>')
+                        });
+                    });
+                }
+            });
         });
-    });
-</script>
+
+        var statuses = [
+            'FINISHED',
+            'CONFIRMED',
+            'INVOICED',
+            'CANCELED',
+            'DENIED',
+            'REJECTION_REQUESTED',
+            'REJECTED',
+            'EXCHANGE_REQUESTED'];
+    </script>
+</div>
 
 
 </body>
