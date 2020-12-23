@@ -2,7 +2,6 @@ package com.example.slabiak.appointmentscheduler.controller;
 
 import com.example.slabiak.appointmentscheduler.entity.Appointment;
 import com.example.slabiak.appointmentscheduler.model.AppointmentRegisterForm;
-import com.example.slabiak.appointmentscheduler.model.TimePeroid;
 import com.example.slabiak.appointmentscheduler.security.CustomUserDetails;
 import com.example.slabiak.appointmentscheduler.service.AppointmentService;
 import com.example.slabiak.appointmentscheduler.service.NotificationService;
@@ -14,8 +13,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RequestMapping("/api")
 @RestController
@@ -44,18 +43,15 @@ public class AjaxController {
     @GetMapping("/availableHours/{providerId}/{workId}/{date}")
     public List<AppointmentRegisterForm> getAvailableHours(@PathVariable("providerId") int providerId, @PathVariable("workId") int workId, @PathVariable("date") String date, @AuthenticationPrincipal CustomUserDetails currentUser) {
         LocalDate localDate = LocalDate.parse(date);
-        List<TimePeroid> peroids = appointmentService.getAvailableHours(providerId, currentUser.getId(), workId, localDate);
-        List<AppointmentRegisterForm> appointments = new ArrayList<>();
-        for (TimePeroid peroid : peroids) {
-            appointments.add(new AppointmentRegisterForm(workId, providerId, peroid.getStart().atDate(localDate), peroid.getEnd().atDate(localDate)));
-        }
-        return appointments;
+        return appointmentService.getAvailableHours(providerId, currentUser.getId(), workId, localDate)
+                .stream()
+                .map(timePeriod -> new AppointmentRegisterForm(workId, providerId, timePeriod.getStart().atDate(localDate), timePeriod.getEnd().atDate(localDate)))
+                .collect(Collectors.toList());
     }
 
     @GetMapping("/user/notifications")
     public int getUnreadNotificationsCount(@AuthenticationPrincipal CustomUserDetails currentUser) {
         return notificationService.getUnreadNotifications(currentUser.getId()).size();
     }
-
 
 }
