@@ -18,6 +18,8 @@ public interface UserService {
     /*
      * User
      * */
+    boolean userExists(String userName);
+
     User getUserById(int userId);
 
     User getUserByUsername(String userName);

@@ -93,10 +93,10 @@ public class CustomerController {
         }
         if (customerType.equals("corporate")) {
             model.addAttribute("account_type", "customer_corporate");
-            model.addAttribute("action", "/customers/new/corporate");
+            model.addAttribute("registerAction", "/customers/new/corporate");
         } else if (customerType.equals("retail")) {
             model.addAttribute("account_type", "customer_retail");
-            model.addAttribute("action", "/customers/new/retail");
+            model.addAttribute("registerAction", "/customers/new/retail");
         } else {
             throw new RuntimeException();
         }

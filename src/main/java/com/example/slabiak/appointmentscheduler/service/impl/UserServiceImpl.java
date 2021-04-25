@@ -48,6 +48,11 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public boolean userExists(String userName) {
+        return userRepository.findByUserName(userName).isPresent();
+    }
+
+    @Override
     @PreAuthorize("#userId == principal.id")
     public User getUserById(int userId) {
         return userRepository.findById(userId)
