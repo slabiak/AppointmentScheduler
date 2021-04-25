@@ -6,6 +6,7 @@ import org.springframework.security.authentication.dao.DaoAuthenticationProvider
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -32,14 +33,14 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-        http.authorizeRequests()
+        http.csrf().disable()
+                .authorizeRequests()
                 .antMatchers("/").hasAnyRole("CUSTOMER", "PROVIDER", "ADMIN")
                 .antMatchers("/api/**").hasAnyRole("CUSTOMER", "PROVIDER", "ADMIN")
                 .antMatchers("/customers/all").hasRole("ADMIN")
                 .antMatchers("/providers/new").hasRole("ADMIN")
                 .antMatchers("/invoices/all").hasRole("ADMIN")
                 .antMatchers("/providers/all").hasRole("ADMIN")
-                .antMatchers("/customers/new/**").permitAll()
                 .antMatchers("/customers/**").hasAnyRole("CUSTOMER", "ADMIN")
                 .antMatchers("/providers/availability/**").hasRole("PROVIDER")
                 .antMatchers("/providers/**").hasAnyRole("PROVIDER", "ADMIN")
@@ -58,6 +59,11 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .logout().logoutUrl("/perform_logout")
                 .and()
                 .exceptionHandling().accessDeniedPage("/access-denied");
+    }
+
+    @Override
+    public void configure(WebSecurity web) throws Exception {
+        web.ignoring().antMatchers("/customers/new/**");
     }
 
     @Bean
