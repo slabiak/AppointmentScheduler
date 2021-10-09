@@ -1,9 +1,12 @@
 [![CircleCI](https://circleci.com/gh/circleci/circleci-docs.svg?style=shield)](https://circleci.com/gh/slabiak/AppointmentScheduler)
+
 # Appointment scheduler
 
 >This is a Spring Boot Web Application to manage and schedule appointments between providers and customers. It has many features such as automatic invoicing, email notifications, appointments cancelation, providers individual working plans with brakes etc.
 
+
 <a href="https://github.com/slabiak/slabiak.github.io/blob/master/images/appointmentscheduler/calendar.png?raw=true"><img src="https://github.com/slabiak/slabiak.github.io/blob/master/images/appointmentscheduler/calendar.png?raw=true" width="600"></a>
+
 ## Demo
 
 The live demo of this app is deployed and can be found [here](https://appointmentscheudler.herokuapp.com/) 
@@ -17,6 +20,9 @@ You can use the following credentials with live demo:
 | `corporate customer` | customer_c |qwerty123 |
 | `retail customer` | customer_r |qwerty123 |
 
+## Blog
+
+This application is being described in [devoxify.com](https://devoxify.com/) blog. If you are interested in how this project was created, what issues were encoutered and how they were solved I highly encourage you to visit this blog.
 
 ## Steps to Setup
 
@@ -27,9 +33,11 @@ git clone https://github.com/slabiak/AppointmentScheduler.git
 ```
 
 **2. Create MySQL database**
+
 ```bash
 create database appointmentscheduler
 ```
+
 - After that run MySQL script to create tables `src/main/resources/appointmentscheduler.sql`
 
 **3. Configure enviroment variables**
@@ -44,9 +52,11 @@ create database appointmentscheduler
 ```bash
 mvn spring-boot:run
 ```
+
 The app will start running at <http://localhost:8080>
 
 **5. Login to admin account**
+
 + username: `admin`
 + password: `qwerty123`
 
@@ -75,6 +85,7 @@ Available hours are calculatated with getAvailableHours function from Appointmen
 `List<TimePeroid> getAvailableHours(int providerId,int customerId, int workId, LocalDate date)`
 
 This function works as follow:
+
 1. gets selected provider working plan
 2. gets working hours from working plan for selected day 
 3. excludes all brakes from working hours
@@ -84,17 +95,18 @@ This function works as follow:
 7. returns available hours
 
 ## Appointments lifecycle
+
 **1. Every appointment has it's own status. Below you can find description for every possible status:**
 
-| Status | Set by | When | Condition |
-| --- | --- | --- | -- |
-| `scheudled` |system | New appointment is created | -|
-| `finished` | system | Current date is after appointment end time  | current appointment status is `scheduled` and current date is after appointment end time|
-| `confirmed` | system | Current date is 24h after appointment end time  |current appointment status is `finished` and current date is more than 24h after appointment end time|
-| `invoiced` | system |Invoice for appointment is created | -|
-| `canceled` | customer |Customer clicks cancel button |current appointment status is `scheduled` and current date is not less than 24h before appointment start time and user total canceled appointments number for current month is not greater than 1|
-| `rejection requested` | customer |Customer clicks reject button |current appointment status is `finished` and current date is not more than 24h after appointment end time|
-| `rejection accepted` | provider |Provider clicks accept rejection button | current appointment status is `rejection requested`|
+| Status                | Set by   | When                                           | Condition                                                    |
+| --------------------- | -------- | ---------------------------------------------- | ------------------------------------------------------------ |
+| `scheudled`           | system   | New appointment is created                     | -                                                            |
+| `finished`            | system   | Current date is after appointment end time     | current appointment status is `scheduled` and current date is after appointment end time |
+| `confirmed`           | system   | Current date is 24h after appointment end time | current appointment status is `finished` and current date is more than 24h after appointment end time |
+| `invoiced`            | system   | Invoice for appointment is created             | -                                                            |
+| `canceled`            | customer | Customer clicks cancel button                  | current appointment status is `scheduled` and current date is not less than 24h before appointment start time and user total canceled appointments number for current month is not greater than 1 |
+| `rejection requested` | customer | Customer clicks reject button                  | current appointment status is `finished` and current date is not more than 24h after appointment end time |
+| `rejection accepted`  | provider | Provider clicks accept rejection button        | current appointment status is `rejection requested`          |
 
 **2. Normal appointment lifecycle is:**
 
@@ -113,6 +125,7 @@ After appointment status is changed to finished system automatically sends email
 Every appointment can be canceled by customer or provider. Customer is allowed to cancel 1 appointment in a month no less than 24h before appointment start date. Provider is allowed to cancel his appointments without any limit as long as the appointment status is `scheduled`. 
 
 ## Notifications
+
 **1. An email notification is sent when:**
 
 + appointment is finished
@@ -141,5 +154,3 @@ If you have any suggestions/ideas please feel free to write about it. You are al
 ## License
 
 This project is licensed under the MIT License - see the [LICENSE.md](LICENSE.md) file for details
-
-
