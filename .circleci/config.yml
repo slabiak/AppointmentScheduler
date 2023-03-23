@@ -15,7 +15,7 @@ workflows:
   build-deploy:
     jobs:
       - build:
-        executor: machine_executor_amd64
+          executor: machine_executor_amd64
       - publish-docker:
           filters:
             branches:
