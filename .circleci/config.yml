@@ -24,6 +24,7 @@ workflows:
               only: master # only run deploy-via-git job on master branch
 jobs:
   build:
+    machine: true
     docker:
       # specify the version you desire here
       - image: circleci/openjdk:8-jdk
