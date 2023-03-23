@@ -2,7 +2,7 @@
 #
 # Check https://circleci.com/docs/2.0/language-java/ for more details
 #
-version: 2
+version: '2.1'
 executors:
   machine_executor_amd64:
     machine:
@@ -14,7 +14,8 @@ workflows:
   version: 2
   build-deploy:
     jobs:
-      - build
+      - build:
+          executor: machine_executor_amd64
       - publish-docker:
           filters:
             branches:
