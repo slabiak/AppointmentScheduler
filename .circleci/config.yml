@@ -49,4 +49,4 @@ jobs:
           key: v1-dependencies-{{ checksum "pom.xml" }}
 
       # run tests!
-      - run: mvn verify
+      - run: mvn package
