@@ -164,7 +164,8 @@ public class WorkingPlan {
         LocalTime defaultStartHour = LocalTime.parse("06:00");
         LocalTime defaultEndHour = LocalTime.parse("18:00");
         TimePeroid defaultWorkingPeroid = new TimePeroid(defaultStartHour, defaultEndHour);
-        DayPlan defaultDayPlan = new DayPlan(defaultWorkingPeroid);
+        DayPlan defaultDayPlan = new DayPlan();
+        defaultDayPlan.setWorkingHours(defaultWorkingPeroid);
         wp.setMonday(defaultDayPlan);
         wp.setTuesday(defaultDayPlan);
         wp.setWednesday(defaultDayPlan);
