@@ -60,6 +60,8 @@ jobs:
       - run: mvn package
 
   heroku-deploy:
+    docker:
+      - image: circleci/openjdk:8-jdk
     steps:
       - checkout
       - run:
