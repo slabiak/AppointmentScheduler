@@ -2,7 +2,7 @@ package com.example.slabiak.appointmentscheduler.controller;
 
 import com.example.slabiak.appointmentscheduler.entity.WorkingPlan;
 import com.example.slabiak.appointmentscheduler.model.ChangePasswordForm;
-import com.example.slabiak.appointmentscheduler.model.TimePeroid;
+import com.example.slabiak.appointmentscheduler.model.TimePeriod;
 import com.example.slabiak.appointmentscheduler.model.UserForm;
 import com.example.slabiak.appointmentscheduler.security.CustomUserDetails;
 import com.example.slabiak.appointmentscheduler.service.AppointmentService;
@@ -109,7 +109,7 @@ public class ProviderController {
     @GetMapping("/availability")
     public String showProviderAvailability(Model model, @AuthenticationPrincipal CustomUserDetails currentUser) {
         model.addAttribute("plan", workingPlanService.getWorkingPlanByProviderId(currentUser.getId()));
-        model.addAttribute("breakModel", new TimePeroid());
+        model.addAttribute("breakModel", new TimePeriod());
         return "users/showOrUpdateProviderAvailability";
     }
 
@@ -119,20 +119,20 @@ public class ProviderController {
         return "redirect:/providers/availability";
     }
 
-    @PostMapping("/availability/breakes/add")
-    public String processProviderAddBreak(@ModelAttribute("breakModel") TimePeroid breakToAdd, @RequestParam("planId") int planId, @RequestParam("dayOfWeek") String dayOfWeek) {
+    @PostMapping("/availability/breaks/add")
+    public String processProviderAddBreak(@ModelAttribute("breakModel") TimePeriod breakToAdd, @RequestParam("planId") int planId, @RequestParam("dayOfWeek") String dayOfWeek) {
         workingPlanService.addBreakToWorkingPlan(breakToAdd, planId, dayOfWeek);
         return "redirect:/providers/availability";
     }
 
-    @PostMapping("/availability/breakes/delete")
-    public String processProviderDeleteBreak(@ModelAttribute("breakModel") TimePeroid breakToDelete, @RequestParam("planId") int planId, @RequestParam("dayOfWeek") String dayOfWeek) {
+    @PostMapping("/availability/breaks/delete")
+    public String processProviderDeleteBreak(@ModelAttribute("breakModel") TimePeriod breakToDelete, @RequestParam("planId") int planId, @RequestParam("dayOfWeek") String dayOfWeek) {
         workingPlanService.deleteBreakFromWorkingPlan(breakToDelete, planId, dayOfWeek);
         return "redirect:/providers/availability";
     }
 
     @PostMapping("/update/password")
-    public String processProviderPasswordUpate(@Valid @ModelAttribute("passwordChange") ChangePasswordForm passwordChange, BindingResult bindingResult, RedirectAttributes redirectAttributes) {
+    public String processProviderPasswordUpdate(@Valid @ModelAttribute("passwordChange") ChangePasswordForm passwordChange, BindingResult bindingResult, RedirectAttributes redirectAttributes) {
         if (bindingResult.hasErrors()) {
             redirectAttributes.addFlashAttribute("org.springframework.validation.BindingResult.passwordChange", bindingResult);
             redirectAttributes.addFlashAttribute("passwordChange", passwordChange);

@@ -2,7 +2,7 @@ package com.example.slabiak.appointmentscheduler.service.impl;
 
 import com.example.slabiak.appointmentscheduler.dao.WorkingPlanRepository;
 import com.example.slabiak.appointmentscheduler.entity.WorkingPlan;
-import com.example.slabiak.appointmentscheduler.model.TimePeroid;
+import com.example.slabiak.appointmentscheduler.model.TimePeriod;
 import com.example.slabiak.appointmentscheduler.security.CustomUserDetails;
 import com.example.slabiak.appointmentscheduler.service.WorkingPlanService;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -33,7 +33,7 @@ public class WorkingPlanServiceImpl implements WorkingPlanService {
     }
 
     @Override
-    public void addBreakToWorkingPlan(TimePeroid breakToAdd, int planId, String dayOfWeek) {
+    public void addBreakToWorkingPlan(TimePeriod breakToAdd, int planId, String dayOfWeek) {
         CustomUserDetails currentUser = (CustomUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         WorkingPlan workingPlan = workingPlanRepository.getOne(planId);
         if (!workingPlan.getProvider().getId().equals(currentUser.getId())) {
@@ -44,7 +44,7 @@ public class WorkingPlanServiceImpl implements WorkingPlanService {
     }
 
     @Override
-    public void deleteBreakFromWorkingPlan(TimePeroid breakToDelete, int planId, String dayOfWeek) {
+    public void deleteBreakFromWorkingPlan(TimePeriod breakToDelete, int planId, String dayOfWeek) {
         CustomUserDetails currentUser = (CustomUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         WorkingPlan workingPlan = workingPlanRepository.getOne(planId);
         if (!workingPlan.getProvider().getId().equals(currentUser.getId())) {

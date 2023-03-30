@@ -82,7 +82,7 @@ To book a new appointment customer needs to click `New Appointment` button on al
 
 Available hours are calculatated with getAvailableHours function from AppointmentService:
 
-`List<TimePeroid> getAvailableHours(int providerId,int customerId, int workId, LocalDate date)`
+`List<TimePeriod> getAvailableHours(int providerId,int customerId, int workId, LocalDate date)`
 
 This function works as follow:
 
@@ -91,7 +91,7 @@ This function works as follow:
 3. excludes all brakes from working hours
 4. excludes all providers booked appointments for that day
 5. excludes all customers booked appointments for that day
-6. gets selected work duration and calculate available time peroids 
+6. gets selected work duration and calculate available time periods 
 7. returns available hours
 
 ## Appointments lifecycle

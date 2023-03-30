@@ -23,10 +23,10 @@ public interface AppointmentRepository extends JpaRepository<Appointment, Intege
     List<Appointment> findScheduledByUserId(@Param("userId") int userId);
 
     @Query("select a from Appointment a where a.provider.id = :providerId and  a.start >=:dayStart and  a.start <=:dayEnd")
-    List<Appointment> findByProviderIdWithStartInPeroid(@Param("providerId") int providerId, @Param("dayStart") LocalDateTime startPeroid, @Param("dayEnd") LocalDateTime endPeroid);
+    List<Appointment> findByProviderIdWithStartInPeriod(@Param("providerId") int providerId, @Param("dayStart") LocalDateTime startPeriod, @Param("dayEnd") LocalDateTime endPeriod);
 
     @Query("select a from Appointment a where a.customer.id = :customerId and  a.start >=:dayStart and  a.start <=:dayEnd")
-    List<Appointment> findByCustomerIdWithStartInPeroid(@Param("customerId") int customerId, @Param("dayStart") LocalDateTime startPeroid, @Param("dayEnd") LocalDateTime endPeroid);
+    List<Appointment> findByCustomerIdWithStartInPeriod(@Param("customerId") int customerId, @Param("dayStart") LocalDateTime startPeriod, @Param("dayEnd") LocalDateTime endPeriod);
 
     @Query("select a from Appointment a where a.customer.id = :customerId and a.canceler.id =:customerId and a.canceledAt >=:date")
     List<Appointment> findByCustomerIdCanceledAfterDate(@Param("customerId") int customerId, @Param("date") LocalDateTime date);

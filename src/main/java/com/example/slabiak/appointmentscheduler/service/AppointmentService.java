@@ -3,7 +3,7 @@ package com.example.slabiak.appointmentscheduler.service;
 import com.example.slabiak.appointmentscheduler.entity.Appointment;
 import com.example.slabiak.appointmentscheduler.entity.ChatMessage;
 import com.example.slabiak.appointmentscheduler.entity.Work;
-import com.example.slabiak.appointmentscheduler.model.TimePeroid;
+import com.example.slabiak.appointmentscheduler.model.TimePeriod;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -40,11 +40,11 @@ public interface AppointmentService {
 
     List<Appointment> getCanceledAppointmentsByCustomerIdForCurrentMonth(int userId);
 
-    List<TimePeroid> getAvailableHours(int providerId, int customerId, int workId, LocalDate date);
+    List<TimePeriod> getAvailableHours(int providerId, int customerId, int workId, LocalDate date);
 
-    List<TimePeroid> calculateAvailableHours(List<TimePeroid> availableTimePeroids, Work work);
+    List<TimePeriod> calculateAvailableHours(List<TimePeriod> availableTimePeriods, Work work);
 
-    List<TimePeroid> excludeAppointmentsFromTimePeroids(List<TimePeroid> peroids, List<Appointment> appointments);
+    List<TimePeriod> excludeAppointmentsFromTimePeriods(List<TimePeriod> periods, List<Appointment> appointments);
 
     String getCancelNotAllowedReason(int userId, int appointmentId);
 
