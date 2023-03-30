@@ -1,29 +1,37 @@
-version: '2.1'
-orbs:
-  maven: circleci/maven@1.3.0
-executors:
-  machine_executor_amd64:
-    machine:
-      image: ubuntu-2204:2022.04.2
-    environment:
-      architecture: "amd64"
-      platform: "linux/amd64"
+# Java Maven CircleCI 2.0 configuration file
+#
+# Check https://circleci.com/docs/2.0/language-java/ for more details
+#
+version: 2
+executorType: machine
 workflows:
-  maven_test:
+  version: 2
+  build-deploy:
     jobs:
-      - maven/verify:
-          executor: machine_executor_amd64
+      - build
+      - publish-docker:
+          filters:
+            branches:
+              only:
+                - master
+          requires:
+            - build
+      - heroku-deploy:
+          requires:
+            - build # only run deploy-via-git job if the build job has completed
+          filters:
+            branches:
+              only: master # only run deploy-via-git job on master branch
 jobs:
-  maven/verify:
-#    machine: true
-      #    docker:
-      #      # specify the version you desire here
-      #      - image: circleci/openjdk:8-jdk
+  build:
+    docker:
+      # specify the version you desire here
+      - image: circleci/openjdk:8-jdk
 
       # Specify service dependencies here if necessary
       # CircleCI maintains a library of pre-built images
       # documented at https://circleci.com/docs/2.0/circleci-images/
-    # - image: circleci/postgres:9.4
+      # - image: circleci/postgres:9.4
 
     working_directory: ~/repo
 
@@ -50,3 +58,29 @@ jobs:
 
       # run tests!
       - run: mvn package
+
+  heroku-deploy:
+    steps:
+      - checkout
+      - run:
+          name: Deploy Master to Heroku
+          command: |
+            git push https://heroku:$HEROKU_API_KEY@git.heroku.com/$HEROKU_APP_NAME.git master
+
+  publish-docker:
+    docker:
+      - image: circleci/openjdk:8-jdk
+    working_directory: ~/repo
+    steps:
+      - checkout
+      - restore_cache:
+          keys:
+            - v1-dependencies-{{ checksum "pom.xml" }}
+            - v1-dependencies
+      - run: mvn dependency:go-offline
+      - run:
+          name: Publish Docker image with Jib
+          command: |
+            mvn compile jib:build -B -DskipTests=true \
+              -Djib.to.auth.username=${docker_login} \
+                  -Djib.to.auth.password=${docker_password}
