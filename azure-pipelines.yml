@@ -5,6 +5,7 @@
 
 trigger:
 - develop
+- master
 
 pool:
   vmImage: ubuntu-latest
@@ -20,3 +21,9 @@ steps:
     publishJUnitResults: true
     testResultsFiles: '**/surefire-reports/TEST-*.xml'
     goals: 'package'
+- task: Maven@3
+  condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/master'))
+  inputs:
+    mavenPomFile: 'pom.xml'
+    goals: 'jib:build'
+    options: '-Djib.to.auth.username=$(dockerRegistryUsername) -Djib.to.auth.password=$(dockerRegistryPassword)'
