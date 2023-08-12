@@ -156,6 +156,7 @@
 				<version>3.0.0-M4</version>
 				<executions>
 					<execution>
+						<phase>package</phase>
 						<goals>
 							<goal>integration-test</goal>
 							<goal>verify</goal>
