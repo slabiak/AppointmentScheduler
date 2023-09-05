@@ -197,6 +197,10 @@
 						<ports>
 							<port>8080</port>
 						</ports>
+						<jvmFlags>
+							<jvmFlag>-Xmx400M</jvmFlag>
+							<jvmFlag>-Xms400M</jvmFlag>
+						</jvmFlags>
 						<creationTime>USE_CURRENT_TIMESTAMP</creationTime>
 					</container>
 				</configuration>
