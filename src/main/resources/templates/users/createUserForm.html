@@ -41,7 +41,7 @@
                     <div class="form-group">
                         <label for="matchingPassword">Repeat</label>
                         <input type="password" class="form-control" th:classappend="${#fields.hasErrors('matchingPassword') ? 'is-invalid' :''}" th:field="*{matchingPassword}"
-                               placeholder="reapeat password">
+                               placeholder="repeat password">
                         <div th:if="${#fields.hasErrors('matchingPassword')}" class="invalid-feedback">
                             <p th:errors="*{matchingPassword}"></p>
                         </div>
