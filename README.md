@@ -9,7 +9,7 @@
 
 ## Demo
 
-The live demo of this app is deployed and can be found [here](https://appointmentscheduler.herokuapp.com) 
+The live demo of this app is deployed and can be found [here](https://appscheduler.onrender.com/) 
 
 You can use the following credentials with live demo:
 
