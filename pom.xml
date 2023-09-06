@@ -10,7 +10,7 @@
 	</parent>
 	<groupId>com.example.slabiak</groupId>
 	<artifactId>appointmentscheduler</artifactId>
-	<version>1.0.4</version>
+	<version>1.0.5</version>
 	<name>appointmentscheduler</name>
 	<description>Demo project for Spring Boot</description>
 
@@ -156,6 +156,7 @@
 				<version>3.0.0-M4</version>
 				<executions>
 					<execution>
+						<phase>package</phase>
 						<goals>
 							<goal>integration-test</goal>
 							<goal>verify</goal>
@@ -196,6 +197,10 @@
 						<ports>
 							<port>8080</port>
 						</ports>
+						<jvmFlags>
+							<jvmFlag>-Xmx400M</jvmFlag>
+							<jvmFlag>-Xms400M</jvmFlag>
+						</jvmFlags>
 						<creationTime>USE_CURRENT_TIMESTAMP</creationTime>
 					</container>
 				</configuration>

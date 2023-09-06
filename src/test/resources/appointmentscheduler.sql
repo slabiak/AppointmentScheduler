@@ -311,10 +311,10 @@ INSERT INTO works_providers
 VALUES (2, 1);
 INSERT INTO working_plans
 VALUES (2,
-        '{"workingHours":{"start":[6,0],"end":[18,0]},"breaks":[],"timePeroidsWithBreaksExcluded":[{"start":[6,0],"end":[18,0]}]}',
-        '{"workingHours":{"start":[6,0],"end":[18,0]},"breaks":[],"timePeroidsWithBreaksExcluded":[{"start":[6,0],"end":[18,0]}]}',
-        '{"workingHours":{"start":[6,0],"end":[18,0]},"breaks":[],"timePeroidsWithBreaksExcluded":[{"start":[6,0],"end":[18,0]}]}',
-        '{"workingHours":{"start":[6,0],"end":[18,0]},"breaks":[],"timePeroidsWithBreaksExcluded":[{"start":[6,0],"end":[18,0]}]}',
-        '{"workingHours":{"start":[6,0],"end":[18,0]},"breaks":[],"timePeroidsWithBreaksExcluded":[{"start":[6,0],"end":[18,0]}]}',
-        '{"workingHours":{"start":[6,0],"end":[18,0]},"breaks":[],"timePeroidsWithBreaksExcluded":[{"start":[6,0],"end":[18,0]}]}',
-        '{"workingHours":{"start":[6,0],"end":[18,0]},"breaks":[],"timePeroidsWithBreaksExcluded":[{"start":[6,0],"end":[18,0]}]}');
+        '{"workingHours":{"start":[6,0],"end":[18,0]},"breaks":[]}',
+        '{"workingHours":{"start":[6,0],"end":[18,0]},"breaks":[]}',
+        '{"workingHours":{"start":[6,0],"end":[18,0]},"breaks":[]}',
+        '{"workingHours":{"start":[6,0],"end":[18,0]},"breaks":[]}',
+        '{"workingHours":{"start":[6,0],"end":[18,0]},"breaks":[]}',
+        '{"workingHours":{"start":[6,0],"end":[18,0]},"breaks":[]}',
+        '{"workingHours":{"start":[6,0],"end":[18,0]},"breaks":[]}');
