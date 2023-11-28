@@ -1,6 +1,7 @@
 package com.example.slabiak.appointmentscheduler.model;
 
 import java.time.LocalDateTime;
+import java.time.chrono.ChronoLocalDateTime;
 
 public class TimePeriod  implements Comparable<TimePeriod>{
     public void setStart(LocalDateTime start) {
@@ -18,11 +19,11 @@ public class TimePeriod  implements Comparable<TimePeriod>{
 
     public void adjust(TimePeriodAdjuster adjuster, TimePeriod breakPeriod) {
         TimePeriod adjusted = adjuster.adjust(this, null);
-        this.start = adjusted.getStart();
+        this.start = (LocalDateTime) adjusted.getStart();
         this.end = adjusted.getEnd();
     }
 
-    public LocalDateTime getStart() {
+    public ChronoLocalDateTime<?> getStart() {
         return start;
     }
 
