@@ -39,7 +39,8 @@ public class EmailServiceImpl implements EmailService {
         this.baseUrl = baseUrl;
     }
 
-    @Async
+    //Before Extract Method
+    /*@Async
     @Override
     public void sendEmail(String to, String subject, String templateName, Context templateContext, File attachment) {
         try {
@@ -65,7 +66,41 @@ public class EmailServiceImpl implements EmailService {
             log.error("Error while adding attachment to email, error is {}", e.getLocalizedMessage());
         }
 
+    }*/
+
+    //After Extract Method
+    @Async
+    @Override
+    public void sendEmail(String to, String subject, String templateName, Context templateContext, File attachment) {
+        try {
+            MimeMessage message = createMimeMessageWithAttachment(to, subject, templateName, templateContext, attachment);
+            javaMailSender.send(message);
+        } catch (MessagingException e) {
+            log.error("Error while adding attachment to email, error is {}", e.getLocalizedMessage());
+        }
     }
+
+    private MimeMessage createMimeMessageWithAttachment(String to, String subject, String templateName, Context templateContext, File attachment) throws MessagingException {
+        MimeMessage message = javaMailSender.createMimeMessage();
+        MimeMessageHelper helper = new MimeMessageHelper(message,
+                MimeMessageHelper.MULTIPART_MODE_MIXED_RELATED,
+                StandardCharsets.UTF_8.name());
+
+        String html = templateEngine.process("email/" + templateName, templateContext);
+
+        helper.setTo(to);
+        helper.setFrom("appointmentscheduler@gmail.com");
+        helper.setSubject(subject);
+        helper.setText(html, true);
+
+        if (attachment != null) {
+            helper.addAttachment("invoice", attachment);
+        }
+
+        return message;
+    }
+
+
 
     @Async
     @Override
