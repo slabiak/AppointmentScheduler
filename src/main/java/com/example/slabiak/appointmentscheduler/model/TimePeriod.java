@@ -17,7 +17,7 @@ public class TimePeriod  implements Comparable<TimePeriod>{
     // Constructors, getters, setters, etc.
 
     public void adjust(TimePeriodAdjuster adjuster, TimePeriod breakPeriod) {
-        TimePeriod adjusted = adjuster.adjust(this, breakPeriod);
+        TimePeriod adjusted = adjuster.adjust(this, null);
         this.start = adjusted.getStart();
         this.end = adjusted.getEnd();
     }

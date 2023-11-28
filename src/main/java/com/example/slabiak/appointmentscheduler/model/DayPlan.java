@@ -41,6 +41,10 @@ public class DayPlan {
         return timePeriodsWithBreaksExcluded;
     }
 
+    private TimePeriod getWorkingHours() {
+        return  null;
+    }
+
 /*    public List<TimePeroid> timePeroidsWithBreaksExcluded() {
         ArrayList<TimePeroid> timePeroidsWithBreaksExcluded = new ArrayList<>();
         timePeroidsWithBreaksExcluded.add(getWorkingHours());
@@ -125,9 +129,9 @@ public class DayPlan {
 */
 
 
-    public TimePeriod getWorkingHours() {
-        return workingHours;
-    }
+    /*public TimePeriod getWorkingHours() {
+        //return workingHours;
+    }*/
 
     public void setWorkingHours(TimePeroid workingHours) {
         this.workingHours = workingHours;
