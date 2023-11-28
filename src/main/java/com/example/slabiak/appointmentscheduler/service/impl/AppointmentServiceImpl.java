@@ -88,7 +88,13 @@ public class AppointmentServiceImpl implements AppointmentService {
         return appointmentRepository.findByProviderIdWithStartInPeroid(providerId, day.atStartOfDay(), day.atStartOfDay().plusDays(1));
     }
 
-    @Override
+
+    public List<Appointment> getAppointmentsByCustomerAtDayAndTimePeriods(int providerId, LocalDate day) {
+        return appointmentRepository.findByCustomerIdWithStartInPeroid(providerId, day.atStartOfDay(), day.atStartOfDay().plusDays(1));
+    }
+
+
+
     public List<Appointment> getAppointmentsByCustomerAtDay(int providerId, LocalDate day) {
         return appointmentRepository.findByCustomerIdWithStartInPeroid(providerId, day.atStartOfDay(), day.atStartOfDay().plusDays(1));
     }
@@ -127,6 +133,8 @@ public class AppointmentServiceImpl implements AppointmentService {
         }
 
     }
+    // Before
+
 
     @Override
     public void addMessageToAppointmentChat(int appointmentId, int authorId, ChatMessage chatMessage) {
