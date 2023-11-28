@@ -1,6 +1,5 @@
 package com.example.slabiak.appointmentscheduler.model;
 
-import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.Objects;
 
@@ -18,8 +17,8 @@ public class TimePeroid implements Comparable<TimePeroid> {
         this.end = end;
     }
 
-    public LocalDateTime getStart() {
-        return null;
+    public LocalTime getStart() {
+        return start;
     }
 
     public void setStart(LocalTime start) {

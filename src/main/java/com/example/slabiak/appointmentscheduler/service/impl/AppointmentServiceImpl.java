@@ -87,16 +87,17 @@ public class AppointmentServiceImpl implements AppointmentService {
     public List<Appointment> getAppointmentsByProviderAtDay(int providerId, LocalDate day) {
         return appointmentRepository.findByProviderIdWithStartInPeroid(providerId, day.atStartOfDay(), day.atStartOfDay().plusDays(1));
     }
-//Before renaming a method
-//    @Override
-//    public List<Appointment> getAppointmentsByCustomerAtDay(int providerId, LocalDate day) {
-//        return appointmentRepository.findByCustomerIdWithStartInPeroid(providerId, day.atStartOfDay(), day.atStartOfDay().plusDays(1));
-//    }
-   //After renaming a method
+
+
     public List<Appointment> getAppointmentsByCustomerAtDayAndTimePeriods(int providerId, LocalDate day) {
         return appointmentRepository.findByCustomerIdWithStartInPeroid(providerId, day.atStartOfDay(), day.atStartOfDay().plusDays(1));
     }
 
+
+
+    public List<Appointment> getAppointmentsByCustomerAtDay(int providerId, LocalDate day) {
+        return appointmentRepository.findByCustomerIdWithStartInPeroid(providerId, day.atStartOfDay(), day.atStartOfDay().plusDays(1));
+    }
 
     @Override
     public List<TimePeroid> getAvailableHours(int providerId, int customerId, int workId, LocalDate date) {
@@ -105,7 +106,7 @@ public class AppointmentServiceImpl implements AppointmentService {
         DayPlan selectedDay = workingPlan.getDay(date.getDayOfWeek().toString().toLowerCase());
 
         List<Appointment> providerAppointments = getAppointmentsByProviderAtDay(providerId, date);
-        List<Appointment> customerAppointments = getAppointmentsByCustomerAtDayAndTimePeriods(customerId, date);
+        List<Appointment> customerAppointments = getAppointmentsByCustomerAtDay(customerId, date);
 
         List<TimePeroid> availablePeroids = selectedDay.timePeroidsWithBreaksExcluded();
         availablePeroids = excludeAppointmentsFromTimePeroids(availablePeroids, providerAppointments);
@@ -132,6 +133,8 @@ public class AppointmentServiceImpl implements AppointmentService {
         }
 
     }
+    // Before
+
 
     @Override
     public void addMessageToAppointmentChat(int appointmentId, int authorId, ChatMessage chatMessage) {
