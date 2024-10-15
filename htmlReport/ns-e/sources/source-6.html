@@ -1,0 +1,112 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <meta http-equiv="Content-Type" content="text/html;charset=UTF-8"> 
+  <title>Coverage Report > EmailService</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/idea.min.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.min.js"></script>
+  <script type="text/javascript" src="../../js/highlightjs-line-numbers.min.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">com.example.slabiak.appointmentscheduler.service</a>
+</div>
+
+<h1>Coverage Summary for Class: EmailService (com.example.slabiak.appointmentscheduler.service)</h1>
+
+<table class="coverageStats">
+
+<tr>
+  <th class="name">Class</th>
+</tr>
+  <tr>
+    <td class="name">EmailService$MockitoMock$1766379375</td>
+  </tr>
+  <tr>
+    <td class="name">EmailService$MockitoMock$1766379375$auxiliary$01sI2juJ</td>
+  </tr>
+  <tr>
+    <td class="name">EmailService$MockitoMock$1766379375$auxiliary$uf9z9Fn0</td>
+  </tr>
+<tr>
+  <td class="name"><strong>Total</strong></td>
+</tr>
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<code class="sourceCode" id="sourceCode">&nbsp;package com.example.slabiak.appointmentscheduler.service;
+&nbsp;
+&nbsp;import com.example.slabiak.appointmentscheduler.entity.Appointment;
+&nbsp;import com.example.slabiak.appointmentscheduler.entity.ChatMessage;
+&nbsp;import com.example.slabiak.appointmentscheduler.entity.ExchangeRequest;
+&nbsp;import com.example.slabiak.appointmentscheduler.entity.Invoice;
+&nbsp;import org.thymeleaf.context.Context;
+&nbsp;
+&nbsp;import java.io.File;
+&nbsp;
+&nbsp;public interface EmailService {
+&nbsp;    void sendEmail(String to, String subject, String templateName, Context templateContext, File attachment);
+&nbsp;
+&nbsp;    void sendAppointmentFinishedNotification(Appointment appointment);
+&nbsp;
+&nbsp;    void sendAppointmentRejectionRequestedNotification(Appointment appointment);
+&nbsp;
+&nbsp;    void sendNewAppointmentScheduledNotification(Appointment appointment);
+&nbsp;
+&nbsp;    void sendAppointmentCanceledByCustomerNotification(Appointment appointment);
+&nbsp;
+&nbsp;    void sendAppointmentCanceledByProviderNotification(Appointment appointment);
+&nbsp;
+&nbsp;    void sendInvoice(Invoice invoice);
+&nbsp;
+&nbsp;    void sendAppointmentRejectionAcceptedNotification(Appointment appointment);
+&nbsp;
+&nbsp;    void sendNewChatMessageNotification(ChatMessage appointment);
+&nbsp;
+&nbsp;    void sendNewExchangeRequestedNotification(Appointment oldAppointment, Appointment newAppointment);
+&nbsp;
+&nbsp;    void sendExchangeRequestAcceptedNotification(ExchangeRequest exchangeRequest);
+&nbsp;
+&nbsp;    void sendExchangeRequestRejectedNotification(ExchangeRequest exchangeRequest);
+&nbsp;}
+</code>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+      hljs.highlightAll()
+      hljs.initLineNumbersOnLoad();
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2024-03-03 21:00</div>
+</div>
+</body>
+</html>

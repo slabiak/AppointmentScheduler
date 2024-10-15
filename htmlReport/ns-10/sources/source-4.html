@@ -1,0 +1,86 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <meta http-equiv="Content-Type" content="text/html;charset=UTF-8"> 
+  <title>Coverage Report > InvoiceRepository</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/idea.min.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.min.js"></script>
+  <script type="text/javascript" src="../../js/highlightjs-line-numbers.min.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">com.example.slabiak.appointmentscheduler.dao</a>
+</div>
+
+<h1>Coverage Summary for Class: InvoiceRepository (com.example.slabiak.appointmentscheduler.dao)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+</tr>
+<tr>
+  <td class="name">InvoiceRepository</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<code class="sourceCode" id="sourceCode">&nbsp;package com.example.slabiak.appointmentscheduler.dao;
+&nbsp;
+&nbsp;import com.example.slabiak.appointmentscheduler.entity.Invoice;
+&nbsp;import org.springframework.data.jpa.repository.JpaRepository;
+&nbsp;import org.springframework.data.jpa.repository.Query;
+&nbsp;import org.springframework.data.repository.query.Param;
+&nbsp;
+&nbsp;import java.time.LocalDateTime;
+&nbsp;import java.util.List;
+&nbsp;
+&nbsp;public interface InvoiceRepository extends JpaRepository&lt;Invoice, Integer&gt; {
+&nbsp;
+&nbsp;    @Query(&quot;select i from Invoice i where i.issued &gt;= :beginingOfCurrentMonth&quot;)
+&nbsp;    List&lt;Invoice&gt; findAllIssuedInCurrentMonth(@Param(&quot;beginingOfCurrentMonth&quot;) LocalDateTime beginingOfCurrentMonth);
+&nbsp;
+&nbsp;    @Query(&quot;select i from Invoice i inner join i.appointments a where a.id in :appointmentId&quot;)
+&nbsp;    Invoice findByAppointmentId(@Param(&quot;appointmentId&quot;) int appointmentId);
+&nbsp;}
+</code>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+      hljs.highlightAll()
+      hljs.initLineNumbersOnLoad();
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2024-03-03 21:00</div>
+</div>
+</body>
+</html>

@@ -1,0 +1,144 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <meta http-equiv="Content-Type" content="text/html;charset=UTF-8"> 
+  <title>Coverage Report > VersionInterceptor</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/idea.min.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.min.js"></script>
+  <script type="text/javascript" src="../../js/highlightjs-line-numbers.min.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">com.example.slabiak.appointmentscheduler.config</a>
+</div>
+
+<h1>Coverage Summary for Class: VersionInterceptor (com.example.slabiak.appointmentscheduler.config)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Branch, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">VersionInterceptor</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/2)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/2)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/4)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<code class="sourceCode" id="sourceCode">&nbsp;package com.example.slabiak.appointmentscheduler.config;
+&nbsp;
+&nbsp;import org.springframework.boot.info.BuildProperties;
+&nbsp;import org.springframework.stereotype.Component;
+&nbsp;import org.springframework.web.servlet.ModelAndView;
+&nbsp;import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
+&nbsp;
+&nbsp;import javax.servlet.http.HttpServletRequest;
+&nbsp;import javax.servlet.http.HttpServletResponse;
+&nbsp;
+&nbsp;@Component
+&nbsp;public class VersionInterceptor extends HandlerInterceptorAdapter {
+&nbsp;
+&nbsp;    private BuildProperties buildProperties;
+&nbsp;
+<b class="nc">&nbsp;    public VersionInterceptor(BuildProperties buildProperties) {</b>
+<b class="nc">&nbsp;        this.buildProperties = buildProperties;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    @Override
+&nbsp;    public void postHandle(final HttpServletRequest request, final HttpServletResponse response, final Object handler,
+&nbsp;                           final ModelAndView modelAndView) throws Exception {
+&nbsp;
+<b class="nc">&nbsp;        if (modelAndView != null) {</b>
+<b class="nc">&nbsp;            modelAndView.getModelMap().addAttribute(&quot;currentVersion&quot;, buildProperties.getVersion());</b>
+&nbsp;        }
+&nbsp;    }
+&nbsp;}
+</code>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+      hljs.highlightAll()
+      hljs.initLineNumbersOnLoad();
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2024-03-03 21:00</div>
+</div>
+</body>
+</html>

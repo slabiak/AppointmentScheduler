@@ -49,6 +49,10 @@ public interface UserService {
 
     void updateProviderProfile(UserForm updateData);
 
+    Collection<Role> getRolesForRetailCustomer();
+
+    Collection<Role> getRoleForCorporateCustomers();
+
     Collection<Role> getRolesForProvider();
 
     /*
@@ -67,7 +71,6 @@ public interface UserService {
 
     void updateRetailCustomerProfile(UserForm updateData);
 
-    Collection<Role> getRolesForRetailCustomer();
 
     /*
      * CorporateCustomer
@@ -80,8 +83,6 @@ public interface UserService {
 
     void updateCorporateCustomerProfile(UserForm updateData);
 
-    Collection<Role> getRoleForCorporateCustomers();
 
 
 }
-

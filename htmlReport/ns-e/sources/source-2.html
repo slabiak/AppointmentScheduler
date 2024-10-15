@@ -1,0 +1,164 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <meta http-equiv="Content-Type" content="text/html;charset=UTF-8"> 
+  <title>Coverage Report > UserService</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/idea.min.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.min.js"></script>
+  <script type="text/javascript" src="../../js/highlightjs-line-numbers.min.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">com.example.slabiak.appointmentscheduler.service</a>
+</div>
+
+<h1>Coverage Summary for Class: UserService (com.example.slabiak.appointmentscheduler.service)</h1>
+
+<table class="coverageStats">
+
+<tr>
+  <th class="name">Class</th>
+</tr>
+  <tr>
+    <td class="name">UserService$MockitoMock$276993811</td>
+  </tr>
+  <tr>
+    <td class="name">UserService$MockitoMock$276993811$auxiliary$2B7w05hH</td>
+  </tr>
+  <tr>
+    <td class="name">UserService$MockitoMock$276993811$auxiliary$LdAiuwk5</td>
+  </tr>
+<tr>
+  <td class="name"><strong>Total</strong></td>
+</tr>
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<code class="sourceCode" id="sourceCode">&nbsp;package com.example.slabiak.appointmentscheduler.service;
+&nbsp;
+&nbsp;
+&nbsp;import com.example.slabiak.appointmentscheduler.entity.Work;
+&nbsp;import com.example.slabiak.appointmentscheduler.entity.user.Role;
+&nbsp;import com.example.slabiak.appointmentscheduler.entity.user.User;
+&nbsp;import com.example.slabiak.appointmentscheduler.entity.user.customer.CorporateCustomer;
+&nbsp;import com.example.slabiak.appointmentscheduler.entity.user.customer.Customer;
+&nbsp;import com.example.slabiak.appointmentscheduler.entity.user.customer.RetailCustomer;
+&nbsp;import com.example.slabiak.appointmentscheduler.entity.user.provider.Provider;
+&nbsp;import com.example.slabiak.appointmentscheduler.model.ChangePasswordForm;
+&nbsp;import com.example.slabiak.appointmentscheduler.model.UserForm;
+&nbsp;
+&nbsp;import java.util.Collection;
+&nbsp;import java.util.List;
+&nbsp;
+&nbsp;public interface UserService {
+&nbsp;    /*
+&nbsp;     * User
+&nbsp;     * */
+&nbsp;    boolean userExists(String userName);
+&nbsp;
+&nbsp;    User getUserById(int userId);
+&nbsp;
+&nbsp;    User getUserByUsername(String userName);
+&nbsp;
+&nbsp;    List&lt;User&gt; getUsersByRoleName(String roleName);
+&nbsp;
+&nbsp;    List&lt;User&gt; getAllUsers();
+&nbsp;
+&nbsp;    void deleteUserById(int userId);
+&nbsp;
+&nbsp;    void updateUserPassword(ChangePasswordForm passwordChangeForm);
+&nbsp;
+&nbsp;    /*
+&nbsp;     * Provider
+&nbsp;     * */
+&nbsp;    Provider getProviderById(int providerId);
+&nbsp;
+&nbsp;    List&lt;Provider&gt; getProvidersWithRetailWorks();
+&nbsp;
+&nbsp;    List&lt;Provider&gt; getProvidersWithCorporateWorks();
+&nbsp;
+&nbsp;    List&lt;Provider&gt; getProvidersByWork(Work work);
+&nbsp;
+&nbsp;    List&lt;Provider&gt; getAllProviders();
+&nbsp;
+&nbsp;    void saveNewProvider(UserForm userForm);
+&nbsp;
+&nbsp;    void updateProviderProfile(UserForm updateData);
+&nbsp;
+&nbsp;    Collection&lt;Role&gt; getRolesForProvider();
+&nbsp;
+&nbsp;    /*
+&nbsp;     * Customer
+&nbsp;     * */
+&nbsp;    Customer getCustomerById(int customerId);
+&nbsp;
+&nbsp;    List&lt;Customer&gt; getAllCustomers();
+&nbsp;
+&nbsp;    /*
+&nbsp;     * RetailCustomer
+&nbsp;     * */
+&nbsp;    RetailCustomer getRetailCustomerById(int retailCustomerId);
+&nbsp;
+&nbsp;    void saveNewRetailCustomer(UserForm userForm);
+&nbsp;
+&nbsp;    void updateRetailCustomerProfile(UserForm updateData);
+&nbsp;
+&nbsp;    Collection&lt;Role&gt; getRolesForRetailCustomer();
+&nbsp;
+&nbsp;    /*
+&nbsp;     * CorporateCustomer
+&nbsp;     * */
+&nbsp;    CorporateCustomer getCorporateCustomerById(int corporateCustomerId);
+&nbsp;
+&nbsp;    List&lt;RetailCustomer&gt; getAllRetailCustomers();
+&nbsp;
+&nbsp;    void saveNewCorporateCustomer(UserForm userForm);
+&nbsp;
+&nbsp;    void updateCorporateCustomerProfile(UserForm updateData);
+&nbsp;
+&nbsp;    Collection&lt;Role&gt; getRoleForCorporateCustomers();
+&nbsp;
+&nbsp;
+&nbsp;}
+&nbsp;
+</code>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+      hljs.highlightAll()
+      hljs.initLineNumbersOnLoad();
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2024-03-03 21:00</div>
+</div>
+</body>
+</html>

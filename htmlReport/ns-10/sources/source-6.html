@@ -1,0 +1,132 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <meta http-equiv="Content-Type" content="text/html;charset=UTF-8"> 
+  <title>Coverage Report > AppointmentRepository</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/idea.min.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.min.js"></script>
+  <script type="text/javascript" src="../../js/highlightjs-line-numbers.min.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">com.example.slabiak.appointmentscheduler.dao</a>
+</div>
+
+<h1>Coverage Summary for Class: AppointmentRepository (com.example.slabiak.appointmentscheduler.dao)</h1>
+
+<table class="coverageStats">
+
+<tr>
+  <th class="name">Class</th>
+</tr>
+  <tr>
+    <td class="name">AppointmentRepository$MockitoMock$1590077142</td>
+  </tr>
+  <tr>
+    <td class="name">AppointmentRepository$MockitoMock$1590077142$auxiliary$afy2YrSR</td>
+  </tr>
+  <tr>
+    <td class="name">AppointmentRepository$MockitoMock$1590077142$auxiliary$NuwIkDVP</td>
+  </tr>
+<tr>
+  <td class="name"><strong>Total</strong></td>
+</tr>
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<code class="sourceCode" id="sourceCode">&nbsp;package com.example.slabiak.appointmentscheduler.dao;
+&nbsp;
+&nbsp;import com.example.slabiak.appointmentscheduler.entity.Appointment;
+&nbsp;import org.springframework.data.jpa.repository.JpaRepository;
+&nbsp;import org.springframework.data.jpa.repository.Query;
+&nbsp;import org.springframework.data.repository.query.Param;
+&nbsp;
+&nbsp;import java.time.LocalDateTime;
+&nbsp;import java.util.List;
+&nbsp;
+&nbsp;public interface AppointmentRepository extends JpaRepository&lt;Appointment, Integer&gt; {
+&nbsp;
+&nbsp;    @Query(&quot;select a from Appointment a where a.customer.id = :customerId&quot;)
+&nbsp;    List&lt;Appointment&gt; findByCustomerId(@Param(&quot;customerId&quot;) int customerId);
+&nbsp;
+&nbsp;    @Query(&quot;select a from Appointment a where a.provider.id = :providerId&quot;)
+&nbsp;    List&lt;Appointment&gt; findByProviderId(@Param(&quot;providerId&quot;) int providerId);
+&nbsp;
+&nbsp;    @Query(&quot;select a from Appointment a where a.canceler.id = :userId&quot;)
+&nbsp;    List&lt;Appointment&gt; findCanceledByUser(@Param(&quot;userId&quot;) int userId);
+&nbsp;
+&nbsp;    @Query(&quot;select a from Appointment a where  a.status=&#39;SCHEDULED&#39; and (a.customer.id = :userId or a.provider.id = :userId)&quot;)
+&nbsp;    List&lt;Appointment&gt; findScheduledByUserId(@Param(&quot;userId&quot;) int userId);
+&nbsp;
+&nbsp;    @Query(&quot;select a from Appointment a where a.provider.id = :providerId and  a.start &gt;=:dayStart and  a.start &lt;=:dayEnd&quot;)
+&nbsp;    List&lt;Appointment&gt; findByProviderIdWithStartInPeroid(@Param(&quot;providerId&quot;) int providerId, @Param(&quot;dayStart&quot;) LocalDateTime startPeroid, @Param(&quot;dayEnd&quot;) LocalDateTime endPeroid);
+&nbsp;
+&nbsp;    @Query(&quot;select a from Appointment a where a.customer.id = :customerId and  a.start &gt;=:dayStart and  a.start &lt;=:dayEnd&quot;)
+&nbsp;    List&lt;Appointment&gt; findByCustomerIdWithStartInPeroid(@Param(&quot;customerId&quot;) int customerId, @Param(&quot;dayStart&quot;) LocalDateTime startPeroid, @Param(&quot;dayEnd&quot;) LocalDateTime endPeroid);
+&nbsp;
+&nbsp;    @Query(&quot;select a from Appointment a where a.customer.id = :customerId and a.canceler.id =:customerId and a.canceledAt &gt;=:date&quot;)
+&nbsp;    List&lt;Appointment&gt; findByCustomerIdCanceledAfterDate(@Param(&quot;customerId&quot;) int customerId, @Param(&quot;date&quot;) LocalDateTime date);
+&nbsp;
+&nbsp;    @Query(&quot;select a from Appointment a where a.status = &#39;SCHEDULED&#39; and :now &gt;= a.end&quot;)
+&nbsp;    List&lt;Appointment&gt; findScheduledWithEndBeforeDate(@Param(&quot;now&quot;) LocalDateTime now);
+&nbsp;
+&nbsp;    @Query(&quot;select a from Appointment a where a.status = &#39;SCHEDULED&#39; and :date &gt;= a.end and (a.customer.id = :userId or a.provider.id = :userId)&quot;)
+&nbsp;    List&lt;Appointment&gt; findScheduledByUserIdWithEndBeforeDate(@Param(&quot;date&quot;) LocalDateTime date, @Param(&quot;userId&quot;) int userId);
+&nbsp;
+&nbsp;    @Query(&quot;select a from Appointment a where a.status = &#39;FINISHED&#39; and :date &gt;= a.end&quot;)
+&nbsp;    List&lt;Appointment&gt; findFinishedWithEndBeforeDate(@Param(&quot;date&quot;) LocalDateTime date);
+&nbsp;
+&nbsp;    @Query(&quot;select a from Appointment a where a.status = &#39;FINISHED&#39; and :date &gt;= a.end and (a.customer.id = :userId or a.provider.id = :userId)&quot;)
+&nbsp;    List&lt;Appointment&gt; findFinishedByUserIdWithEndBeforeDate(@Param(&quot;date&quot;) LocalDateTime date, @Param(&quot;userId&quot;) int userId);
+&nbsp;
+&nbsp;    @Query(&quot;select a from Appointment a where a.status = &#39;CONFIRMED&#39; and a.customer.id = :customerId&quot;)
+&nbsp;    List&lt;Appointment&gt; findConfirmedByCustomerId(@Param(&quot;customerId&quot;) int customerId);
+&nbsp;
+&nbsp;    @Query(&quot;select a from Appointment a inner join a.work w where a.status = &#39;SCHEDULED&#39; and a.customer.id &lt;&gt; :customerId and a.provider.id= :providerId and a.start &gt;= :start and w.id = :workId&quot;)
+&nbsp;    List&lt;Appointment&gt; getEligibleAppointmentsForExchange(@Param(&quot;start&quot;) LocalDateTime start, @Param(&quot;customerId&quot;) Integer customerId, @Param(&quot;providerId&quot;) Integer providerId, @Param(&quot;workId&quot;) Integer workId);
+&nbsp;
+&nbsp;    @Query(&quot;select a from Appointment a where a.status = &#39;EXCHANGE_REQUESTED&#39; and a.start &lt;= :start&quot;)
+&nbsp;    List&lt;Appointment&gt; findExchangeRequestedWithStartBefore(@Param(&quot;start&quot;) LocalDateTime date);
+&nbsp;
+&nbsp;}
+</code>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+      hljs.highlightAll()
+      hljs.initLineNumbersOnLoad();
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2024-03-03 21:00</div>
+</div>
+</body>
+</html>

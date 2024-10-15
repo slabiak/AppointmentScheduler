@@ -26,7 +26,9 @@ import java.util.List;
 @Service
 public class AppointmentServiceImpl implements AppointmentService {
 
-    private final int NUMBER_OF_ALLOWED_CANCELATIONS_PER_MONTH = 1;
+//    NUMBER_OF_ALLOWED_CANCELATIONS_PER_MONTH is a Long Identifier Implementation Smell.
+//    It can be changed to allowedCancelPerMonth to mitigate the code smell.
+    private final int allowedCancelPerMonth = 1;
     private final AppointmentRepository appointmentRepository;
     private final UserService userService;
     private final WorkService workService;
@@ -88,8 +90,13 @@ public class AppointmentServiceImpl implements AppointmentService {
         return appointmentRepository.findByProviderIdWithStartInPeroid(providerId, day.atStartOfDay(), day.atStartOfDay().plusDays(1));
     }
 
-    @Override
-    public List<Appointment> getAppointmentsByCustomerAtDay(int providerId, LocalDate day) {
+//    Before Refactorings using the "Rename method" was done.
+//    @Override
+//    public List<Appointment> getAppointmentsByCustomerAtDay(int providerId, LocalDate day) {
+//        return appointmentRepository.findByCustomerIdWithStartInPeroid(providerId, day.atStartOfDay(), day.atStartOfDay().plusDays(1));
+//    }
+//    After Refactorings using the "Rename method" was done.
+    public List<Appointment> getAppointmentsByCustomerAtDayAndTimePeriods(int providerId, LocalDate day){
         return appointmentRepository.findByCustomerIdWithStartInPeroid(providerId, day.atStartOfDay(), day.atStartOfDay().plusDays(1));
     }
 
@@ -100,9 +107,9 @@ public class AppointmentServiceImpl implements AppointmentService {
         DayPlan selectedDay = workingPlan.getDay(date.getDayOfWeek().toString().toLowerCase());
 
         List<Appointment> providerAppointments = getAppointmentsByProviderAtDay(providerId, date);
-        List<Appointment> customerAppointments = getAppointmentsByCustomerAtDay(customerId, date);
+        List<Appointment> customerAppointments = getAppointmentsByCustomerAtDayAndTimePeriods(customerId, date);
 
-        List<TimePeroid> availablePeroids = selectedDay.timePeroidsWithBreaksExcluded();
+        List<TimePeroid> availablePeroids = selectedDay.timePeriodsWithBreaksExcluded();
         availablePeroids = excludeAppointmentsFromTimePeroids(availablePeroids, providerAppointments);
 
         availablePeroids = excludeAppointmentsFromTimePeroids(availablePeroids, customerAppointments);
@@ -127,6 +134,8 @@ public class AppointmentServiceImpl implements AppointmentService {
         }
 
     }
+    // Before
+
 
     @Override
     public void addMessageToAppointmentChat(int appointmentId, int authorId, ChatMessage chatMessage) {
@@ -337,7 +346,7 @@ public class AppointmentServiceImpl implements AppointmentService {
                 return "Appointments which will be in less than 24 hours cannot be canceled.";
             } else if (!appointment.getWork().getEditable()) {
                 return "This type of appointment can be canceled only by Provider.";
-            } else if (getCanceledAppointmentsByCustomerIdForCurrentMonth(userId).size() >= NUMBER_OF_ALLOWED_CANCELATIONS_PER_MONTH) {
+            } else if (getCanceledAppointmentsByCustomerIdForCurrentMonth(userId).size() >= allowedCancelPerMonth) {
                 return "You can't cancel this appointment because you exceeded maximum number of cancellations in this month.";
             } else {
                 return null;

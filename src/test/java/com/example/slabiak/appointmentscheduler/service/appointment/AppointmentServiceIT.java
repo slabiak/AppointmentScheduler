@@ -37,7 +37,6 @@ public class AppointmentServiceIT {
         List<Appointment> appointmentByProviderId = appointmentService.getAllAppointments();
         assertThat(appointmentByProviderId).hasSize(2);
         assertEquals(AppointmentStatus.SCHEDULED, appointmentByProviderId.get(0).getStatus());
-
     }
 
 }

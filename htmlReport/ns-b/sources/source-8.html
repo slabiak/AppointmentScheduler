@@ -1,0 +1,326 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <meta http-equiv="Content-Type" content="text/html;charset=UTF-8"> 
+  <title>Coverage Report > UserServiceImpl</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/idea.min.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.min.js"></script>
+  <script type="text/javascript" src="../../js/highlightjs-line-numbers.min.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">com.example.slabiak.appointmentscheduler.service.impl</a>
+</div>
+
+<h1>Coverage Summary for Class: UserServiceImpl (com.example.slabiak.appointmentscheduler.service.impl)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">UserServiceImpl</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (1/1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    37%
+  </span>
+  <span class="absValue">
+    (10/27)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    47.5%
+  </span>
+  <span class="absValue">
+    (28/59)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<code class="sourceCode" id="sourceCode">&nbsp;package com.example.slabiak.appointmentscheduler.service.impl;
+&nbsp;
+&nbsp;import com.example.slabiak.appointmentscheduler.dao.RoleRepository;
+&nbsp;import com.example.slabiak.appointmentscheduler.dao.user.UserRepository;
+&nbsp;import com.example.slabiak.appointmentscheduler.dao.user.customer.CorporateCustomerRepository;
+&nbsp;import com.example.slabiak.appointmentscheduler.dao.user.customer.CustomerRepository;
+&nbsp;import com.example.slabiak.appointmentscheduler.dao.user.customer.RetailCustomerRepository;
+&nbsp;import com.example.slabiak.appointmentscheduler.dao.user.provider.ProviderRepository;
+&nbsp;import com.example.slabiak.appointmentscheduler.entity.Work;
+&nbsp;import com.example.slabiak.appointmentscheduler.entity.WorkingPlan;
+&nbsp;import com.example.slabiak.appointmentscheduler.entity.user.Role;
+&nbsp;import com.example.slabiak.appointmentscheduler.entity.user.User;
+&nbsp;import com.example.slabiak.appointmentscheduler.entity.user.customer.CorporateCustomer;
+&nbsp;import com.example.slabiak.appointmentscheduler.entity.user.customer.Customer;
+&nbsp;import com.example.slabiak.appointmentscheduler.entity.user.customer.RetailCustomer;
+&nbsp;import com.example.slabiak.appointmentscheduler.entity.user.provider.Provider;
+&nbsp;import com.example.slabiak.appointmentscheduler.model.ChangePasswordForm;
+&nbsp;import com.example.slabiak.appointmentscheduler.model.UserForm;
+&nbsp;import com.example.slabiak.appointmentscheduler.service.UserService;
+&nbsp;import org.springframework.security.access.prepost.PreAuthorize;
+&nbsp;import org.springframework.security.core.userdetails.UsernameNotFoundException;
+&nbsp;import org.springframework.security.crypto.password.PasswordEncoder;
+&nbsp;import org.springframework.stereotype.Service;
+&nbsp;
+&nbsp;import java.util.Collection;
+&nbsp;import java.util.HashSet;
+&nbsp;import java.util.List;
+&nbsp;
+&nbsp;@Service
+&nbsp;public class UserServiceImpl implements UserService {
+&nbsp;
+&nbsp;    private final ProviderRepository providerRepository;
+&nbsp;    private final CustomerRepository customerRepository;
+&nbsp;    private final CorporateCustomerRepository corporateCustomerRepository;
+&nbsp;    private final RetailCustomerRepository retailCustomerRepository;
+&nbsp;    private final UserRepository userRepository;
+&nbsp;    private final RoleRepository roleRepository;
+&nbsp;    private final PasswordEncoder passwordEncoder;
+&nbsp;
+<b class="fc">&nbsp;    public UserServiceImpl(ProviderRepository providerRepository, CustomerRepository customerRepository, CorporateCustomerRepository corporateCustomerRepository, RetailCustomerRepository retailCustomerRepository, UserRepository userRepository, RoleRepository roleRepository, PasswordEncoder passwordEncoder) {</b>
+<b class="fc">&nbsp;        this.providerRepository = providerRepository;</b>
+<b class="fc">&nbsp;        this.customerRepository = customerRepository;</b>
+<b class="fc">&nbsp;        this.corporateCustomerRepository = corporateCustomerRepository;</b>
+<b class="fc">&nbsp;        this.retailCustomerRepository = retailCustomerRepository;</b>
+<b class="fc">&nbsp;        this.userRepository = userRepository;</b>
+<b class="fc">&nbsp;        this.roleRepository = roleRepository;</b>
+<b class="fc">&nbsp;        this.passwordEncoder = passwordEncoder;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    @Override
+&nbsp;    public boolean userExists(String userName) {
+<b class="nc">&nbsp;        return userRepository.findByUserName(userName).isPresent();</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    @Override
+&nbsp;    @PreAuthorize(&quot;#userId == principal.id&quot;)
+&nbsp;    public User getUserById(int userId) {
+<b class="fc">&nbsp;        return userRepository.findById(userId)</b>
+<b class="fc">&nbsp;                .orElseThrow(() -&gt; new UsernameNotFoundException(&quot;User not found&quot;));</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    @Override
+&nbsp;    @PreAuthorize(&quot;#customerId == principal.id or hasRole(&#39;ADMIN&#39;)&quot;)
+&nbsp;    public Customer getCustomerById(int customerId) {
+<b class="nc">&nbsp;        return customerRepository.getOne(customerId);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    @Override
+&nbsp;    public Provider getProviderById(int providerId) {
+<b class="nc">&nbsp;        return providerRepository.findById(providerId)</b>
+<b class="nc">&nbsp;                .orElseThrow(() -&gt; new UsernameNotFoundException(&quot;User not found!&quot;));</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    @Override
+&nbsp;    @PreAuthorize(&quot;#retailCustomerId == principal.id or hasRole(&#39;ADMIN&#39;)&quot;)
+&nbsp;    public RetailCustomer getRetailCustomerById(int retailCustomerId) {
+<b class="fc">&nbsp;        return retailCustomerRepository.findById(retailCustomerId)</b>
+<b class="fc">&nbsp;                .orElseThrow(() -&gt; new UsernameNotFoundException(&quot;User not found!&quot;));</b>
+&nbsp;
+&nbsp;    }
+&nbsp;
+&nbsp;    @Override
+&nbsp;    @PreAuthorize(&quot;#corporateCustomerId == principal.id or hasRole(&#39;ADMIN&#39;)&quot;)
+&nbsp;    public CorporateCustomer getCorporateCustomerById(int corporateCustomerId) {
+<b class="nc">&nbsp;        return corporateCustomerRepository.findById(corporateCustomerId)</b>
+<b class="nc">&nbsp;                .orElseThrow(() -&gt; new UsernameNotFoundException(&quot;User not found!&quot;));</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    @Override
+&nbsp;    @PreAuthorize(&quot;hasRole(&#39;ADMIN&#39;)&quot;)
+&nbsp;    public List&lt;Provider&gt; getAllProviders() {
+<b class="nc">&nbsp;        return providerRepository.findAll();</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    @Override
+&nbsp;    public List&lt;Customer&gt; getAllCustomers() {
+<b class="nc">&nbsp;        return customerRepository.findAll();</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    @Override
+&nbsp;    public List&lt;RetailCustomer&gt; getAllRetailCustomers() {
+<b class="nc">&nbsp;        return retailCustomerRepository.findAll();</b>
+&nbsp;    }
+&nbsp;
+&nbsp;
+&nbsp;    @Override
+&nbsp;    public User getUserByUsername(String userName) {
+<b class="fc">&nbsp;        return userRepository.findByUserName(userName)</b>
+<b class="fc">&nbsp;                .orElseThrow(() -&gt; new UsernameNotFoundException(&quot;User not found!&quot;));</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    @Override
+&nbsp;    public List&lt;User&gt; getUsersByRoleName(String roleName) {
+<b class="nc">&nbsp;        return userRepository.findByRoleName(roleName);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    @Override
+&nbsp;    public List&lt;User&gt; getAllUsers() {
+<b class="fc">&nbsp;        return userRepository.findAll();</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    @Override
+&nbsp;    @PreAuthorize(&quot;hasRole(&#39;ADMIN&#39;)&quot;)
+&nbsp;    public void deleteUserById(int userId) {
+<b class="fc">&nbsp;        userRepository.deleteById(userId);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    @Override
+&nbsp;    public List&lt;Provider&gt; getProvidersWithRetailWorks() {
+<b class="nc">&nbsp;        return providerRepository.findAllWithRetailWorks();</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    @Override
+&nbsp;    public List&lt;Provider&gt; getProvidersWithCorporateWorks() {
+<b class="nc">&nbsp;        return providerRepository.findAllWithCorporateWorks();</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    @Override
+&nbsp;    public List&lt;Provider&gt; getProvidersByWork(Work work) {
+<b class="nc">&nbsp;        return providerRepository.findByWorks(work);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    @Override
+&nbsp;    @PreAuthorize(&quot;#passwordChangeForm.id == principal.id&quot;)
+&nbsp;    public void updateUserPassword(ChangePasswordForm passwordChangeForm) {
+<b class="fc">&nbsp;        User user = userRepository.getOne(passwordChangeForm.getId());</b>
+<b class="fc">&nbsp;        user.setPassword(passwordEncoder.encode(passwordChangeForm.getPassword()));</b>
+<b class="fc">&nbsp;        userRepository.save(user);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    @Override
+&nbsp;    @PreAuthorize(&quot;#updateData.id == principal.id or hasRole(&#39;ADMIN&#39;)&quot;)
+&nbsp;    public void updateProviderProfile(UserForm updateData) {
+<b class="nc">&nbsp;        Provider provider = providerRepository.getOne(updateData.getId());</b>
+<b class="nc">&nbsp;        provider.update(updateData);</b>
+<b class="nc">&nbsp;        providerRepository.save(provider);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    @Override
+&nbsp;    @PreAuthorize(&quot;#updateData.id == principal.id or hasRole(&#39;ADMIN&#39;)&quot;)
+&nbsp;    public void updateRetailCustomerProfile(UserForm updateData) {
+<b class="fc">&nbsp;        RetailCustomer retailCustomer = retailCustomerRepository.getOne(updateData.getId());</b>
+<b class="fc">&nbsp;        retailCustomer.update(updateData);</b>
+<b class="fc">&nbsp;        retailCustomerRepository.save(retailCustomer);</b>
+&nbsp;
+&nbsp;    }
+&nbsp;
+&nbsp;    @Override
+&nbsp;    @PreAuthorize(&quot;#updateData.id == principal.id or hasRole(&#39;ADMIN&#39;)&quot;)
+&nbsp;    public void updateCorporateCustomerProfile(UserForm updateData) {
+<b class="nc">&nbsp;        CorporateCustomer corporateCustomer = corporateCustomerRepository.getOne(updateData.getId());</b>
+<b class="nc">&nbsp;        corporateCustomer.update(updateData);</b>
+<b class="nc">&nbsp;        corporateCustomerRepository.save(corporateCustomer);</b>
+&nbsp;
+&nbsp;    }
+&nbsp;
+&nbsp;    @Override
+&nbsp;    public void saveNewRetailCustomer(UserForm userForm) {
+<b class="fc">&nbsp;        RetailCustomer retailCustomer = new RetailCustomer(userForm, passwordEncoder.encode(userForm.getPassword()), getRolesForRetailCustomer());</b>
+<b class="fc">&nbsp;        retailCustomerRepository.save(retailCustomer);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    @Override
+&nbsp;    public void saveNewCorporateCustomer(UserForm userForm) {
+<b class="nc">&nbsp;        CorporateCustomer corporateCustomer = new CorporateCustomer(userForm, passwordEncoder.encode(userForm.getPassword()), getRoleForCorporateCustomers());</b>
+<b class="nc">&nbsp;        corporateCustomerRepository.save(corporateCustomer);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    @Override
+&nbsp;    public void saveNewProvider(UserForm userForm) {
+<b class="nc">&nbsp;        WorkingPlan workingPlan = WorkingPlan.generateDefaultWorkingPlan();</b>
+<b class="nc">&nbsp;        Provider provider = new Provider(userForm, passwordEncoder.encode(userForm.getPassword()), getRolesForProvider(), workingPlan);</b>
+<b class="nc">&nbsp;        providerRepository.save(provider);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    @Override
+&nbsp;    public Collection&lt;Role&gt; getRolesForRetailCustomer() {
+<b class="fc">&nbsp;        HashSet&lt;Role&gt; roles = new HashSet();</b>
+<b class="fc">&nbsp;        roles.add(roleRepository.findByName(&quot;ROLE_CUSTOMER_RETAIL&quot;));</b>
+<b class="fc">&nbsp;        roles.add(roleRepository.findByName(&quot;ROLE_CUSTOMER&quot;));</b>
+<b class="fc">&nbsp;        return roles;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;
+&nbsp;    @Override
+&nbsp;    public Collection&lt;Role&gt; getRoleForCorporateCustomers() {
+<b class="nc">&nbsp;        HashSet&lt;Role&gt; roles = new HashSet();</b>
+<b class="nc">&nbsp;        roles.add(roleRepository.findByName(&quot;ROLE_CUSTOMER_CORPORATE&quot;));</b>
+<b class="nc">&nbsp;        roles.add(roleRepository.findByName(&quot;ROLE_CUSTOMER&quot;));</b>
+<b class="nc">&nbsp;        return roles;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    @Override
+&nbsp;    public Collection&lt;Role&gt; getRolesForProvider() {
+<b class="nc">&nbsp;        HashSet&lt;Role&gt; roles = new HashSet();</b>
+<b class="nc">&nbsp;        roles.add(roleRepository.findByName(&quot;ROLE_PROVIDER&quot;));</b>
+<b class="nc">&nbsp;        return roles;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;
+&nbsp;}
+&nbsp;
+</code>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+      hljs.highlightAll()
+      hljs.initLineNumbersOnLoad();
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2024-03-03 21:00</div>
+</div>
+</body>
+</html>

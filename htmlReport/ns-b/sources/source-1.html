@@ -1,0 +1,489 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <meta http-equiv="Content-Type" content="text/html;charset=UTF-8"> 
+  <title>Coverage Report > AppointmentServiceImpl</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/idea.min.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.min.js"></script>
+  <script type="text/javascript" src="../../js/highlightjs-line-numbers.min.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">com.example.slabiak.appointmentscheduler.service.impl</a>
+</div>
+
+<h1>Coverage Summary for Class: AppointmentServiceImpl (com.example.slabiak.appointmentscheduler.service.impl)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Branch, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">AppointmentServiceImpl</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (1/1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    35.3%
+  </span>
+  <span class="absValue">
+    (12/34)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    23.8%
+  </span>
+  <span class="absValue">
+    (20/84)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    38%
+  </span>
+  <span class="absValue">
+    (63/166)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<code class="sourceCode" id="sourceCode">&nbsp;package com.example.slabiak.appointmentscheduler.service.impl;
+&nbsp;
+&nbsp;import com.example.slabiak.appointmentscheduler.dao.AppointmentRepository;
+&nbsp;import com.example.slabiak.appointmentscheduler.dao.ChatMessageRepository;
+&nbsp;import com.example.slabiak.appointmentscheduler.entity.*;
+&nbsp;import com.example.slabiak.appointmentscheduler.entity.user.User;
+&nbsp;import com.example.slabiak.appointmentscheduler.entity.user.provider.Provider;
+&nbsp;import com.example.slabiak.appointmentscheduler.exception.AppointmentNotFoundException;
+&nbsp;import com.example.slabiak.appointmentscheduler.model.DayPlan;
+&nbsp;import com.example.slabiak.appointmentscheduler.model.TimePeroid;
+&nbsp;import com.example.slabiak.appointmentscheduler.service.AppointmentService;
+&nbsp;import com.example.slabiak.appointmentscheduler.service.NotificationService;
+&nbsp;import com.example.slabiak.appointmentscheduler.service.UserService;
+&nbsp;import com.example.slabiak.appointmentscheduler.service.WorkService;
+&nbsp;import org.springframework.security.access.prepost.PostAuthorize;
+&nbsp;import org.springframework.security.access.prepost.PreAuthorize;
+&nbsp;import org.springframework.stereotype.Service;
+&nbsp;
+&nbsp;import java.time.LocalDate;
+&nbsp;import java.time.LocalDateTime;
+&nbsp;import java.time.temporal.TemporalAdjusters;
+&nbsp;import java.util.ArrayList;
+&nbsp;import java.util.Collections;
+&nbsp;import java.util.List;
+&nbsp;
+&nbsp;@Service
+&nbsp;public class AppointmentServiceImpl implements AppointmentService {
+&nbsp;
+<b class="fc">&nbsp;    private final int NUMBER_OF_ALLOWED_CANCELATIONS_PER_MONTH = 1;</b>
+&nbsp;    private final AppointmentRepository appointmentRepository;
+&nbsp;    private final UserService userService;
+&nbsp;    private final WorkService workService;
+&nbsp;    private final ChatMessageRepository chatMessageRepository;
+&nbsp;    private final NotificationService notificationService;
+&nbsp;    private final JwtTokenServiceImpl jwtTokenService;
+&nbsp;
+<b class="fc">&nbsp;    public AppointmentServiceImpl(AppointmentRepository appointmentRepository, UserService userService, WorkService workService, ChatMessageRepository chatMessageRepository, NotificationService notificationService, JwtTokenServiceImpl jwtTokenService) {</b>
+<b class="fc">&nbsp;        this.appointmentRepository = appointmentRepository;</b>
+<b class="fc">&nbsp;        this.userService = userService;</b>
+<b class="fc">&nbsp;        this.workService = workService;</b>
+<b class="fc">&nbsp;        this.chatMessageRepository = chatMessageRepository;</b>
+<b class="fc">&nbsp;        this.notificationService = notificationService;</b>
+<b class="fc">&nbsp;        this.jwtTokenService = jwtTokenService;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    @Override
+&nbsp;    public void updateAppointment(Appointment appointment) {
+<b class="nc">&nbsp;        appointmentRepository.save(appointment);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    @Override
+&nbsp;    @PostAuthorize(&quot;returnObject.provider.id == principal.id or returnObject.customer.id == principal.id or hasRole(&#39;ADMIN&#39;) &quot;)
+&nbsp;    public Appointment getAppointmentByIdWithAuthorization(int id) {
+<b class="fc">&nbsp;        return getAppointmentById(id);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    @Override
+&nbsp;    public Appointment getAppointmentById(int id) {
+<b class="fc">&nbsp;        return appointmentRepository.findById(id)</b>
+<b class="fc">&nbsp;                .orElseThrow(AppointmentNotFoundException::new);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    @Override
+&nbsp;    @PreAuthorize(&quot;hasRole(&#39;ADMIN&#39;)&quot;)
+&nbsp;    public List&lt;Appointment&gt; getAllAppointments() {
+<b class="fc">&nbsp;        return appointmentRepository.findAll();</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    @Override
+&nbsp;    public void deleteAppointmentById(int id) {
+<b class="fc">&nbsp;        appointmentRepository.deleteById(id);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    @Override
+&nbsp;    @PreAuthorize(&quot;#customerId == principal.id&quot;)
+&nbsp;    public List&lt;Appointment&gt; getAppointmentByCustomerId(int customerId) {
+<b class="nc">&nbsp;        return appointmentRepository.findByCustomerId(customerId);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    @Override
+&nbsp;    @PreAuthorize(&quot;#providerId == principal.id&quot;)
+&nbsp;    public List&lt;Appointment&gt; getAppointmentByProviderId(int providerId) {
+<b class="nc">&nbsp;        return appointmentRepository.findByProviderId(providerId);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    @Override
+&nbsp;    public List&lt;Appointment&gt; getAppointmentsByProviderAtDay(int providerId, LocalDate day) {
+<b class="fc">&nbsp;        return appointmentRepository.findByProviderIdWithStartInPeroid(providerId, day.atStartOfDay(), day.atStartOfDay().plusDays(1));</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    @Override
+&nbsp;    public List&lt;Appointment&gt; getAppointmentsByCustomerAtDay(int providerId, LocalDate day) {
+<b class="fc">&nbsp;        return appointmentRepository.findByCustomerIdWithStartInPeroid(providerId, day.atStartOfDay(), day.atStartOfDay().plusDays(1));</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    @Override
+&nbsp;    public List&lt;TimePeroid&gt; getAvailableHours(int providerId, int customerId, int workId, LocalDate date) {
+<b class="fc">&nbsp;        Provider p = userService.getProviderById(providerId);</b>
+<b class="fc">&nbsp;        WorkingPlan workingPlan = p.getWorkingPlan();</b>
+<b class="fc">&nbsp;        DayPlan selectedDay = workingPlan.getDay(date.getDayOfWeek().toString().toLowerCase());</b>
+&nbsp;
+<b class="fc">&nbsp;        List&lt;Appointment&gt; providerAppointments = getAppointmentsByProviderAtDay(providerId, date);</b>
+<b class="fc">&nbsp;        List&lt;Appointment&gt; customerAppointments = getAppointmentsByCustomerAtDay(customerId, date);</b>
+&nbsp;
+<b class="fc">&nbsp;        List&lt;TimePeroid&gt; availablePeroids = selectedDay.timePeroidsWithBreaksExcluded();</b>
+<b class="fc">&nbsp;        availablePeroids = excludeAppointmentsFromTimePeroids(availablePeroids, providerAppointments);</b>
+&nbsp;
+<b class="fc">&nbsp;        availablePeroids = excludeAppointmentsFromTimePeroids(availablePeroids, customerAppointments);</b>
+<b class="fc">&nbsp;        return calculateAvailableHours(availablePeroids, workService.getWorkById(workId));</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    @Override
+&nbsp;    public void createNewAppointment(int workId, int providerId, int customerId, LocalDateTime start) {
+<b class="fc">&nbsp;        if (isAvailable(workId, providerId, customerId, start)) {</b>
+<b class="fc">&nbsp;            Appointment appointment = new Appointment();</b>
+<b class="fc">&nbsp;            appointment.setStatus(AppointmentStatus.SCHEDULED);</b>
+<b class="fc">&nbsp;            appointment.setCustomer(userService.getCustomerById(customerId));</b>
+<b class="fc">&nbsp;            appointment.setProvider(userService.getProviderById(providerId));</b>
+<b class="fc">&nbsp;            Work work = workService.getWorkById(workId);</b>
+<b class="fc">&nbsp;            appointment.setWork(work);</b>
+<b class="fc">&nbsp;            appointment.setStart(start);</b>
+<b class="fc">&nbsp;            appointment.setEnd(start.plusMinutes(work.getDuration()));</b>
+<b class="fc">&nbsp;            appointmentRepository.save(appointment);</b>
+<b class="fc">&nbsp;            notificationService.newNewAppointmentScheduledNotification(appointment, true);</b>
+<b class="fc">&nbsp;        } else {</b>
+<b class="fc">&nbsp;            throw new RuntimeException();</b>
+&nbsp;        }
+&nbsp;
+&nbsp;    }
+&nbsp;
+&nbsp;    @Override
+&nbsp;    public void addMessageToAppointmentChat(int appointmentId, int authorId, ChatMessage chatMessage) {
+<b class="nc">&nbsp;        Appointment appointment = getAppointmentByIdWithAuthorization(appointmentId);</b>
+<b class="nc">&nbsp;        if (appointment.getProvider().getId() == authorId || appointment.getCustomer().getId() == authorId) {</b>
+<b class="nc">&nbsp;            chatMessage.setAuthor(userService.getUserById(authorId));</b>
+<b class="nc">&nbsp;            chatMessage.setAppointment(appointment);</b>
+<b class="nc">&nbsp;            chatMessage.setCreatedAt(LocalDateTime.now());</b>
+<b class="nc">&nbsp;            chatMessageRepository.save(chatMessage);</b>
+<b class="nc">&nbsp;            notificationService.newChatMessageNotification(chatMessage, true);</b>
+&nbsp;        } else {
+<b class="nc">&nbsp;            throw new org.springframework.security.access.AccessDeniedException(&quot;Unauthorized&quot;);</b>
+&nbsp;        }
+&nbsp;    }
+&nbsp;
+&nbsp;    @Override
+&nbsp;    public List&lt;TimePeroid&gt; calculateAvailableHours(List&lt;TimePeroid&gt; availableTimePeroids, Work work) {
+<b class="fc">&nbsp;        ArrayList&lt;TimePeroid&gt; availableHours = new ArrayList();</b>
+<b class="fc">&nbsp;        for (TimePeroid peroid : availableTimePeroids) {</b>
+<b class="fc">&nbsp;            TimePeroid workPeroid = new TimePeroid(peroid.getStart(), peroid.getStart().plusMinutes(work.getDuration()));</b>
+<b class="fc">&nbsp;            while (workPeroid.getEnd().isBefore(peroid.getEnd()) || workPeroid.getEnd().equals(peroid.getEnd())) {</b>
+<b class="fc">&nbsp;                availableHours.add(new TimePeroid(workPeroid.getStart(), workPeroid.getStart().plusMinutes(work.getDuration())));</b>
+<b class="fc">&nbsp;                workPeroid.setStart(workPeroid.getStart().plusMinutes(work.getDuration()));</b>
+<b class="fc">&nbsp;                workPeroid.setEnd(workPeroid.getEnd().plusMinutes(work.getDuration()));</b>
+&nbsp;            }
+<b class="fc">&nbsp;        }</b>
+<b class="fc">&nbsp;        return availableHours;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    @Override
+&nbsp;    public List&lt;TimePeroid&gt; excludeAppointmentsFromTimePeroids(List&lt;TimePeroid&gt; peroids, List&lt;Appointment&gt; appointments) {
+&nbsp;
+<b class="fc">&nbsp;        List&lt;TimePeroid&gt; toAdd = new ArrayList();</b>
+<b class="fc">&nbsp;        Collections.sort(appointments);</b>
+<b class="fc">&nbsp;        for (Appointment appointment : appointments) {</b>
+<b class="fc">&nbsp;            for (TimePeroid peroid : peroids) {</b>
+<b class="pc">&nbsp;                if ((appointment.getStart().toLocalTime().isBefore(peroid.getStart()) || appointment.getStart().toLocalTime().equals(peroid.getStart())) &amp;&amp; appointment.getEnd().toLocalTime().isAfter(peroid.getStart()) &amp;&amp; appointment.getEnd().toLocalTime().isBefore(peroid.getEnd())) {</b>
+<b class="fc">&nbsp;                    peroid.setStart(appointment.getEnd().toLocalTime());</b>
+&nbsp;                }
+<b class="pc">&nbsp;                if (appointment.getStart().toLocalTime().isAfter(peroid.getStart()) &amp;&amp; appointment.getStart().toLocalTime().isBefore(peroid.getEnd()) &amp;&amp; appointment.getEnd().toLocalTime().isAfter(peroid.getEnd()) || appointment.getEnd().toLocalTime().equals(peroid.getEnd())) {</b>
+<b class="nc">&nbsp;                    peroid.setEnd(appointment.getStart().toLocalTime());</b>
+&nbsp;                }
+<b class="pc">&nbsp;                if (appointment.getStart().toLocalTime().isAfter(peroid.getStart()) &amp;&amp; appointment.getEnd().toLocalTime().isBefore(peroid.getEnd())) {</b>
+<b class="nc">&nbsp;                    toAdd.add(new TimePeroid(peroid.getStart(), appointment.getStart().toLocalTime()));</b>
+<b class="nc">&nbsp;                    peroid.setStart(appointment.getEnd().toLocalTime());</b>
+&nbsp;                }
+<b class="fc">&nbsp;            }</b>
+<b class="fc">&nbsp;        }</b>
+<b class="fc">&nbsp;        peroids.addAll(toAdd);</b>
+<b class="fc">&nbsp;        Collections.sort(peroids);</b>
+<b class="fc">&nbsp;        return peroids;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    @Override
+&nbsp;    public List&lt;Appointment&gt; getCanceledAppointmentsByCustomerIdForCurrentMonth(int customerId) {
+<b class="nc">&nbsp;        return appointmentRepository.findByCustomerIdCanceledAfterDate(customerId, LocalDate.now().with(TemporalAdjusters.firstDayOfMonth()).atStartOfDay());</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    @Override
+&nbsp;    public void updateUserAppointmentsStatuses(int userId) {
+<b class="nc">&nbsp;        for (Appointment appointment : appointmentRepository.findScheduledByUserIdWithEndBeforeDate(LocalDateTime.now(), userId)) {</b>
+<b class="nc">&nbsp;            appointment.setStatus(AppointmentStatus.FINISHED);</b>
+<b class="nc">&nbsp;            updateAppointment(appointment);</b>
+<b class="nc">&nbsp;        }</b>
+&nbsp;
+<b class="nc">&nbsp;        for (Appointment appointment : appointmentRepository.findFinishedByUserIdWithEndBeforeDate(LocalDateTime.now().minusDays(1), userId)) {</b>
+&nbsp;
+<b class="nc">&nbsp;            appointment.setStatus(AppointmentStatus.INVOICED);</b>
+<b class="nc">&nbsp;            updateAppointment(appointment);</b>
+<b class="nc">&nbsp;        }</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    @Override
+&nbsp;    public void updateAllAppointmentsStatuses() {
+<b class="nc">&nbsp;        appointmentRepository.findScheduledWithEndBeforeDate(LocalDateTime.now())</b>
+<b class="nc">&nbsp;                .forEach(appointment -&gt; {</b>
+<b class="nc">&nbsp;                    appointment.setStatus(AppointmentStatus.FINISHED);</b>
+<b class="nc">&nbsp;                    updateAppointment(appointment);</b>
+<b class="nc">&nbsp;                    if (LocalDateTime.now().minusDays(1).isBefore(appointment.getEnd())) {</b>
+<b class="nc">&nbsp;                        notificationService.newAppointmentFinishedNotification(appointment, true);</b>
+&nbsp;                    }
+&nbsp;                });
+&nbsp;
+<b class="nc">&nbsp;        appointmentRepository.findFinishedWithEndBeforeDate(LocalDateTime.now().minusDays(1))</b>
+<b class="nc">&nbsp;                .forEach(appointment -&gt; {</b>
+<b class="nc">&nbsp;                    appointment.setStatus(AppointmentStatus.CONFIRMED);</b>
+<b class="nc">&nbsp;                    updateAppointment(appointment);</b>
+&nbsp;                });
+&nbsp;    }
+&nbsp;
+&nbsp;    @Override
+&nbsp;    public void updateAppointmentsStatusesWithExpiredExchangeRequest() {
+<b class="nc">&nbsp;        appointmentRepository.findExchangeRequestedWithStartBefore(LocalDateTime.now().plusDays(1))</b>
+<b class="nc">&nbsp;                .forEach(appointment -&gt; {</b>
+<b class="nc">&nbsp;                    appointment.setStatus(AppointmentStatus.SCHEDULED);</b>
+<b class="nc">&nbsp;                    updateAppointment(appointment);</b>
+&nbsp;                });
+&nbsp;    }
+&nbsp;
+&nbsp;    @Override
+&nbsp;    public void cancelUserAppointmentById(int appointmentId, int userId) {
+<b class="nc">&nbsp;        Appointment appointment = appointmentRepository.getOne(appointmentId);</b>
+<b class="nc">&nbsp;        if (appointment.getCustomer().getId() == userId || appointment.getProvider().getId() == userId) {</b>
+<b class="nc">&nbsp;            appointment.setStatus(AppointmentStatus.CANCELED);</b>
+<b class="nc">&nbsp;            User canceler = userService.getUserById(userId);</b>
+<b class="nc">&nbsp;            appointment.setCanceler(canceler);</b>
+<b class="nc">&nbsp;            appointment.setCanceledAt(LocalDateTime.now());</b>
+<b class="nc">&nbsp;            appointmentRepository.save(appointment);</b>
+<b class="nc">&nbsp;            if (canceler.equals(appointment.getCustomer())) {</b>
+<b class="nc">&nbsp;                notificationService.newAppointmentCanceledByCustomerNotification(appointment, true);</b>
+<b class="nc">&nbsp;            } else if (canceler.equals(appointment.getProvider())) {</b>
+<b class="nc">&nbsp;                notificationService.newAppointmentCanceledByProviderNotification(appointment, true);</b>
+&nbsp;            }
+<b class="nc">&nbsp;        } else {</b>
+<b class="nc">&nbsp;            throw new org.springframework.security.access.AccessDeniedException(&quot;Unauthorized&quot;);</b>
+&nbsp;        }
+&nbsp;
+&nbsp;
+&nbsp;    }
+&nbsp;
+&nbsp;
+&nbsp;    @Override
+&nbsp;    public boolean isCustomerAllowedToRejectAppointment(int userId, int appointmentId) {
+<b class="nc">&nbsp;        User user = userService.getUserById(userId);</b>
+<b class="nc">&nbsp;        Appointment appointment = getAppointmentByIdWithAuthorization(appointmentId);</b>
+&nbsp;
+<b class="nc">&nbsp;        return appointment.getCustomer().equals(user) &amp;&amp; appointment.getStatus().equals(AppointmentStatus.FINISHED) &amp;&amp; !LocalDateTime.now().isAfter(appointment.getEnd().plusDays(1));</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    @Override
+&nbsp;    public boolean requestAppointmentRejection(int appointmentId, int customerId) {
+<b class="nc">&nbsp;        if (isCustomerAllowedToRejectAppointment(customerId, appointmentId)) {</b>
+<b class="nc">&nbsp;            Appointment appointment = getAppointmentByIdWithAuthorization(appointmentId);</b>
+<b class="nc">&nbsp;            appointment.setStatus(AppointmentStatus.REJECTION_REQUESTED);</b>
+<b class="nc">&nbsp;            notificationService.newAppointmentRejectionRequestedNotification(appointment, true);</b>
+<b class="nc">&nbsp;            updateAppointment(appointment);</b>
+<b class="nc">&nbsp;            return true;</b>
+&nbsp;        } else {
+<b class="nc">&nbsp;            return false;</b>
+&nbsp;        }
+&nbsp;
+&nbsp;    }
+&nbsp;
+&nbsp;
+&nbsp;    @Override
+&nbsp;    public boolean requestAppointmentRejection(String token) {
+<b class="nc">&nbsp;        if (jwtTokenService.validateToken(token)) {</b>
+<b class="nc">&nbsp;            int appointmentId = jwtTokenService.getAppointmentIdFromToken(token);</b>
+<b class="nc">&nbsp;            int customerId = jwtTokenService.getCustomerIdFromToken(token);</b>
+<b class="nc">&nbsp;            return requestAppointmentRejection(appointmentId, customerId);</b>
+&nbsp;        }
+<b class="nc">&nbsp;        return false;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;
+&nbsp;    @Override
+&nbsp;    public boolean isProviderAllowedToAcceptRejection(int providerId, int appointmentId) {
+<b class="nc">&nbsp;        User user = userService.getUserById(providerId);</b>
+<b class="nc">&nbsp;        Appointment appointment = getAppointmentByIdWithAuthorization(appointmentId);</b>
+&nbsp;
+<b class="nc">&nbsp;        return appointment.getProvider().equals(user) &amp;&amp; appointment.getStatus().equals(AppointmentStatus.REJECTION_REQUESTED);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    @Override
+&nbsp;    public boolean acceptRejection(int appointmentId, int customerId) {
+<b class="nc">&nbsp;        if (isProviderAllowedToAcceptRejection(customerId, appointmentId)) {</b>
+<b class="nc">&nbsp;            Appointment appointment = getAppointmentByIdWithAuthorization(appointmentId);</b>
+<b class="nc">&nbsp;            appointment.setStatus(AppointmentStatus.REJECTED);</b>
+<b class="nc">&nbsp;            updateAppointment(appointment);</b>
+<b class="nc">&nbsp;            notificationService.newAppointmentRejectionAcceptedNotification(appointment, true);</b>
+<b class="nc">&nbsp;            return true;</b>
+&nbsp;        } else {
+<b class="nc">&nbsp;            return false;</b>
+&nbsp;        }
+&nbsp;    }
+&nbsp;
+&nbsp;    @Override
+&nbsp;    public boolean acceptRejection(String token) {
+<b class="nc">&nbsp;        if (jwtTokenService.validateToken(token)) {</b>
+<b class="nc">&nbsp;            int appointmentId = jwtTokenService.getAppointmentIdFromToken(token);</b>
+<b class="nc">&nbsp;            int providerId = jwtTokenService.getProviderIdFromToken(token);</b>
+<b class="nc">&nbsp;            return acceptRejection(appointmentId, providerId);</b>
+&nbsp;        }
+<b class="nc">&nbsp;        return false;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    @Override
+&nbsp;    public String getCancelNotAllowedReason(int userId, int appointmentId) {
+<b class="nc">&nbsp;        User user = userService.getUserById(userId);</b>
+<b class="nc">&nbsp;        Appointment appointment = getAppointmentByIdWithAuthorization(appointmentId);</b>
+&nbsp;
+<b class="nc">&nbsp;        if (user.hasRole(&quot;ROLE_ADMIN&quot;)) {</b>
+<b class="nc">&nbsp;            return &quot;Only customer or provider can cancel appointments&quot;;</b>
+&nbsp;        }
+&nbsp;
+<b class="nc">&nbsp;        if (appointment.getProvider().equals(user)) {</b>
+<b class="nc">&nbsp;            if (!appointment.getStatus().equals(AppointmentStatus.SCHEDULED)) {</b>
+<b class="nc">&nbsp;                return &quot;Only appoinmtents with scheduled status can be cancelled.&quot;;</b>
+&nbsp;            } else {
+<b class="nc">&nbsp;                return null;</b>
+&nbsp;            }
+&nbsp;        }
+&nbsp;
+<b class="nc">&nbsp;        if (appointment.getCustomer().equals(user)) {</b>
+<b class="nc">&nbsp;            if (!appointment.getStatus().equals(AppointmentStatus.SCHEDULED)) {</b>
+<b class="nc">&nbsp;                return &quot;Only appoinmtents with scheduled status can be cancelled.&quot;;</b>
+<b class="nc">&nbsp;            } else if (LocalDateTime.now().plusDays(1).isAfter(appointment.getStart())) {</b>
+<b class="nc">&nbsp;                return &quot;Appointments which will be in less than 24 hours cannot be canceled.&quot;;</b>
+<b class="nc">&nbsp;            } else if (!appointment.getWork().getEditable()) {</b>
+<b class="nc">&nbsp;                return &quot;This type of appointment can be canceled only by Provider.&quot;;</b>
+<b class="nc">&nbsp;            } else if (getCanceledAppointmentsByCustomerIdForCurrentMonth(userId).size() &gt;= NUMBER_OF_ALLOWED_CANCELATIONS_PER_MONTH) {</b>
+<b class="nc">&nbsp;                return &quot;You can&#39;t cancel this appointment because you exceeded maximum number of cancellations in this month.&quot;;</b>
+&nbsp;            } else {
+<b class="nc">&nbsp;                return null;</b>
+&nbsp;            }
+&nbsp;        }
+<b class="nc">&nbsp;        return null;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    @Override
+&nbsp;    public int getNumberOfCanceledAppointmentsForUser(int userId) {
+<b class="nc">&nbsp;        return appointmentRepository.findCanceledByUser(userId).size();</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    @Override
+&nbsp;    public int getNumberOfScheduledAppointmentsForUser(int userId) {
+<b class="nc">&nbsp;        return appointmentRepository.findScheduledByUserId(userId).size();</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    @Override
+&nbsp;    public boolean isAvailable(int workId, int providerId, int customerId, LocalDateTime start) {
+<b class="pc">&nbsp;        if (!workService.isWorkForCustomer(workId, customerId)) {</b>
+<b class="nc">&nbsp;            return false;</b>
+&nbsp;        }
+<b class="fc">&nbsp;        Work work = workService.getWorkById(workId);</b>
+<b class="fc">&nbsp;        TimePeroid timePeroid = new TimePeroid(start.toLocalTime(), start.toLocalTime().plusMinutes(work.getDuration()));</b>
+<b class="fc">&nbsp;        return getAvailableHours(providerId, customerId, workId, start.toLocalDate()).contains(timePeroid);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    @Override
+&nbsp;    public List&lt;Appointment&gt; getConfirmedAppointmentsByCustomerId(int customerId) {
+<b class="nc">&nbsp;        return appointmentRepository.findConfirmedByCustomerId(customerId);</b>
+&nbsp;    }
+&nbsp;}
+</code>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+      hljs.highlightAll()
+      hljs.initLineNumbersOnLoad();
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2024-03-03 21:00</div>
+</div>
+</body>
+</html>

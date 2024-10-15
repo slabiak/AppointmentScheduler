@@ -1,0 +1,305 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <meta http-equiv="Content-Type" content="text/html;charset=UTF-8"> 
+  <title>Coverage Report > User</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/idea.min.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.min.js"></script>
+  <script type="text/javascript" src="../../js/highlightjs-line-numbers.min.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">com.example.slabiak.appointmentscheduler.entity.user</a>
+</div>
+
+<h1>Coverage Summary for Class: User (com.example.slabiak.appointmentscheduler.entity.user)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Branch, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">User</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (1/1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    89.3%
+  </span>
+  <span class="absValue">
+    (25/28)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    50%
+  </span>
+  <span class="absValue">
+    (4/8)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    86.3%
+  </span>
+  <span class="absValue">
+    (44/51)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<code class="sourceCode" id="sourceCode">&nbsp;package com.example.slabiak.appointmentscheduler.entity.user;
+&nbsp;
+&nbsp;import com.example.slabiak.appointmentscheduler.entity.BaseEntity;
+&nbsp;import com.example.slabiak.appointmentscheduler.entity.Notification;
+&nbsp;import com.example.slabiak.appointmentscheduler.model.UserForm;
+&nbsp;
+&nbsp;import javax.persistence.*;
+&nbsp;import java.util.Collection;
+&nbsp;import java.util.List;
+&nbsp;import java.util.Objects;
+&nbsp;
+&nbsp;
+&nbsp;@Entity
+&nbsp;@Table(name = &quot;users&quot;)
+&nbsp;@Inheritance(strategy = InheritanceType.JOINED)
+&nbsp;public class User extends BaseEntity {
+&nbsp;
+&nbsp;    @Column(name = &quot;username&quot;)
+&nbsp;    private String userName;
+&nbsp;
+&nbsp;    @Column(name = &quot;password&quot;)
+&nbsp;    private String password;
+&nbsp;
+&nbsp;    @Column(name = &quot;first_name&quot;)
+&nbsp;    private String firstName;
+&nbsp;
+&nbsp;    @Column(name = &quot;last_name&quot;)
+&nbsp;    private String lastName;
+&nbsp;
+&nbsp;    @Column(name = &quot;email&quot;)
+&nbsp;    private String email;
+&nbsp;
+&nbsp;    @Column(name = &quot;mobile&quot;)
+&nbsp;    private String mobile;
+&nbsp;
+&nbsp;    @Column(name = &quot;street&quot;)
+&nbsp;    private String street;
+&nbsp;
+&nbsp;    @Column(name = &quot;city&quot;)
+&nbsp;    private String city;
+&nbsp;
+&nbsp;    @Column(name = &quot;postcode&quot;)
+&nbsp;    private String postcode;
+&nbsp;
+&nbsp;    @OneToMany(mappedBy = &quot;user&quot;)
+&nbsp;    private List&lt;Notification&gt; notifications;
+&nbsp;
+&nbsp;    @ManyToMany(fetch = FetchType.EAGER)
+&nbsp;    @JoinTable(name = &quot;users_roles&quot;, joinColumns = @JoinColumn(name = &quot;user_id&quot;), inverseJoinColumns = @JoinColumn(name = &quot;role_id&quot;))
+&nbsp;    private Collection&lt;Role&gt; roles;
+&nbsp;
+<b class="fc">&nbsp;    public User() {</b>
+&nbsp;    }
+&nbsp;
+<b class="fc">&nbsp;    public User(UserForm newUserForm, String encryptedPassword, Collection&lt;Role&gt; roles) {</b>
+<b class="fc">&nbsp;        this.setUserName(newUserForm.getUserName());</b>
+<b class="fc">&nbsp;        this.setFirstName(newUserForm.getFirstName());</b>
+<b class="fc">&nbsp;        this.setLastName(newUserForm.getLastName());</b>
+<b class="fc">&nbsp;        this.setEmail(newUserForm.getEmail());</b>
+<b class="fc">&nbsp;        this.setCity(newUserForm.getCity());</b>
+<b class="fc">&nbsp;        this.setStreet(newUserForm.getStreet());</b>
+<b class="fc">&nbsp;        this.setPostcode(newUserForm.getPostcode());</b>
+<b class="fc">&nbsp;        this.setMobile(newUserForm.getMobile());</b>
+<b class="fc">&nbsp;        this.password = encryptedPassword;</b>
+<b class="fc">&nbsp;        this.roles = roles;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public void update(UserForm updateData) {
+<b class="fc">&nbsp;        this.setEmail(updateData.getEmail());</b>
+<b class="fc">&nbsp;        this.setFirstName(updateData.getFirstName());</b>
+<b class="fc">&nbsp;        this.setLastName(updateData.getLastName());</b>
+<b class="fc">&nbsp;        this.setMobile(updateData.getMobile());</b>
+<b class="fc">&nbsp;        this.setCity(updateData.getCity());</b>
+<b class="fc">&nbsp;        this.setStreet(updateData.getStreet());</b>
+<b class="fc">&nbsp;        this.setPostcode(updateData.getPostcode());</b>
+&nbsp;    }
+&nbsp;
+&nbsp;
+&nbsp;    public String getUserName() {
+<b class="fc">&nbsp;        return userName;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public void setUserName(String userName) {
+<b class="fc">&nbsp;        this.userName = userName;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public String getPassword() {
+<b class="fc">&nbsp;        return password;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public void setPassword(String password) {
+<b class="fc">&nbsp;        this.password = password;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public String getFirstName() {
+<b class="fc">&nbsp;        return firstName;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public void setFirstName(String firstName) {
+<b class="fc">&nbsp;        this.firstName = firstName;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public String getLastName() {
+<b class="fc">&nbsp;        return lastName;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public void setLastName(String lastName) {
+<b class="fc">&nbsp;        this.lastName = lastName;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public String getEmail() {
+<b class="fc">&nbsp;        return email;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public void setEmail(String email) {
+<b class="fc">&nbsp;        this.email = email;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public Collection&lt;Role&gt; getRoles() {
+<b class="fc">&nbsp;        return roles;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public void setRoles(Collection&lt;Role&gt; roles) {
+<b class="fc">&nbsp;        this.roles = roles;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;
+&nbsp;    public String getMobile() {
+<b class="fc">&nbsp;        return mobile;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public void setMobile(String mobile) {
+<b class="fc">&nbsp;        this.mobile = mobile;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public String getStreet() {
+<b class="fc">&nbsp;        return street;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public void setStreet(String street) {
+<b class="fc">&nbsp;        this.street = street;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public String getCity() {
+<b class="fc">&nbsp;        return city;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public void setCity(String city) {
+<b class="fc">&nbsp;        this.city = city;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public String getPostcode() {
+<b class="fc">&nbsp;        return postcode;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public void setPostcode(String postcode) {
+<b class="fc">&nbsp;        this.postcode = postcode;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public boolean hasRole(String roleName) {
+<b class="pc">&nbsp;        for (Role role : roles) {</b>
+<b class="fc">&nbsp;            if (role.getName().equals(roleName)) {</b>
+<b class="fc">&nbsp;                return true;</b>
+&nbsp;            }
+<b class="fc">&nbsp;        }</b>
+<b class="nc">&nbsp;        return false;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    @Override
+&nbsp;    public boolean equals(Object o) {
+<b class="pc">&nbsp;        if (this == o) return true;</b>
+<b class="nc">&nbsp;        if (!(o instanceof User)) return false;</b>
+<b class="nc">&nbsp;        User user = (User) o;</b>
+<b class="nc">&nbsp;        return this.getId().equals(user.getId());</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    @Override
+&nbsp;    public int hashCode() {
+<b class="nc">&nbsp;        return Objects.hash(super.getId());</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public List&lt;Notification&gt; getNotifications() {
+<b class="nc">&nbsp;        return notifications;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public void setNotifications(List&lt;Notification&gt; notifications) {
+<b class="nc">&nbsp;        this.notifications = notifications;</b>
+&nbsp;    }
+&nbsp;}
+</code>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+      hljs.highlightAll()
+      hljs.initLineNumbersOnLoad();
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2024-03-03 21:00</div>
+</div>
+</body>
+</html>

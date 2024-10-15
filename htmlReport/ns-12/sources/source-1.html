@@ -1,0 +1,87 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <meta http-equiv="Content-Type" content="text/html;charset=UTF-8"> 
+  <title>Coverage Report > ProviderRepository</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/idea.min.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.min.js"></script>
+  <script type="text/javascript" src="../../js/highlightjs-line-numbers.min.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">com.example.slabiak.appointmentscheduler.dao.user.provider</a>
+</div>
+
+<h1>Coverage Summary for Class: ProviderRepository (com.example.slabiak.appointmentscheduler.dao.user.provider)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+</tr>
+<tr>
+  <td class="name">ProviderRepository</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<code class="sourceCode" id="sourceCode">&nbsp;package com.example.slabiak.appointmentscheduler.dao.user.provider;
+&nbsp;
+&nbsp;import com.example.slabiak.appointmentscheduler.dao.user.CommonUserRepository;
+&nbsp;import com.example.slabiak.appointmentscheduler.entity.Work;
+&nbsp;import com.example.slabiak.appointmentscheduler.entity.user.provider.Provider;
+&nbsp;import org.springframework.data.jpa.repository.Query;
+&nbsp;
+&nbsp;import java.util.List;
+&nbsp;
+&nbsp;public interface ProviderRepository extends CommonUserRepository&lt;Provider&gt; {
+&nbsp;
+&nbsp;    List&lt;Provider&gt; findByWorks(Work work);
+&nbsp;
+&nbsp;    @Query(&quot;select distinct p from Provider p inner join p.works w where w.targetCustomer = &#39;retail&#39;&quot;)
+&nbsp;    List&lt;Provider&gt; findAllWithRetailWorks();
+&nbsp;
+&nbsp;    @Query(&quot;select distinct p from Provider p inner join p.works w where w.targetCustomer = &#39;corporate&#39;&quot;)
+&nbsp;    List&lt;Provider&gt; findAllWithCorporateWorks();
+&nbsp;}
+</code>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+      hljs.highlightAll()
+      hljs.initLineNumbersOnLoad();
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2024-03-03 21:00</div>
+</div>
+</body>
+</html>

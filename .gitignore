@@ -23,3 +23,10 @@
 /nbdist/
 /.nb-gradle/
 /build/
+
+### Application Properties ###
+src/main/resources/application.properties
+src/test/resources/application.properties
+
+.DS_Store
+

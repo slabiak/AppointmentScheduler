@@ -1,0 +1,173 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <meta http-equiv="Content-Type" content="text/html;charset=UTF-8"> 
+  <title>Coverage Report > AjaxController</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/idea.min.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.min.js"></script>
+  <script type="text/javascript" src="../../js/highlightjs-line-numbers.min.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">com.example.slabiak.appointmentscheduler.controller</a>
+</div>
+
+<h1>Coverage Summary for Class: AjaxController (com.example.slabiak.appointmentscheduler.controller)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Branch, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">AjaxController</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/4)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/6)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/16)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<code class="sourceCode" id="sourceCode">&nbsp;package com.example.slabiak.appointmentscheduler.controller;
+&nbsp;
+&nbsp;import com.example.slabiak.appointmentscheduler.entity.Appointment;
+&nbsp;import com.example.slabiak.appointmentscheduler.model.AppointmentRegisterForm;
+&nbsp;import com.example.slabiak.appointmentscheduler.security.CustomUserDetails;
+&nbsp;import com.example.slabiak.appointmentscheduler.service.AppointmentService;
+&nbsp;import com.example.slabiak.appointmentscheduler.service.NotificationService;
+&nbsp;import com.google.common.collect.Lists;
+&nbsp;import org.springframework.security.core.annotation.AuthenticationPrincipal;
+&nbsp;import org.springframework.web.bind.annotation.GetMapping;
+&nbsp;import org.springframework.web.bind.annotation.PathVariable;
+&nbsp;import org.springframework.web.bind.annotation.RequestMapping;
+&nbsp;import org.springframework.web.bind.annotation.RestController;
+&nbsp;
+&nbsp;import java.time.LocalDate;
+&nbsp;import java.util.List;
+&nbsp;import java.util.stream.Collectors;
+&nbsp;
+&nbsp;@RequestMapping(&quot;/api&quot;)
+&nbsp;@RestController
+&nbsp;public class AjaxController {
+&nbsp;
+&nbsp;    private final AppointmentService appointmentService;
+&nbsp;    private final NotificationService notificationService;
+&nbsp;
+<b class="nc">&nbsp;    public AjaxController(AppointmentService appointmentService, NotificationService notificationService) {</b>
+<b class="nc">&nbsp;        this.appointmentService = appointmentService;</b>
+<b class="nc">&nbsp;        this.notificationService = notificationService;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;
+&nbsp;    @GetMapping(&quot;/user/{userId}/appointments&quot;)
+&nbsp;    public List&lt;Appointment&gt; getAppointmentsForUser(@PathVariable(&quot;userId&quot;) int userId, @AuthenticationPrincipal CustomUserDetails currentUser) {
+<b class="nc">&nbsp;        if (currentUser.hasRole(&quot;ROLE_CUSTOMER&quot;)) {</b>
+<b class="nc">&nbsp;            return appointmentService.getAppointmentByCustomerId(userId);</b>
+<b class="nc">&nbsp;        } else if (currentUser.hasRole(&quot;ROLE_PROVIDER&quot;))</b>
+<b class="nc">&nbsp;            return appointmentService.getAppointmentByProviderId(userId);</b>
+<b class="nc">&nbsp;        else if (currentUser.hasRole(&quot;ROLE_ADMIN&quot;))</b>
+<b class="nc">&nbsp;            return appointmentService.getAllAppointments();</b>
+<b class="nc">&nbsp;        else return Lists.newArrayList();</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    @GetMapping(&quot;/availableHours/{providerId}/{workId}/{date}&quot;)
+&nbsp;    public List&lt;AppointmentRegisterForm&gt; getAvailableHours(@PathVariable(&quot;providerId&quot;) int providerId, @PathVariable(&quot;workId&quot;) int workId, @PathVariable(&quot;date&quot;) String date, @AuthenticationPrincipal CustomUserDetails currentUser) {
+<b class="nc">&nbsp;        LocalDate localDate = LocalDate.parse(date);</b>
+<b class="nc">&nbsp;        return appointmentService.getAvailableHours(providerId, currentUser.getId(), workId, localDate)</b>
+<b class="nc">&nbsp;                .stream()</b>
+<b class="nc">&nbsp;                .map(timePeriod -&gt; new AppointmentRegisterForm(workId, providerId, timePeriod.getStart().atDate(localDate), timePeriod.getEnd().atDate(localDate)))</b>
+<b class="nc">&nbsp;                .collect(Collectors.toList());</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    @GetMapping(&quot;/user/notifications&quot;)
+&nbsp;    public int getUnreadNotificationsCount(@AuthenticationPrincipal CustomUserDetails currentUser) {
+<b class="nc">&nbsp;        return notificationService.getUnreadNotifications(currentUser.getId()).size();</b>
+&nbsp;    }
+&nbsp;
+&nbsp;}
+</code>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+      hljs.highlightAll()
+      hljs.initLineNumbersOnLoad();
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2024-03-03 21:00</div>
+</div>
+</body>
+</html>

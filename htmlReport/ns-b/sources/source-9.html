@@ -1,0 +1,211 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <meta http-equiv="Content-Type" content="text/html;charset=UTF-8"> 
+  <title>Coverage Report > WorkServiceImpl</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/idea.min.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.min.js"></script>
+  <script type="text/javascript" src="../../js/highlightjs-line-numbers.min.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">com.example.slabiak.appointmentscheduler.service.impl</a>
+</div>
+
+<h1>Coverage Summary for Class: WorkServiceImpl (com.example.slabiak.appointmentscheduler.service.impl)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Branch, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">WorkServiceImpl</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (1/1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    41.7%
+  </span>
+  <span class="absValue">
+    (5/12)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/8)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    28%
+  </span>
+  <span class="absValue">
+    (7/25)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<code class="sourceCode" id="sourceCode">&nbsp;package com.example.slabiak.appointmentscheduler.service.impl;
+&nbsp;
+&nbsp;import com.example.slabiak.appointmentscheduler.dao.WorkRepository;
+&nbsp;import com.example.slabiak.appointmentscheduler.entity.Work;
+&nbsp;import com.example.slabiak.appointmentscheduler.entity.user.customer.Customer;
+&nbsp;import com.example.slabiak.appointmentscheduler.exception.WorkNotFoundException;
+&nbsp;import com.example.slabiak.appointmentscheduler.service.UserService;
+&nbsp;import com.example.slabiak.appointmentscheduler.service.WorkService;
+&nbsp;import org.springframework.security.access.prepost.PreAuthorize;
+&nbsp;import org.springframework.stereotype.Service;
+&nbsp;
+&nbsp;import java.util.List;
+&nbsp;
+&nbsp;@Service
+&nbsp;public class WorkServiceImpl implements WorkService {
+&nbsp;
+&nbsp;    private final WorkRepository workRepository;
+&nbsp;    private final UserService userService;
+&nbsp;
+<b class="fc">&nbsp;    public WorkServiceImpl(WorkRepository workRepository, UserService userService) {</b>
+<b class="fc">&nbsp;        this.workRepository = workRepository;</b>
+<b class="fc">&nbsp;        this.userService = userService;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    @Override
+&nbsp;    @PreAuthorize(&quot;hasRole(&#39;ADMIN&#39;)&quot;)
+&nbsp;    public void createNewWork(Work work) {
+<b class="fc">&nbsp;        workRepository.save(work);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    @Override
+&nbsp;    @PreAuthorize(&quot;hasRole(&#39;ADMIN&#39;)&quot;)
+&nbsp;    public void updateWork(Work workUpdateData) {
+<b class="nc">&nbsp;        Work work = getWorkById(workUpdateData.getId());</b>
+<b class="nc">&nbsp;        work.setName(workUpdateData.getName());</b>
+<b class="nc">&nbsp;        work.setPrice(workUpdateData.getPrice());</b>
+<b class="nc">&nbsp;        work.setDuration(workUpdateData.getDuration());</b>
+<b class="nc">&nbsp;        work.setDescription(workUpdateData.getDescription());</b>
+<b class="nc">&nbsp;        work.setEditable(workUpdateData.getEditable());</b>
+<b class="nc">&nbsp;        work.setTargetCustomer(workUpdateData.getTargetCustomer());</b>
+<b class="nc">&nbsp;        workRepository.save(work);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    @Override
+&nbsp;    public Work getWorkById(int workId) {
+<b class="fc">&nbsp;        return workRepository.findById(workId).orElseThrow(WorkNotFoundException::new);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    @Override
+&nbsp;    public List&lt;Work&gt; getAllWorks() {
+<b class="fc">&nbsp;        return workRepository.findAll();</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    @Override
+&nbsp;    @PreAuthorize(&quot;hasRole(&#39;ADMIN&#39;)&quot;)
+&nbsp;    public void deleteWorkById(int workId) {
+<b class="fc">&nbsp;        workRepository.deleteById(workId);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    @Override
+&nbsp;    public boolean isWorkForCustomer(int workId, int customerId) {
+<b class="nc">&nbsp;        Customer customer = userService.getCustomerById(customerId);</b>
+<b class="nc">&nbsp;        Work work = getWorkById(workId);</b>
+<b class="nc">&nbsp;        if (customer.hasRole(&quot;ROLE_CUSTOMER_RETAIL&quot;) &amp;&amp; !work.getTargetCustomer().equals(&quot;retail&quot;)) {</b>
+<b class="nc">&nbsp;            return false;</b>
+<b class="nc">&nbsp;        } else return !customer.hasRole(&quot;ROLE_CUSTOMER_CORPORATE&quot;) || work.getTargetCustomer().equals(&quot;corporate&quot;);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    @Override
+&nbsp;    public List&lt;Work&gt; getWorksByProviderId(int providerId) {
+<b class="nc">&nbsp;        return workRepository.findByProviderId(providerId);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    @Override
+&nbsp;    public List&lt;Work&gt; getRetailCustomerWorks() {
+<b class="nc">&nbsp;        return workRepository.findByTargetCustomer(&quot;retail&quot;);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    @Override
+&nbsp;    public List&lt;Work&gt; getCorporateCustomerWorks() {
+<b class="nc">&nbsp;        return workRepository.findByTargetCustomer(&quot;corporate&quot;);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    @Override
+&nbsp;    public List&lt;Work&gt; getWorksForRetailCustomerByProviderId(int providerId) {
+<b class="nc">&nbsp;        return workRepository.findByTargetCustomerAndProviderId(&quot;retail&quot;, providerId);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    @Override
+&nbsp;    public List&lt;Work&gt; getWorksForCorporateCustomerByProviderId(int providerId) {
+<b class="nc">&nbsp;        return workRepository.findByTargetCustomerAndProviderId(&quot;corporate&quot;, providerId);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;
+&nbsp;}
+</code>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+      hljs.highlightAll()
+      hljs.initLineNumbersOnLoad();
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2024-03-03 21:00</div>
+</div>
+</body>
+</html>

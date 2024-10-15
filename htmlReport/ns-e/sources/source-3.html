@@ -1,0 +1,120 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <meta http-equiv="Content-Type" content="text/html;charset=UTF-8"> 
+  <title>Coverage Report > NotificationService</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/idea.min.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.min.js"></script>
+  <script type="text/javascript" src="../../js/highlightjs-line-numbers.min.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">com.example.slabiak.appointmentscheduler.service</a>
+</div>
+
+<h1>Coverage Summary for Class: NotificationService (com.example.slabiak.appointmentscheduler.service)</h1>
+
+<table class="coverageStats">
+
+<tr>
+  <th class="name">Class</th>
+</tr>
+  <tr>
+    <td class="name">NotificationService$MockitoMock$618959501</td>
+  </tr>
+  <tr>
+    <td class="name">NotificationService$MockitoMock$618959501$auxiliary$1TdoCIv4</td>
+  </tr>
+  <tr>
+    <td class="name">NotificationService$MockitoMock$618959501$auxiliary$r48f9ICo</td>
+  </tr>
+<tr>
+  <td class="name"><strong>Total</strong></td>
+</tr>
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<code class="sourceCode" id="sourceCode">&nbsp;package com.example.slabiak.appointmentscheduler.service;
+&nbsp;
+&nbsp;import com.example.slabiak.appointmentscheduler.entity.*;
+&nbsp;import com.example.slabiak.appointmentscheduler.entity.user.User;
+&nbsp;
+&nbsp;import java.util.List;
+&nbsp;
+&nbsp;public interface NotificationService {
+&nbsp;
+&nbsp;    void newNotification(String title, String message, String url, User user);
+&nbsp;
+&nbsp;    void markAsRead(int notificationId, int userId);
+&nbsp;
+&nbsp;    void markAllAsRead(int userId);
+&nbsp;
+&nbsp;    Notification getNotificationById(int notificationId);
+&nbsp;
+&nbsp;    List&lt;Notification&gt; getAll(int userId);
+&nbsp;
+&nbsp;    List&lt;Notification&gt; getUnreadNotifications(int userId);
+&nbsp;
+&nbsp;    void newAppointmentFinishedNotification(Appointment appointment, boolean sendEmail);
+&nbsp;
+&nbsp;    void newAppointmentRejectionRequestedNotification(Appointment appointment, boolean sendEmail);
+&nbsp;
+&nbsp;    void newNewAppointmentScheduledNotification(Appointment appointment, boolean sendEmail);
+&nbsp;
+&nbsp;    void newAppointmentCanceledByCustomerNotification(Appointment appointment, boolean sendEmail);
+&nbsp;
+&nbsp;    void newAppointmentCanceledByProviderNotification(Appointment appointment, boolean sendEmail);
+&nbsp;
+&nbsp;    void newAppointmentRejectionAcceptedNotification(Appointment appointment, boolean sendEmail);
+&nbsp;
+&nbsp;    void newChatMessageNotification(ChatMessage chatMessage, boolean sendEmail);
+&nbsp;
+&nbsp;    void newInvoice(Invoice invoice, boolean sendEmail);
+&nbsp;
+&nbsp;    void newExchangeRequestedNotification(Appointment oldAppointment, Appointment newAppointment, boolean sendEmail);
+&nbsp;
+&nbsp;    void newExchangeAcceptedNotification(ExchangeRequest exchangeRequest, boolean sendEmail);
+&nbsp;
+&nbsp;    void newExchangeRejectedNotification(ExchangeRequest exchangeRequest, boolean sendEmail);
+&nbsp;}
+</code>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+      hljs.highlightAll()
+      hljs.initLineNumbersOnLoad();
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2024-03-03 21:00</div>
+</div>
+</body>
+</html>

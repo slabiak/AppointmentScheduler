@@ -1,0 +1,323 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <meta http-equiv="Content-Type" content="text/html;charset=UTF-8"> 
+  <title>Coverage Report > UserForm</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/idea.min.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.min.js"></script>
+  <script type="text/javascript" src="../../js/highlightjs-line-numbers.min.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">com.example.slabiak.appointmentscheduler.model</a>
+</div>
+
+<h1>Coverage Summary for Class: UserForm (com.example.slabiak.appointmentscheduler.model)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">UserForm</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (1/1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    66.7%
+  </span>
+  <span class="absValue">
+    (22/33)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    48.9%
+  </span>
+  <span class="absValue">
+    (22/45)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<code class="sourceCode" id="sourceCode">&nbsp;package com.example.slabiak.appointmentscheduler.model;
+&nbsp;
+&nbsp;import com.example.slabiak.appointmentscheduler.entity.Work;
+&nbsp;import com.example.slabiak.appointmentscheduler.entity.user.User;
+&nbsp;import com.example.slabiak.appointmentscheduler.entity.user.customer.CorporateCustomer;
+&nbsp;import com.example.slabiak.appointmentscheduler.entity.user.customer.RetailCustomer;
+&nbsp;import com.example.slabiak.appointmentscheduler.entity.user.provider.Provider;
+&nbsp;import com.example.slabiak.appointmentscheduler.validation.FieldsMatches;
+&nbsp;import com.example.slabiak.appointmentscheduler.validation.UniqueUsername;
+&nbsp;import com.example.slabiak.appointmentscheduler.validation.groups.*;
+&nbsp;
+&nbsp;import javax.validation.constraints.*;
+&nbsp;import java.util.List;
+&nbsp;
+&nbsp;@FieldsMatches(field = &quot;password&quot;, matchingField = &quot;matchingPassword&quot;, groups = {CreateUser.class})
+&nbsp;public class UserForm {
+&nbsp;
+&nbsp;    @NotNull(groups = {UpdateUser.class})
+&nbsp;    @Min(value = 1, groups = {UpdateUser.class})
+&nbsp;    private int id;
+&nbsp;
+&nbsp;    @UniqueUsername(groups = {CreateUser.class})
+&nbsp;    @Size(min = 5, max = 15, groups = {CreateUser.class}, message = &quot;Username should have 5-15 letters&quot;)
+&nbsp;    @NotBlank(groups = {CreateUser.class})
+&nbsp;    private String userName;
+&nbsp;
+&nbsp;    @Size(min = 5, max = 15, groups = {CreateUser.class}, message = &quot;Password should have 5-15 letters&quot;)
+&nbsp;    @NotBlank(groups = {CreateUser.class})
+&nbsp;    private String password;
+&nbsp;
+&nbsp;    @Size(min = 5, max = 15, groups = {CreateUser.class}, message = &quot;Password should have 5-15 letters&quot;)
+&nbsp;    @NotBlank(groups = {CreateUser.class})
+&nbsp;    private String matchingPassword;
+&nbsp;
+&nbsp;    @NotBlank(groups = {CreateUser.class, UpdateUser.class}, message = &quot;First name cannot be empty&quot;)
+&nbsp;    private String firstName;
+&nbsp;
+&nbsp;    @NotBlank(groups = {CreateUser.class, UpdateUser.class}, message = &quot;Last name cannot be empty&quot;)
+&nbsp;    private String lastName;
+&nbsp;
+&nbsp;    @Email(groups = {CreateUser.class, UpdateUser.class}, message = &quot;Email not valid!&quot;)
+&nbsp;    @NotBlank(groups = {CreateUser.class, UpdateUser.class}, message = &quot;Email cannot be empty&quot;)
+&nbsp;    private String email;
+&nbsp;
+&nbsp;    @Pattern(groups = {CreateUser.class, UpdateUser.class}, regexp = &quot;[0-9]{9}&quot;, message = &quot;Please enter valid mobile phone&quot;)
+&nbsp;    @NotBlank(groups = {CreateUser.class, UpdateUser.class}, message = &quot;Mobile phone cannot be empty&quot;)
+&nbsp;    private String mobile;
+&nbsp;
+&nbsp;    @Size(groups = {CreateUser.class, UpdateUser.class}, min = 5, max = 30, message = &quot;Wrong street!&quot;)
+&nbsp;    @NotBlank(groups = {CreateUser.class, UpdateUser.class}, message = &quot;Street cannot be empty&quot;)
+&nbsp;    private String street;
+&nbsp;
+&nbsp;    @Pattern(groups = {CreateUser.class, UpdateUser.class}, regexp = &quot;[0-9]{2}-[0-9]{3}&quot;, message = &quot;Please enter valid postcode&quot;)
+&nbsp;    @NotBlank(groups = {CreateUser.class, UpdateUser.class}, message = &quot;Post code cannot be empty&quot;)
+&nbsp;    private String postcode;
+&nbsp;
+&nbsp;    @NotBlank(groups = {CreateUser.class, UpdateUser.class}, message = &quot;City cannot be empty&quot;)
+&nbsp;    private String city;
+&nbsp;
+&nbsp;    /*
+&nbsp;     * CorporateCustomer only:
+&nbsp;     * */
+&nbsp;    @NotBlank(groups = {CreateCorporateCustomer.class, UpdateCorporateCustomer.class}, message = &quot;Company cannot be empty&quot;)
+&nbsp;    private String companyName;
+&nbsp;
+&nbsp;    @Pattern(groups = {CreateCorporateCustomer.class, UpdateCorporateCustomer.class}, regexp = &quot;[0-9]{10}&quot;, message = &quot;Please enter valid Polish VAT number&quot;)
+&nbsp;    @NotBlank(groups = {CreateCorporateCustomer.class, UpdateCorporateCustomer.class}, message = &quot;VAT number cannot be empty&quot;)
+&nbsp;    private String vatNumber;
+&nbsp;
+&nbsp;    /*
+&nbsp;     * Provider only:
+&nbsp;     * */
+&nbsp;    @NotNull(groups = {CreateProvider.class, UpdateProvider.class})
+&nbsp;    private List&lt;Work&gt; works;
+&nbsp;
+&nbsp;
+<b class="fc">&nbsp;    public UserForm() {</b>
+&nbsp;    }
+&nbsp;
+<b class="nc">&nbsp;    public UserForm(User user) {</b>
+<b class="nc">&nbsp;        this.setId(user.getId());</b>
+<b class="nc">&nbsp;        this.setUserName(user.getUserName());</b>
+<b class="nc">&nbsp;        this.setFirstName(user.getFirstName());</b>
+<b class="nc">&nbsp;        this.setLastName(user.getLastName());</b>
+<b class="nc">&nbsp;        this.setEmail(user.getEmail());</b>
+<b class="nc">&nbsp;        this.setCity(user.getCity());</b>
+<b class="nc">&nbsp;        this.setStreet(user.getStreet());</b>
+<b class="nc">&nbsp;        this.setPostcode(user.getPostcode());</b>
+<b class="nc">&nbsp;        this.setMobile(user.getMobile());</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public UserForm(Provider provider) {
+<b class="nc">&nbsp;        this((User) provider);</b>
+<b class="nc">&nbsp;        this.setWorks(provider.getWorks());</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public UserForm(RetailCustomer retailCustomer) {
+<b class="nc">&nbsp;        this((User) retailCustomer);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public UserForm(CorporateCustomer corporateCustomer) {
+<b class="nc">&nbsp;        this((User) corporateCustomer);</b>
+<b class="nc">&nbsp;        this.setCompanyName(corporateCustomer.getCompanyName());</b>
+<b class="nc">&nbsp;        this.setVatNumber(corporateCustomer.getVatNumber());</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public int getId() {
+<b class="fc">&nbsp;        return id;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public void setId(int id) {
+<b class="fc">&nbsp;        this.id = id;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public String getUserName() {
+<b class="fc">&nbsp;        return userName;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public void setUserName(String userName) {
+<b class="fc">&nbsp;        this.userName = userName;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public String getPassword() {
+<b class="fc">&nbsp;        return password;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public void setPassword(String password) {
+<b class="fc">&nbsp;        this.password = password;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public String getMatchingPassword() {
+<b class="nc">&nbsp;        return matchingPassword;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public void setMatchingPassword(String matchingPassword) {
+<b class="fc">&nbsp;        this.matchingPassword = matchingPassword;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public String getCompanyName() {
+<b class="nc">&nbsp;        return companyName;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public void setCompanyName(String companyName) {
+<b class="nc">&nbsp;        this.companyName = companyName;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public String getVatNumber() {
+<b class="nc">&nbsp;        return vatNumber;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public void setVatNumber(String vatNumber) {
+<b class="nc">&nbsp;        this.vatNumber = vatNumber;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public String getFirstName() {
+<b class="fc">&nbsp;        return firstName;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public void setFirstName(String firstName) {
+<b class="fc">&nbsp;        this.firstName = firstName;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public String getLastName() {
+<b class="fc">&nbsp;        return lastName;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public void setLastName(String lastName) {
+<b class="fc">&nbsp;        this.lastName = lastName;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public String getEmail() {
+<b class="fc">&nbsp;        return email;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public void setEmail(String email) {
+<b class="fc">&nbsp;        this.email = email;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public String getMobile() {
+<b class="fc">&nbsp;        return mobile;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public void setMobile(String mobile) {
+<b class="fc">&nbsp;        this.mobile = mobile;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public String getStreet() {
+<b class="fc">&nbsp;        return street;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public void setStreet(String street) {
+<b class="fc">&nbsp;        this.street = street;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public String getPostcode() {
+<b class="fc">&nbsp;        return postcode;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public void setPostcode(String postcode) {
+<b class="fc">&nbsp;        this.postcode = postcode;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public String getCity() {
+<b class="fc">&nbsp;        return city;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public void setCity(String city) {
+<b class="fc">&nbsp;        this.city = city;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public List&lt;Work&gt; getWorks() {
+<b class="nc">&nbsp;        return works;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public void setWorks(List&lt;Work&gt; works) {
+<b class="nc">&nbsp;        this.works = works;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;}
+</code>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+      hljs.highlightAll()
+      hljs.initLineNumbersOnLoad();
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2024-03-03 21:00</div>
+</div>
+</body>
+</html>

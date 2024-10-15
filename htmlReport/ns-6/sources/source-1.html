@@ -1,0 +1,160 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <meta http-equiv="Content-Type" content="text/html;charset=UTF-8"> 
+  <title>Coverage Report > CorporateCustomer</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/idea.min.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.min.js"></script>
+  <script type="text/javascript" src="../../js/highlightjs-line-numbers.min.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">com.example.slabiak.appointmentscheduler.entity.user.customer</a>
+</div>
+
+<h1>Coverage Summary for Class: CorporateCustomer (com.example.slabiak.appointmentscheduler.entity.user.customer)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">CorporateCustomer</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/7)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/11)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<code class="sourceCode" id="sourceCode">&nbsp;package com.example.slabiak.appointmentscheduler.entity.user.customer;
+&nbsp;
+&nbsp;import com.example.slabiak.appointmentscheduler.entity.user.Role;
+&nbsp;import com.example.slabiak.appointmentscheduler.model.UserForm;
+&nbsp;
+&nbsp;import javax.persistence.Column;
+&nbsp;import javax.persistence.Entity;
+&nbsp;import javax.persistence.PrimaryKeyJoinColumn;
+&nbsp;import javax.persistence.Table;
+&nbsp;import java.util.Collection;
+&nbsp;
+&nbsp;@Entity
+&nbsp;@Table(name = &quot;corporate_customers&quot;)
+&nbsp;@PrimaryKeyJoinColumn(name = &quot;id_customer&quot;)
+&nbsp;public class CorporateCustomer extends Customer {
+&nbsp;
+&nbsp;    @Column(name = &quot;company_name&quot;)
+&nbsp;    private String companyName;
+&nbsp;
+&nbsp;    @Column(name = &quot;vat_number&quot;)
+&nbsp;    private String vatNumber;
+&nbsp;
+&nbsp;
+<b class="nc">&nbsp;    public CorporateCustomer() {</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public CorporateCustomer(UserForm userFormDTO, String encryptedPassword, Collection&lt;Role&gt; roles) {
+<b class="nc">&nbsp;        super(userFormDTO, encryptedPassword, roles);</b>
+<b class="nc">&nbsp;        this.companyName = userFormDTO.getCompanyName();</b>
+<b class="nc">&nbsp;        this.vatNumber = userFormDTO.getVatNumber();</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    @Override
+&nbsp;    public void update(UserForm updateData) {
+<b class="nc">&nbsp;        super.update(updateData);</b>
+<b class="nc">&nbsp;        this.companyName = updateData.getCompanyName();</b>
+<b class="nc">&nbsp;        this.vatNumber = updateData.getVatNumber();</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public String getCompanyName() {
+<b class="nc">&nbsp;        return companyName;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public void setCompanyName(String companyName) {
+<b class="nc">&nbsp;        this.companyName = companyName;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public String getVatNumber() {
+<b class="nc">&nbsp;        return vatNumber;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public void setVatNumber(String vatNumber) {
+<b class="nc">&nbsp;        this.vatNumber = vatNumber;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;}
+</code>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+      hljs.highlightAll()
+      hljs.initLineNumbersOnLoad();
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2024-03-03 21:00</div>
+</div>
+</body>
+</html>

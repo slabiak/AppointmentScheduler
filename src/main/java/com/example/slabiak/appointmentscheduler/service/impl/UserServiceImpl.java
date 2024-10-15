@@ -193,6 +193,7 @@ public class UserServiceImpl implements UserService {
         providerRepository.save(provider);
     }
 
+//    Move method/field Design Implementation
     @Override
     public Collection<Role> getRolesForRetailCustomer() {
         HashSet<Role> roles = new HashSet();

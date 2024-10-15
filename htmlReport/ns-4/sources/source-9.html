@@ -1,0 +1,221 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <meta http-equiv="Content-Type" content="text/html;charset=UTF-8"> 
+  <title>Coverage Report > Work</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/idea.min.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.min.js"></script>
+  <script type="text/javascript" src="../../js/highlightjs-line-numbers.min.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">com.example.slabiak.appointmentscheduler.entity</a>
+</div>
+
+<h1>Coverage Summary for Class: Work (com.example.slabiak.appointmentscheduler.entity)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Branch, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">Work</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (1/1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    23.5%
+  </span>
+  <span class="absValue">
+    (4/17)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    25%
+  </span>
+  <span class="absValue">
+    (1/4)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    20%
+  </span>
+  <span class="absValue">
+    (4/20)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<code class="sourceCode" id="sourceCode">&nbsp;package com.example.slabiak.appointmentscheduler.entity;
+&nbsp;
+&nbsp;import com.example.slabiak.appointmentscheduler.entity.user.User;
+&nbsp;
+&nbsp;import javax.persistence.*;
+&nbsp;import java.util.List;
+&nbsp;
+&nbsp;@Entity
+&nbsp;@Table(name = &quot;works&quot;)
+&nbsp;public class Work extends BaseEntity {
+&nbsp;
+&nbsp;    @Column(name = &quot;name&quot;)
+&nbsp;    private String name;
+&nbsp;
+&nbsp;    @Column(name = &quot;description&quot;)
+&nbsp;    private String description;
+&nbsp;
+&nbsp;    @Column(name = &quot;price&quot;)
+&nbsp;    private double price;
+&nbsp;
+&nbsp;    @Column(name = &quot;duration&quot;)
+&nbsp;    private int duration;
+&nbsp;
+&nbsp;    @Column(name = &quot;editable&quot;)
+&nbsp;    private boolean editable;
+&nbsp;
+&nbsp;    @Column(name = &quot;target&quot;)
+&nbsp;    private String targetCustomer;
+&nbsp;
+&nbsp;    @ManyToMany
+&nbsp;    @JoinTable(name = &quot;works_providers&quot;, joinColumns = @JoinColumn(name = &quot;id_work&quot;), inverseJoinColumns = @JoinColumn(name = &quot;id_user&quot;))
+&nbsp;    private List&lt;User&gt; providers;
+&nbsp;
+<b class="fc">&nbsp;    public Work() {</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public String getName() {
+<b class="nc">&nbsp;        return name;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public void setName(String name) {
+<b class="nc">&nbsp;        this.name = name;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public String getDescription() {
+<b class="nc">&nbsp;        return description;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public void setDescription(String description) {
+<b class="nc">&nbsp;        this.description = description;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public double getPrice() {
+<b class="nc">&nbsp;        return price;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public void setPrice(double price) {
+<b class="nc">&nbsp;        this.price = price;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public int getDuration() {
+<b class="fc">&nbsp;        return duration;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public void setDuration(int duration) {
+<b class="fc">&nbsp;        this.duration = duration;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public List&lt;User&gt; getProviders() {
+<b class="nc">&nbsp;        return providers;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public void setProviders(List&lt;User&gt; providers) {
+<b class="nc">&nbsp;        this.providers = providers;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public boolean getEditable() {
+<b class="nc">&nbsp;        return editable;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public void setEditable(boolean editable) {
+<b class="nc">&nbsp;        this.editable = editable;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public String getTargetCustomer() {
+<b class="nc">&nbsp;        return targetCustomer;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public void setTargetCustomer(String targetCustomer) {
+<b class="nc">&nbsp;        this.targetCustomer = targetCustomer;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    @Override
+&nbsp;    public boolean equals(Object o) {
+<b class="pc">&nbsp;        if (this == o) return true;</b>
+<b class="nc">&nbsp;        if (!(o instanceof Work)) return false;</b>
+<b class="nc">&nbsp;        Work work = (Work) o;</b>
+<b class="nc">&nbsp;        return super.getId().equals(work.getId());</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    @Override
+&nbsp;    public int hashCode() {
+<b class="nc">&nbsp;        return this.getId().hashCode();</b>
+&nbsp;    }
+&nbsp;}
+</code>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+      hljs.highlightAll()
+      hljs.initLineNumbersOnLoad();
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2024-03-03 21:00</div>
+</div>
+</body>
+</html>

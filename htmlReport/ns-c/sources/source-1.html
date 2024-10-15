@@ -1,0 +1,181 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <meta http-equiv="Content-Type" content="text/html;charset=UTF-8"> 
+  <title>Coverage Report > PdfGeneratorUtil</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/idea.min.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.min.js"></script>
+  <script type="text/javascript" src="../../js/highlightjs-line-numbers.min.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">com.example.slabiak.appointmentscheduler.util</a>
+</div>
+
+<h1>Coverage Summary for Class: PdfGeneratorUtil (com.example.slabiak.appointmentscheduler.util)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Branch, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">PdfGeneratorUtil</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/2)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/10)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/29)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<code class="sourceCode" id="sourceCode">&nbsp;package com.example.slabiak.appointmentscheduler.util;
+&nbsp;
+&nbsp;import com.example.slabiak.appointmentscheduler.entity.Invoice;
+&nbsp;import com.itextpdf.text.DocumentException;
+&nbsp;import org.springframework.beans.factory.annotation.Value;
+&nbsp;import org.springframework.stereotype.Component;
+&nbsp;import org.thymeleaf.context.Context;
+&nbsp;import org.thymeleaf.spring5.SpringTemplateEngine;
+&nbsp;import org.xhtmlrenderer.pdf.ITextRenderer;
+&nbsp;
+&nbsp;import java.io.File;
+&nbsp;import java.io.FileNotFoundException;
+&nbsp;import java.io.FileOutputStream;
+&nbsp;import java.io.IOException;
+&nbsp;import java.util.UUID;
+&nbsp;
+&nbsp;@Component
+&nbsp;public class PdfGeneratorUtil {
+&nbsp;
+&nbsp;    private final SpringTemplateEngine templateEngine;
+&nbsp;    private final String baseUrl;
+&nbsp;
+<b class="nc">&nbsp;    public PdfGeneratorUtil(SpringTemplateEngine templateEngine, @Value(&quot;${base.url}&quot;) String baseUrl) {</b>
+<b class="nc">&nbsp;        this.templateEngine = templateEngine;</b>
+<b class="nc">&nbsp;        this.baseUrl = baseUrl;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public File generatePdfFromInvoice(Invoice invoice) {
+&nbsp;
+<b class="nc">&nbsp;        Context ctx = new Context();</b>
+<b class="nc">&nbsp;        ctx.setVariable(&quot;invoice&quot;, invoice);</b>
+<b class="nc">&nbsp;        String processedHtml = templateEngine.process(&quot;email/pdf/invoice&quot;, ctx);</b>
+&nbsp;
+<b class="nc">&nbsp;        ITextRenderer renderer = new ITextRenderer();</b>
+<b class="nc">&nbsp;        renderer.setDocumentFromString(processedHtml, baseUrl);</b>
+<b class="nc">&nbsp;        renderer.layout();</b>
+&nbsp;
+<b class="nc">&nbsp;        String fileName = UUID.randomUUID().toString();</b>
+<b class="nc">&nbsp;        FileOutputStream os = null;</b>
+&nbsp;        try {
+<b class="nc">&nbsp;            final File outputFile = File.createTempFile(fileName, &quot;.pdf&quot;);</b>
+<b class="nc">&nbsp;            os = new FileOutputStream(outputFile);</b>
+<b class="nc">&nbsp;            renderer.createPDF(os, false);</b>
+<b class="nc">&nbsp;            renderer.finishPDF();</b>
+<b class="nc">&nbsp;            return outputFile;</b>
+<b class="nc">&nbsp;        } catch (FileNotFoundException e) {</b>
+<b class="nc">&nbsp;            e.printStackTrace();</b>
+<b class="nc">&nbsp;        } catch (IOException e) {</b>
+<b class="nc">&nbsp;            e.printStackTrace();</b>
+<b class="nc">&nbsp;        } catch (DocumentException e) {</b>
+<b class="nc">&nbsp;            e.printStackTrace();</b>
+&nbsp;        } finally {
+<b class="nc">&nbsp;            if (os != null) {</b>
+&nbsp;                try {
+<b class="nc">&nbsp;                    os.close();</b>
+&nbsp;
+<b class="nc">&nbsp;                } catch (IOException e) {</b>
+<b class="nc">&nbsp;                    e.printStackTrace();</b>
+<b class="nc">&nbsp;                }</b>
+&nbsp;            }
+<b class="nc">&nbsp;        }</b>
+<b class="nc">&nbsp;        return null;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;}
+</code>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+      hljs.highlightAll()
+      hljs.initLineNumbersOnLoad();
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2024-03-03 21:00</div>
+</div>
+</body>
+</html>

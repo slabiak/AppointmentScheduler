@@ -1,0 +1,93 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <meta http-equiv="Content-Type" content="text/html;charset=UTF-8"> 
+  <title>Coverage Report > FieldsMatches</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/idea.min.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.min.js"></script>
+  <script type="text/javascript" src="../../js/highlightjs-line-numbers.min.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">com.example.slabiak.appointmentscheduler.validation</a>
+</div>
+
+<h1>Coverage Summary for Class: FieldsMatches (com.example.slabiak.appointmentscheduler.validation)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+</tr>
+<tr>
+  <td class="name">FieldsMatches</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<code class="sourceCode" id="sourceCode">&nbsp;package com.example.slabiak.appointmentscheduler.validation;
+&nbsp;
+&nbsp;import javax.validation.Constraint;
+&nbsp;import javax.validation.Payload;
+&nbsp;import java.lang.annotation.ElementType;
+&nbsp;import java.lang.annotation.Retention;
+&nbsp;import java.lang.annotation.RetentionPolicy;
+&nbsp;import java.lang.annotation.Target;
+&nbsp;
+&nbsp;@Target({ElementType.TYPE})
+&nbsp;@Retention(RetentionPolicy.RUNTIME)
+&nbsp;@Constraint(validatedBy = FieldsMatchesValidator.class)
+&nbsp;public @interface FieldsMatches {
+&nbsp;
+&nbsp;    String field();
+&nbsp;
+&nbsp;    String matchingField();
+&nbsp;
+&nbsp;    String message() default &quot;Passwords don&#39;t match&quot;;
+&nbsp;
+&nbsp;    Class&lt;?&gt;[] groups() default {};
+&nbsp;
+&nbsp;    Class&lt;? extends Payload&gt;[] payload() default {};
+&nbsp;
+&nbsp;}
+</code>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+      hljs.highlightAll()
+      hljs.initLineNumbersOnLoad();
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2024-03-03 21:00</div>
+</div>
+</body>
+</html>

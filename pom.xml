@@ -110,7 +110,7 @@
 		<dependency>
 			<groupId>org.projectlombok</groupId>
 			<artifactId>lombok</artifactId>
-			<version>1.18.8</version>
+			<version>1.18.30</version>
 			<scope>provided</scope>
 		</dependency>
 
@@ -205,6 +205,28 @@
 					</container>
 				</configuration>
 			</plugin>
+<!--			Adding the JACOCO Dependency		-->
+			<plugin>
+				<groupId>org.jacoco</groupId>
+				<artifactId>jacoco-maven-plugin</artifactId>
+				<version>0.8.11</version>
+				<executions>
+					<execution>
+						<goals>
+							<goal>prepare-agent</goal>
+						</goals>
+					</execution>
+					<execution>
+						<id>report</id>
+						<phase>prepare-package</phase>
+						<goals>
+							<goal>report</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+
+			<!--			END-->
 		</plugins>
 
 	</build>

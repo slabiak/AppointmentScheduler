@@ -1,0 +1,294 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <meta http-equiv="Content-Type" content="text/html;charset=UTF-8"> 
+  <title>Coverage Report > WorkingPlan</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/idea.min.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.min.js"></script>
+  <script type="text/javascript" src="../../js/highlightjs-line-numbers.min.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">com.example.slabiak.appointmentscheduler.entity</a>
+</div>
+
+<h1>Coverage Summary for Class: WorkingPlan (com.example.slabiak.appointmentscheduler.entity)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Branch, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">WorkingPlan</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (1/1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    47.6%
+  </span>
+  <span class="absValue">
+    (10/21)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    10.7%
+  </span>
+  <span class="absValue">
+    (3/28)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    57.1%
+  </span>
+  <span class="absValue">
+    (24/42)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<code class="sourceCode" id="sourceCode">&nbsp;package com.example.slabiak.appointmentscheduler.entity;
+&nbsp;
+&nbsp;import com.example.slabiak.appointmentscheduler.entity.user.User;
+&nbsp;import com.example.slabiak.appointmentscheduler.entity.user.provider.Provider;
+&nbsp;import com.example.slabiak.appointmentscheduler.model.DayPlan;
+&nbsp;import com.example.slabiak.appointmentscheduler.model.TimePeroid;
+&nbsp;import com.vladmihalcea.hibernate.type.json.JsonStringType;
+&nbsp;import org.hibernate.annotations.Type;
+&nbsp;import org.hibernate.annotations.TypeDef;
+&nbsp;import org.hibernate.annotations.TypeDefs;
+&nbsp;
+&nbsp;import javax.persistence.*;
+&nbsp;import java.time.LocalTime;
+&nbsp;
+&nbsp;@TypeDefs(@TypeDef(name = &quot;json&quot;, typeClass = JsonStringType.class))
+&nbsp;@Entity
+&nbsp;@Table(name = &quot;working_plans&quot;)
+&nbsp;public class WorkingPlan {
+&nbsp;
+&nbsp;    @Id
+&nbsp;    @Column(name = &quot;id_provider&quot;)
+&nbsp;    private int id;
+&nbsp;
+&nbsp;    @MapsId
+&nbsp;    @OneToOne
+&nbsp;    @JoinColumn(name = &quot;id_provider&quot;)
+&nbsp;    private Provider provider;
+&nbsp;
+&nbsp;    @Type(type = &quot;json&quot;)
+&nbsp;    @Column(columnDefinition = &quot;json&quot;, name = &quot;monday&quot;)
+&nbsp;    private DayPlan monday;
+&nbsp;
+&nbsp;    @Type(type = &quot;json&quot;)
+&nbsp;    @Column(columnDefinition = &quot;json&quot;, name = &quot;tuesday&quot;)
+&nbsp;    private DayPlan tuesday;
+&nbsp;
+&nbsp;    @Type(type = &quot;json&quot;)
+&nbsp;    @Column(columnDefinition = &quot;json&quot;, name = &quot;wednesday&quot;)
+&nbsp;    private DayPlan wednesday;
+&nbsp;
+&nbsp;    @Type(type = &quot;json&quot;)
+&nbsp;    @Column(columnDefinition = &quot;json&quot;, name = &quot;thursday&quot;)
+&nbsp;    private DayPlan thursday;
+&nbsp;
+&nbsp;    @Type(type = &quot;json&quot;)
+&nbsp;    @Column(columnDefinition = &quot;json&quot;, name = &quot;friday&quot;)
+&nbsp;    private DayPlan friday;
+&nbsp;
+&nbsp;    @Type(type = &quot;json&quot;)
+&nbsp;    @Column(columnDefinition = &quot;json&quot;, name = &quot;saturday&quot;)
+&nbsp;    private DayPlan saturday;
+&nbsp;
+&nbsp;    @Type(type = &quot;json&quot;)
+&nbsp;    @Column(columnDefinition = &quot;json&quot;, name = &quot;sunday&quot;)
+&nbsp;    private DayPlan sunday;
+&nbsp;
+&nbsp;
+<b class="fc">&nbsp;    public WorkingPlan() {</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public int getId() {
+<b class="nc">&nbsp;        return id;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public void setId(int id) {
+<b class="nc">&nbsp;        this.id = id;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public User getProvider() {
+<b class="nc">&nbsp;        return provider;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public void setProvider(Provider provider) {
+<b class="nc">&nbsp;        this.provider = provider;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public DayPlan getDay(String day) {
+<b class="pc">&nbsp;        switch (day) {</b>
+&nbsp;            case &quot;monday&quot;:
+<b class="nc">&nbsp;                return monday;</b>
+&nbsp;
+&nbsp;            case &quot;tuesday&quot;:
+<b class="fc">&nbsp;                return tuesday;</b>
+&nbsp;
+&nbsp;            case &quot;wednesday&quot;:
+<b class="nc">&nbsp;                return wednesday;</b>
+&nbsp;
+&nbsp;            case &quot;thursday&quot;:
+<b class="nc">&nbsp;                return thursday;</b>
+&nbsp;
+&nbsp;            case &quot;friday&quot;:
+<b class="nc">&nbsp;                return friday;</b>
+&nbsp;
+&nbsp;            case &quot;saturday&quot;:
+<b class="nc">&nbsp;                return saturday;</b>
+&nbsp;
+&nbsp;            case &quot;sunday&quot;:
+<b class="nc">&nbsp;                return sunday;</b>
+&nbsp;
+&nbsp;            default:
+<b class="nc">&nbsp;                return null;</b>
+&nbsp;        }
+&nbsp;    }
+&nbsp;
+&nbsp;    public DayPlan getMonday() {
+<b class="nc">&nbsp;        return monday;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public void setMonday(DayPlan monday) {
+<b class="fc">&nbsp;        this.monday = monday;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public DayPlan getTuesday() {
+<b class="nc">&nbsp;        return tuesday;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public void setTuesday(DayPlan tuesday) {
+<b class="fc">&nbsp;        this.tuesday = tuesday;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public DayPlan getWednesday() {
+<b class="nc">&nbsp;        return wednesday;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public void setWednesday(DayPlan wednesday) {
+<b class="fc">&nbsp;        this.wednesday = wednesday;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public DayPlan getThursday() {
+<b class="nc">&nbsp;        return thursday;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public void setThursday(DayPlan thursday) {
+<b class="fc">&nbsp;        this.thursday = thursday;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public DayPlan getFriday() {
+<b class="nc">&nbsp;        return friday;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public void setFriday(DayPlan friday) {
+<b class="fc">&nbsp;        this.friday = friday;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public DayPlan getSaturday() {
+<b class="nc">&nbsp;        return saturday;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public void setSaturday(DayPlan saturday) {
+<b class="fc">&nbsp;        this.saturday = saturday;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public DayPlan getSunday() {
+<b class="nc">&nbsp;        return sunday;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public void setSunday(DayPlan sunday) {
+<b class="fc">&nbsp;        this.sunday = sunday;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;
+&nbsp;    public static WorkingPlan generateDefaultWorkingPlan() {
+<b class="fc">&nbsp;        WorkingPlan wp = new WorkingPlan();</b>
+<b class="fc">&nbsp;        LocalTime defaultStartHour = LocalTime.parse(&quot;06:00&quot;);</b>
+<b class="fc">&nbsp;        LocalTime defaultEndHour = LocalTime.parse(&quot;18:00&quot;);</b>
+<b class="fc">&nbsp;        TimePeroid defaultWorkingPeroid = new TimePeroid(defaultStartHour, defaultEndHour);</b>
+<b class="fc">&nbsp;        DayPlan defaultDayPlan = new DayPlan();</b>
+<b class="fc">&nbsp;        defaultDayPlan.setWorkingHours(defaultWorkingPeroid);</b>
+<b class="fc">&nbsp;        wp.setMonday(defaultDayPlan);</b>
+<b class="fc">&nbsp;        wp.setTuesday(defaultDayPlan);</b>
+<b class="fc">&nbsp;        wp.setWednesday(defaultDayPlan);</b>
+<b class="fc">&nbsp;        wp.setThursday(defaultDayPlan);</b>
+<b class="fc">&nbsp;        wp.setFriday(defaultDayPlan);</b>
+<b class="fc">&nbsp;        wp.setSaturday(defaultDayPlan);</b>
+<b class="fc">&nbsp;        wp.setSunday(defaultDayPlan);</b>
+<b class="fc">&nbsp;        return wp;</b>
+&nbsp;    }
+&nbsp;}
+</code>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+      hljs.highlightAll()
+      hljs.initLineNumbersOnLoad();
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2024-03-03 21:00</div>
+</div>
+</body>
+</html>

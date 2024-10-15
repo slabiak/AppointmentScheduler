@@ -1,0 +1,190 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <meta http-equiv="Content-Type" content="text/html;charset=UTF-8"> 
+  <title>Coverage Report > WebSecurityConfig</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/idea.min.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.min.js"></script>
+  <script type="text/javascript" src="../../js/highlightjs-line-numbers.min.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">com.example.slabiak.appointmentscheduler.security</a>
+</div>
+
+<h1>Coverage Summary for Class: WebSecurityConfig (com.example.slabiak.appointmentscheduler.security)</h1>
+
+<table class="coverageStats">
+
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">WebSecurityConfig</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/5)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/36)
+  </span>
+</td>
+</tr>
+  <tr>
+    <td class="name">WebSecurityConfig$$EnhancerBySpringCGLIB$$19170227</td>
+  </tr>
+<tr>
+  <td class="name"><strong>Total</strong></td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/5)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/36)
+  </span>
+</td>
+</tr>
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<code class="sourceCode" id="sourceCode">&nbsp;package com.example.slabiak.appointmentscheduler.security;
+&nbsp;
+&nbsp;import org.springframework.context.annotation.Bean;
+&nbsp;import org.springframework.context.annotation.Configuration;
+&nbsp;import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
+&nbsp;import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
+&nbsp;import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
+&nbsp;import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+&nbsp;import org.springframework.security.config.annotation.web.builders.WebSecurity;
+&nbsp;import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+&nbsp;import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+&nbsp;import org.springframework.security.crypto.password.PasswordEncoder;
+&nbsp;
+&nbsp;@EnableWebSecurity
+&nbsp;@Configuration
+&nbsp;@EnableGlobalMethodSecurity(prePostEnabled = true)
+&nbsp;public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
+&nbsp;
+&nbsp;    private final CustomUserDetailsService customUserDetailsService;
+&nbsp;    private final CustomAuthenticationSuccessHandler customAuthenticationSuccessHandler;
+&nbsp;    private final PasswordEncoder passwordEncoder;
+&nbsp;
+<b class="nc">&nbsp;    public WebSecurityConfig(CustomUserDetailsService customUserDetailsService, CustomAuthenticationSuccessHandler customAuthenticationSuccessHandler, PasswordEncoder passwordEncoder) {</b>
+<b class="nc">&nbsp;        this.customUserDetailsService = customUserDetailsService;</b>
+<b class="nc">&nbsp;        this.customAuthenticationSuccessHandler = customAuthenticationSuccessHandler;</b>
+<b class="nc">&nbsp;        this.passwordEncoder = passwordEncoder;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    @Override
+&nbsp;    protected void configure(AuthenticationManagerBuilder auth) {
+<b class="nc">&nbsp;        auth.authenticationProvider(authenticationProvider());</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    @Override
+&nbsp;    protected void configure(HttpSecurity http) throws Exception {
+<b class="nc">&nbsp;        http.csrf().disable()</b>
+<b class="nc">&nbsp;                .authorizeRequests()</b>
+<b class="nc">&nbsp;                .antMatchers(&quot;/&quot;).hasAnyRole(&quot;CUSTOMER&quot;, &quot;PROVIDER&quot;, &quot;ADMIN&quot;)</b>
+<b class="nc">&nbsp;                .antMatchers(&quot;/api/**&quot;).hasAnyRole(&quot;CUSTOMER&quot;, &quot;PROVIDER&quot;, &quot;ADMIN&quot;)</b>
+<b class="nc">&nbsp;                .antMatchers(&quot;/customers/all&quot;).hasRole(&quot;ADMIN&quot;)</b>
+<b class="nc">&nbsp;                .antMatchers(&quot;/providers/new&quot;).hasRole(&quot;ADMIN&quot;)</b>
+<b class="nc">&nbsp;                .antMatchers(&quot;/invoices/all&quot;).hasRole(&quot;ADMIN&quot;)</b>
+<b class="nc">&nbsp;                .antMatchers(&quot;/providers/all&quot;).hasRole(&quot;ADMIN&quot;)</b>
+<b class="nc">&nbsp;                .antMatchers(&quot;/customers/**&quot;).hasAnyRole(&quot;CUSTOMER&quot;, &quot;ADMIN&quot;)</b>
+<b class="nc">&nbsp;                .antMatchers(&quot;/providers/availability/**&quot;).hasRole(&quot;PROVIDER&quot;)</b>
+<b class="nc">&nbsp;                .antMatchers(&quot;/providers/**&quot;).hasAnyRole(&quot;PROVIDER&quot;, &quot;ADMIN&quot;)</b>
+<b class="nc">&nbsp;                .antMatchers(&quot;/works/**&quot;).hasRole(&quot;ADMIN&quot;)</b>
+<b class="nc">&nbsp;                .antMatchers(&quot;/exchange/**&quot;).hasRole(&quot;CUSTOMER&quot;)</b>
+<b class="nc">&nbsp;                .antMatchers(&quot;/appointments/new/**&quot;).hasRole(&quot;CUSTOMER&quot;)</b>
+<b class="nc">&nbsp;                .antMatchers(&quot;/appointments/**&quot;).hasAnyRole(&quot;CUSTOMER&quot;, &quot;PROVIDER&quot;, &quot;ADMIN&quot;)</b>
+<b class="nc">&nbsp;                .antMatchers(&quot;/invoices/**&quot;).hasAnyRole(&quot;CUSTOMER&quot;, &quot;PROVIDER&quot;, &quot;ADMIN&quot;)</b>
+<b class="nc">&nbsp;                .and()</b>
+<b class="nc">&nbsp;                .formLogin()</b>
+<b class="nc">&nbsp;                .loginPage(&quot;/login&quot;)</b>
+<b class="nc">&nbsp;                .loginProcessingUrl(&quot;/perform_login&quot;)</b>
+<b class="nc">&nbsp;                .successHandler(customAuthenticationSuccessHandler)</b>
+<b class="nc">&nbsp;                .permitAll()</b>
+<b class="nc">&nbsp;                .and()</b>
+<b class="nc">&nbsp;                .logout().logoutUrl(&quot;/perform_logout&quot;)</b>
+<b class="nc">&nbsp;                .and()</b>
+<b class="nc">&nbsp;                .exceptionHandling().accessDeniedPage(&quot;/access-denied&quot;);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    @Override
+&nbsp;    public void configure(WebSecurity web) throws Exception {
+<b class="nc">&nbsp;        web.ignoring().antMatchers(&quot;/customers/new/**&quot;);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    @Bean
+&nbsp;    public DaoAuthenticationProvider authenticationProvider() {
+<b class="nc">&nbsp;        DaoAuthenticationProvider auth = new DaoAuthenticationProvider();</b>
+<b class="nc">&nbsp;        auth.setUserDetailsService(customUserDetailsService);</b>
+<b class="nc">&nbsp;        auth.setPasswordEncoder(passwordEncoder);</b>
+<b class="nc">&nbsp;        return auth;</b>
+&nbsp;    }
+&nbsp;}
+</code>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+      hljs.highlightAll()
+      hljs.initLineNumbersOnLoad();
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2024-03-03 21:00</div>
+</div>
+</body>
+</html>

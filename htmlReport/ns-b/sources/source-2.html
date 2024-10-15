@@ -1,0 +1,288 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <meta http-equiv="Content-Type" content="text/html;charset=UTF-8"> 
+  <title>Coverage Report > EmailServiceImpl</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/idea.min.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.min.js"></script>
+  <script type="text/javascript" src="../../js/highlightjs-line-numbers.min.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">com.example.slabiak.appointmentscheduler.service.impl</a>
+</div>
+
+<h1>Coverage Summary for Class: EmailServiceImpl (com.example.slabiak.appointmentscheduler.service.impl)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Branch, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">EmailServiceImpl</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/14)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/4)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/69)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<code class="sourceCode" id="sourceCode">&nbsp;package com.example.slabiak.appointmentscheduler.service.impl;
+&nbsp;
+&nbsp;import com.example.slabiak.appointmentscheduler.entity.Appointment;
+&nbsp;import com.example.slabiak.appointmentscheduler.entity.ChatMessage;
+&nbsp;import com.example.slabiak.appointmentscheduler.entity.ExchangeRequest;
+&nbsp;import com.example.slabiak.appointmentscheduler.entity.Invoice;
+&nbsp;import com.example.slabiak.appointmentscheduler.entity.user.User;
+&nbsp;import com.example.slabiak.appointmentscheduler.service.EmailService;
+&nbsp;import com.example.slabiak.appointmentscheduler.util.PdfGeneratorUtil;
+&nbsp;import lombok.extern.slf4j.Slf4j;
+&nbsp;import org.springframework.beans.factory.annotation.Value;
+&nbsp;import org.springframework.mail.javamail.JavaMailSender;
+&nbsp;import org.springframework.mail.javamail.MimeMessageHelper;
+&nbsp;import org.springframework.scheduling.annotation.Async;
+&nbsp;import org.springframework.stereotype.Service;
+&nbsp;import org.thymeleaf.context.Context;
+&nbsp;import org.thymeleaf.spring5.SpringTemplateEngine;
+&nbsp;
+&nbsp;import javax.mail.MessagingException;
+&nbsp;import javax.mail.internet.MimeMessage;
+&nbsp;import java.io.File;
+&nbsp;import java.nio.charset.StandardCharsets;
+&nbsp;
+<b class="nc">&nbsp;@Slf4j</b>
+&nbsp;@Service
+&nbsp;public class EmailServiceImpl implements EmailService {
+&nbsp;
+&nbsp;    private final JavaMailSender javaMailSender;
+&nbsp;    private final SpringTemplateEngine templateEngine;
+&nbsp;    private final JwtTokenServiceImpl jwtTokenService;
+&nbsp;    private final PdfGeneratorUtil pdfGenaratorUtil;
+&nbsp;    private final String baseUrl;
+&nbsp;
+<b class="nc">&nbsp;    public EmailServiceImpl(JavaMailSender javaMailSender, SpringTemplateEngine templateEngine, JwtTokenServiceImpl jwtTokenService, PdfGeneratorUtil pdfGenaratorUtil, @Value(&quot;${base.url}&quot;) String baseUrl) {</b>
+<b class="nc">&nbsp;        this.javaMailSender = javaMailSender;</b>
+<b class="nc">&nbsp;        this.templateEngine = templateEngine;</b>
+<b class="nc">&nbsp;        this.jwtTokenService = jwtTokenService;</b>
+<b class="nc">&nbsp;        this.pdfGenaratorUtil = pdfGenaratorUtil;</b>
+<b class="nc">&nbsp;        this.baseUrl = baseUrl;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    @Async
+&nbsp;    @Override
+&nbsp;    public void sendEmail(String to, String subject, String templateName, Context templateContext, File attachment) {
+&nbsp;        try {
+<b class="nc">&nbsp;            MimeMessage message = javaMailSender.createMimeMessage();</b>
+<b class="nc">&nbsp;            MimeMessageHelper helper = new MimeMessageHelper(message,</b>
+&nbsp;                    MimeMessageHelper.MULTIPART_MODE_MIXED_RELATED,
+<b class="nc">&nbsp;                    StandardCharsets.UTF_8.name());</b>
+&nbsp;
+<b class="nc">&nbsp;            String html = templateEngine.process(&quot;email/&quot; + templateName, templateContext);</b>
+&nbsp;
+<b class="nc">&nbsp;            helper.setTo(to);</b>
+<b class="nc">&nbsp;            helper.setFrom(&quot;appointmentscheduler@gmail.com&quot;);</b>
+<b class="nc">&nbsp;            helper.setSubject(subject);</b>
+<b class="nc">&nbsp;            helper.setText(html, true);</b>
+&nbsp;
+<b class="nc">&nbsp;            if (attachment != null) {</b>
+<b class="nc">&nbsp;                helper.addAttachment(&quot;invoice&quot;, attachment);</b>
+&nbsp;            }
+&nbsp;
+<b class="nc">&nbsp;            javaMailSender.send(message);</b>
+&nbsp;
+<b class="nc">&nbsp;        } catch (MessagingException e) {</b>
+<b class="nc">&nbsp;            log.error(&quot;Error while adding attachment to email, error is {}&quot;, e.getLocalizedMessage());</b>
+<b class="nc">&nbsp;        }</b>
+&nbsp;
+&nbsp;    }
+&nbsp;
+&nbsp;    @Async
+&nbsp;    @Override
+&nbsp;    public void sendAppointmentFinishedNotification(Appointment appointment) {
+<b class="nc">&nbsp;        Context context = new Context();</b>
+<b class="nc">&nbsp;        context.setVariable(&quot;appointment&quot;, appointment);</b>
+<b class="nc">&nbsp;        context.setVariable(&quot;url&quot;, baseUrl + &quot;/appointments/reject?token=&quot; + jwtTokenService.generateAppointmentRejectionToken(appointment));</b>
+<b class="nc">&nbsp;        sendEmail(appointment.getCustomer().getEmail(), &quot;Finished appointment summary&quot;, &quot;appointmentFinished&quot;, context, null);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    @Async
+&nbsp;    @Override
+&nbsp;    public void sendAppointmentRejectionRequestedNotification(Appointment appointment) {
+<b class="nc">&nbsp;        Context context = new Context();</b>
+<b class="nc">&nbsp;        context.setVariable(&quot;appointment&quot;, appointment);</b>
+<b class="nc">&nbsp;        context.setVariable(&quot;url&quot;, baseUrl + &quot;/appointments/acceptRejection?token=&quot; + jwtTokenService.generateAcceptRejectionToken(appointment));</b>
+<b class="nc">&nbsp;        sendEmail(appointment.getProvider().getEmail(), &quot;Rejection requested&quot;, &quot;appointmentRejectionRequested&quot;, context, null);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    @Async
+&nbsp;    @Override
+&nbsp;    public void sendNewAppointmentScheduledNotification(Appointment appointment) {
+<b class="nc">&nbsp;        Context context = new Context();</b>
+<b class="nc">&nbsp;        context.setVariable(&quot;appointment&quot;, appointment);</b>
+<b class="nc">&nbsp;        sendEmail(appointment.getProvider().getEmail(), &quot;New appointment booked&quot;, &quot;newAppointmentScheduled&quot;, context, null);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    @Async
+&nbsp;    @Override
+&nbsp;    public void sendAppointmentCanceledByCustomerNotification(Appointment appointment) {
+<b class="nc">&nbsp;        Context context = new Context();</b>
+<b class="nc">&nbsp;        context.setVariable(&quot;appointment&quot;, appointment);</b>
+<b class="nc">&nbsp;        context.setVariable(&quot;canceler&quot;, &quot;customer&quot;);</b>
+<b class="nc">&nbsp;        sendEmail(appointment.getProvider().getEmail(), &quot;Appointment canceled by Customer&quot;, &quot;appointmentCanceled&quot;, context, null);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    @Async
+&nbsp;    @Override
+&nbsp;    public void sendAppointmentCanceledByProviderNotification(Appointment appointment) {
+<b class="nc">&nbsp;        Context context = new Context();</b>
+<b class="nc">&nbsp;        context.setVariable(&quot;appointment&quot;, appointment);</b>
+<b class="nc">&nbsp;        context.setVariable(&quot;canceler&quot;, &quot;provider&quot;);</b>
+<b class="nc">&nbsp;        sendEmail(appointment.getCustomer().getEmail(), &quot;Appointment canceled by Provider&quot;, &quot;appointmentCanceled&quot;, context, null);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    @Async
+&nbsp;    @Override
+&nbsp;    public void sendInvoice(Invoice invoice) {
+<b class="nc">&nbsp;        Context context = new Context();</b>
+<b class="nc">&nbsp;        context.setVariable(&quot;customer&quot;, invoice.getAppointments().get(0).getCustomer().getFirstName() + &quot; &quot; + invoice.getAppointments().get(0).getCustomer().getLastName());</b>
+&nbsp;        try {
+<b class="nc">&nbsp;            File invoicePdf = pdfGenaratorUtil.generatePdfFromInvoice(invoice);</b>
+<b class="nc">&nbsp;            sendEmail(invoice.getAppointments().get(0).getCustomer().getEmail(), &quot;Appointment invoice&quot;, &quot;appointmentInvoice&quot;, context, invoicePdf);</b>
+<b class="nc">&nbsp;        } catch (Exception e) {</b>
+<b class="nc">&nbsp;            log.error(&quot;Error while generating pdf, error is {}&quot;, e.getLocalizedMessage());</b>
+<b class="nc">&nbsp;        }</b>
+&nbsp;
+&nbsp;    }
+&nbsp;
+&nbsp;    @Async
+&nbsp;    @Override
+&nbsp;    public void sendAppointmentRejectionAcceptedNotification(Appointment appointment) {
+<b class="nc">&nbsp;        Context context = new Context();</b>
+<b class="nc">&nbsp;        context.setVariable(&quot;appointment&quot;, appointment);</b>
+<b class="nc">&nbsp;        sendEmail(appointment.getCustomer().getEmail(), &quot;Rejection request accepted&quot;, &quot;appointmentRejectionAccepted&quot;, context, null);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    @Async
+&nbsp;    @Override
+&nbsp;    public void sendNewChatMessageNotification(ChatMessage chatMessage) {
+<b class="nc">&nbsp;        Context context = new Context();</b>
+<b class="nc">&nbsp;        User recipent = chatMessage.getAuthor() == chatMessage.getAppointment().getProvider() ? chatMessage.getAppointment().getCustomer() : chatMessage.getAppointment().getProvider();</b>
+<b class="nc">&nbsp;        context.setVariable(&quot;recipent&quot;, recipent);</b>
+<b class="nc">&nbsp;        context.setVariable(&quot;appointment&quot;, chatMessage.getAppointment());</b>
+<b class="nc">&nbsp;        context.setVariable(&quot;url&quot;, baseUrl + &quot;/appointments/&quot; + chatMessage.getAppointment().getId());</b>
+<b class="nc">&nbsp;        sendEmail(recipent.getEmail(), &quot;New chat message&quot;, &quot;newChatMessage&quot;, context, null);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    @Async
+&nbsp;    @Override
+&nbsp;    public void sendNewExchangeRequestedNotification(Appointment oldAppointment, Appointment newAppointment) {
+<b class="nc">&nbsp;        Context context = new Context();</b>
+<b class="nc">&nbsp;        context.setVariable(&quot;oldAppointment&quot;, oldAppointment);</b>
+<b class="nc">&nbsp;        context.setVariable(&quot;newAppointment&quot;, newAppointment);</b>
+<b class="nc">&nbsp;        context.setVariable(&quot;url&quot;, baseUrl + &quot;/appointments/&quot; + newAppointment.getId());</b>
+<b class="nc">&nbsp;        sendEmail(newAppointment.getCustomer().getEmail(), &quot;New Appointment Exchange Request&quot;, &quot;newExchangeRequest&quot;, context, null);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    @Override
+&nbsp;    public void sendExchangeRequestAcceptedNotification(ExchangeRequest exchangeRequest) {
+<b class="nc">&nbsp;        Context context = new Context();</b>
+<b class="nc">&nbsp;        context.setVariable(&quot;exchangeRequest&quot;, exchangeRequest);</b>
+<b class="nc">&nbsp;        context.setVariable(&quot;url&quot;, baseUrl + &quot;/appointments/&quot; + exchangeRequest.getRequested().getId());</b>
+<b class="nc">&nbsp;        sendEmail(exchangeRequest.getRequested().getCustomer().getEmail(), &quot;Exchange request accepted&quot;, &quot;exchangeRequestAccepted&quot;, context, null);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    @Override
+&nbsp;    public void sendExchangeRequestRejectedNotification(ExchangeRequest exchangeRequest) {
+<b class="nc">&nbsp;        Context context = new Context();</b>
+<b class="nc">&nbsp;        context.setVariable(&quot;exchangeRequest&quot;, exchangeRequest);</b>
+<b class="nc">&nbsp;        context.setVariable(&quot;url&quot;, baseUrl + &quot;/appointments/&quot; + exchangeRequest.getRequestor().getId());</b>
+<b class="nc">&nbsp;        sendEmail(exchangeRequest.getRequestor().getCustomer().getEmail(), &quot;Exchange request rejected&quot;, &quot;exchangeRequestRejected&quot;, context, null);</b>
+&nbsp;    }
+&nbsp;}
+</code>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+      hljs.highlightAll()
+      hljs.initLineNumbersOnLoad();
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2024-03-03 21:00</div>
+</div>
+</body>
+</html>

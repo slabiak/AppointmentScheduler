@@ -84,8 +84,8 @@ public class AppointmentServiceTest {
         optionalAppointment = Optional.of(appointment);
         appointments = new ArrayList<>();
         appointments.add(appointment);
-
     }
+
 
     @Test
     public void shouldBookAppointmentWhenAllConditionsMet() {

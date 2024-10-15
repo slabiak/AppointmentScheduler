@@ -30,24 +30,27 @@ public class ExchangeServiceImpl implements ExchangeService {
     @Override
     public boolean checkIfEligibleForExchange(int userId, int appointmentId) {
         Appointment appointment = appointmentRepository.getOne(appointmentId);
-        return appointment.getStart().minusHours(24).isAfter(LocalDateTime.now()) && appointment.getStatus().equals(AppointmentStatus.SCHEDULED) && appointment.getCustomer().getId() == userId;
+        int hoursInADay = 24;
+        return appointment.getStart().minusHours(hoursInADay).isAfter(LocalDateTime.now()) && appointment.getStatus().equals(AppointmentStatus.SCHEDULED) && appointment.getCustomer().getId() == userId;
     }
 
     @Override
     public List<Appointment> getEligibleAppointmentsForExchange(int appointmentId) {
         Appointment appointmentToExchange = appointmentRepository.getOne(appointmentId);
-        return appointmentRepository.getEligibleAppointmentsForExchange(LocalDateTime.now().plusHours(24), appointmentToExchange.getCustomer().getId(), appointmentToExchange.getProvider().getId(), appointmentToExchange.getWork().getId());
+        int hoursInADay = 24;
+        return appointmentRepository.getEligibleAppointmentsForExchange(LocalDateTime.now().plusHours(hoursInADay), appointmentToExchange.getCustomer().getId(), appointmentToExchange.getProvider().getId(), appointmentToExchange.getWork().getId());
     }
 
     @Override
     public boolean checkIfExchangeIsPossible(int oldAppointmentId, int newAppointmentId, int userId) {
         Appointment oldAppointment = appointmentRepository.getOne(oldAppointmentId);
         Appointment newAppointment = appointmentRepository.getOne(newAppointmentId);
+        int hoursInADay = 24;
         if (oldAppointment.getCustomer().getId() == userId) {
             return oldAppointment.getWork().getId().equals(newAppointment.getWork().getId())
                     && oldAppointment.getProvider().getId().equals(newAppointment.getProvider().getId())
-                    && oldAppointment.getStart().minusHours(24).isAfter(LocalDateTime.now())
-                    && newAppointment.getStart().minusHours(24).isAfter(LocalDateTime.now());
+                    && oldAppointment.getStart().minusHours(hoursInADay).isAfter(LocalDateTime.now())
+                    && newAppointment.getStart().minusHours(hoursInADay).isAfter(LocalDateTime.now());
         } else {
             throw new org.springframework.security.access.AccessDeniedException("Unauthorized");
         }
