@@ -63,39 +63,62 @@ public class LoginPageIT {
     public void shouldLoginAsRetailCustomerAndSuccessfullyBookNewAppointment() {
         RemoteWebDriver driver = chrome.getWebDriver();
         String url = "http://host.testcontainers.internal:" + port + "/";
-
         driver.get(url);
         driver.manage().timeouts().implicitlyWait(30, TimeUnit.SECONDS);
 
+        loginAsRetailCustomer(driver);
+        navigateToNewAppointmentPage(driver);
+        selectAppointmentSlot(driver);
+        confirmAppointmentBooking(driver);
+
+        // Validate the result
+        validateAppointmentResult(driver);
+    }
+
+    private void loginAsRetailCustomer(RemoteWebDriver driver) {
         driver.findElementById("username").sendKeys("customer_r");
         driver.findElementById("password").sendKeys("qwerty123");
         driver.findElementByTagName("button").click();
+    }
 
+    private void navigateToNewAppointmentPage(RemoteWebDriver driver) {
         driver.findElementByLinkText("Appointments").click();
         driver.findElementByLinkText("New appointment").click();
+    }
+
+    private void selectAppointmentSlot(RemoteWebDriver driver) {
         driver.findElementByLinkText("Select").click();
         driver.findElementByLinkText("Select").click();
-        driver.findElementByXPath("//*[@id=\"calendar\"]/div[1]/div[2]/div/button[2]/span\n").click();
 
-        boolean result = false;
-        int attempts = 0;
-        while (attempts < 3) {
-            try {
-                driver.findElementByXPath("//*[@id=\"calendar\"]/div[2]/div/div/table/tbody/tr[2]/td[1]").click();
-                result = true;
-                break;
-            } catch (StaleElementReferenceException e) {
-            }
-            attempts++;
-        }
+        // Handling dynamic XPath, retrying in case of StaleElementReferenceException
+        boolean result = retryingFindClick(driver, "//*[@id=\"calendar\"]/div[1]/div[2]/div/button[2]/span");
+        assertTrue(result);
+    }
 
+    private void confirmAppointmentBooking(RemoteWebDriver driver) {
+        // Handling dynamic XPath, retrying in case of StaleElementReferenceException
+        retryingFindClick(driver, "//*[@id=\"calendar\"]/div[2]/div/div/table/tbody/tr[2]/td[1]");
         driver.findElementByXPath("/html/body/div[2]/div/div/table/tbody/tr[8]/td/form/button").click();
+    }
 
+    private void validateAppointmentResult(RemoteWebDriver driver) {
         WebElement table = driver.findElement(By.id("appointments"));
         WebElement tableBody = table.findElement(By.tagName("tbody"));
         int rowCount = tableBody.findElements(By.tagName("tr")).size();
-        assertTrue(result);
         assertEquals(1, rowCount);
+    }
+
+    private boolean retryingFindClick(RemoteWebDriver driver, String xpath) {
+        int attempts = 0;
+        while (attempts < 3) {
+            try {
+                driver.findElementByXPath(xpath).click();
+                return true;
+            } catch (StaleElementReferenceException e) {
+                attempts++;
+            }
+        }
+        return false;
     }
 
     public static class Initializer implements ApplicationContextInitializer<ConfigurableApplicationContext> {

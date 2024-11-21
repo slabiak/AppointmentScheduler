@@ -26,40 +26,47 @@ public class PdfGeneratorUtil {
     }
 
     public File generatePdfFromInvoice(Invoice invoice) {
+        Context ctx = createContextWithInvoice(invoice);
+        String processedHtml = processHtmlTemplate(ctx);
 
+        ITextRenderer renderer = createAndInitializeRenderer(processedHtml);
+
+        try {
+            return createPdfFile(renderer);
+        } catch (IOException | DocumentException e) {
+            e.printStackTrace();
+        }
+
+        return null;
+    }
+
+    private Context createContextWithInvoice(Invoice invoice) {
         Context ctx = new Context();
         ctx.setVariable("invoice", invoice);
-        String processedHtml = templateEngine.process("email/pdf/invoice", ctx);
+        return ctx;
+    }
 
+    private String processHtmlTemplate(Context ctx) {
+        return templateEngine.process("email/pdf/invoice", ctx);
+    }
+
+    private ITextRenderer createAndInitializeRenderer(String processedHtml) {
         ITextRenderer renderer = new ITextRenderer();
         renderer.setDocumentFromString(processedHtml, baseUrl);
         renderer.layout();
+        return renderer;
+    }
 
+    private File createPdfFile(ITextRenderer renderer) throws IOException, DocumentException {
         String fileName = UUID.randomUUID().toString();
-        FileOutputStream os = null;
-        try {
-            final File outputFile = File.createTempFile(fileName, ".pdf");
-            os = new FileOutputStream(outputFile);
+        File outputFile = File.createTempFile(fileName, ".pdf");
+        
+        try (FileOutputStream os = new FileOutputStream(outputFile)) {
             renderer.createPDF(os, false);
             renderer.finishPDF();
-            return outputFile;
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        } catch (DocumentException e) {
-            e.printStackTrace();
-        } finally {
-            if (os != null) {
-                try {
-                    os.close();
-
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
         }
-        return null;
+
+        return outputFile;
     }
 
 }

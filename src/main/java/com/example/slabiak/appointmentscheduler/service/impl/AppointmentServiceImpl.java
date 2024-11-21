@@ -323,28 +323,38 @@ public class AppointmentServiceImpl implements AppointmentService {
         }
 
         if (appointment.getProvider().equals(user)) {
-            if (!appointment.getStatus().equals(AppointmentStatus.SCHEDULED)) {
-                return "Only appoinmtents with scheduled status can be cancelled.";
-            } else {
-                return null;
-            }
+            return getCancelNotAllowedReasonForProvider(appointment);
         }
 
         if (appointment.getCustomer().equals(user)) {
-            if (!appointment.getStatus().equals(AppointmentStatus.SCHEDULED)) {
-                return "Only appoinmtents with scheduled status can be cancelled.";
-            } else if (LocalDateTime.now().plusDays(1).isAfter(appointment.getStart())) {
-                return "Appointments which will be in less than 24 hours cannot be canceled.";
-            } else if (!appointment.getWork().getEditable()) {
-                return "This type of appointment can be canceled only by Provider.";
-            } else if (getCanceledAppointmentsByCustomerIdForCurrentMonth(userId).size() >= NUMBER_OF_ALLOWED_CANCELATIONS_PER_MONTH) {
-                return "You can't cancel this appointment because you exceeded maximum number of cancellations in this month.";
-            } else {
-                return null;
-            }
+            return getCancelNotAllowedReasonForCustomer(appointment, userId);
         }
+
         return null;
     }
+
+    private String getCancelNotAllowedReasonForProvider(Appointment appointment) {
+        if (!appointment.getStatus().equals(AppointmentStatus.SCHEDULED)) {
+            return "Only appointments with scheduled status can be cancelled.";
+        } else {
+            return null;
+        }
+    }
+
+    private String getCancelNotAllowedReasonForCustomer(Appointment appointment, int userId) {
+        if (!appointment.getStatus().equals(AppointmentStatus.SCHEDULED)) {
+            return "Only appointments with scheduled status can be cancelled.";
+        } else if (LocalDateTime.now().plusDays(1).isAfter(appointment.getStart())) {
+            return "Appointments which will be in less than 24 hours cannot be canceled.";
+        } else if (!appointment.getWork().getEditable()) {
+            return "This type of appointment can be canceled only by Provider.";
+        } else if (getCanceledAppointmentsByCustomerIdForCurrentMonth(userId).size() >= NUMBER_OF_ALLOWED_CANCELATIONS_PER_MONTH) {
+            return "You can't cancel this appointment because you exceeded the maximum number of cancellations in this month.";
+        } else {
+            return null;
+        }
+    }
+
 
     @Override
     public int getNumberOfCanceledAppointmentsForUser(int userId) {
