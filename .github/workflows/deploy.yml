@@ -1,0 +1,59 @@
+name: Deploy Spring Boot Application
+
+on:
+  push:
+    branches:
+      - develop
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v3
+
+      - name: Set Up JDK
+        uses: actions/setup-java@v3
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+
+      - name: Build with Maven (skip tests)
+        run: mvn clean package -DskipTests
+
+      - name: Package as ZIP
+        run: |
+          mkdir -p deploy/scripts
+          cp target/*.jar deploy/
+          cp appspec.yml deploy/
+          cp scripts/deploy.sh deploy/scripts/
+          cd deploy
+          zip -r deployment.zip ./*
+
+      - name: Upload Artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: deployment
+          path: deploy/deployment.zip
+
+      - name: Deploy to S3
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          AWS_SESSION_TOKEN: ${{ secrets.AWS_SESSION_TOKEN }}
+          AWS_REGION: 'us-east-1'
+        run: |
+          aws s3 cp deploy/deployment.zip s3://s3bucketmerin12/deployment.zip
+
+      - name: Deploy to EC2
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          AWS_SESSION_TOKEN: ${{ secrets.AWS_SESSION_TOKEN }}
+          AWS_REGION: 'us-east-1'
+        run: |
+          aws deploy create-deployment \
+            --application-name aws-demo-ec2-code-deploy \
+            --deployment-group-name AppointmentSchedulerCodeDeploy \
+            --s3-location bucket=s3bucketmerin12,key=deployment.zip,bundleType=zip

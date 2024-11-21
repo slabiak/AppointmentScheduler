@@ -16,6 +16,7 @@ import com.example.slabiak.appointmentscheduler.entity.user.customer.RetailCusto
 import com.example.slabiak.appointmentscheduler.entity.user.provider.Provider;
 import com.example.slabiak.appointmentscheduler.model.ChangePasswordForm;
 import com.example.slabiak.appointmentscheduler.model.UserForm;
+import com.example.slabiak.appointmentscheduler.service.RetailCustomerService;
 import com.example.slabiak.appointmentscheduler.service.UserService;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -36,8 +37,9 @@ public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
     private final RoleRepository roleRepository;
     private final PasswordEncoder passwordEncoder;
+    private final RetailCustomerService retailCustomerService;
 
-    public UserServiceImpl(ProviderRepository providerRepository, CustomerRepository customerRepository, CorporateCustomerRepository corporateCustomerRepository, RetailCustomerRepository retailCustomerRepository, UserRepository userRepository, RoleRepository roleRepository, PasswordEncoder passwordEncoder) {
+    public UserServiceImpl(ProviderRepository providerRepository, CustomerRepository customerRepository, CorporateCustomerRepository corporateCustomerRepository, RetailCustomerRepository retailCustomerRepository, UserRepository userRepository, RoleRepository roleRepository, PasswordEncoder passwordEncoder, RetailCustomerService retailCustomerService) {
         this.providerRepository = providerRepository;
         this.customerRepository = customerRepository;
         this.corporateCustomerRepository = corporateCustomerRepository;
@@ -45,6 +47,7 @@ public class UserServiceImpl implements UserService {
         this.userRepository = userRepository;
         this.roleRepository = roleRepository;
         this.passwordEncoder = passwordEncoder;
+        this.retailCustomerService = retailCustomerService;
     }
 
     @Override
@@ -74,8 +77,7 @@ public class UserServiceImpl implements UserService {
     @Override
     @PreAuthorize("#retailCustomerId == principal.id or hasRole('ADMIN')")
     public RetailCustomer getRetailCustomerById(int retailCustomerId) {
-        return retailCustomerRepository.findById(retailCustomerId)
-                .orElseThrow(() -> new UsernameNotFoundException("User not found!"));
+        return retailCustomerService.getRetailCustomerById(retailCustomerId);
 
     }
 
@@ -99,7 +101,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public List<RetailCustomer> getAllRetailCustomers() {
-        return retailCustomerRepository.findAll();
+        return retailCustomerService.getAllRetailCustomers();
     }
 
 
@@ -159,12 +161,9 @@ public class UserServiceImpl implements UserService {
     @Override
     @PreAuthorize("#updateData.id == principal.id or hasRole('ADMIN')")
     public void updateRetailCustomerProfile(UserForm updateData) {
-        RetailCustomer retailCustomer = retailCustomerRepository.getOne(updateData.getId());
-        retailCustomer.update(updateData);
-        retailCustomerRepository.save(retailCustomer);
+        retailCustomerService.updateRetailCustomerProfile(updateData);
 
     }
-
     @Override
     @PreAuthorize("#updateData.id == principal.id or hasRole('ADMIN')")
     public void updateCorporateCustomerProfile(UserForm updateData) {
@@ -176,8 +175,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public void saveNewRetailCustomer(UserForm userForm) {
-        RetailCustomer retailCustomer = new RetailCustomer(userForm, passwordEncoder.encode(userForm.getPassword()), getRolesForRetailCustomer());
-        retailCustomerRepository.save(retailCustomer);
+        retailCustomerService.saveNewRetailCustomer(userForm);
     }
 
     @Override
@@ -193,13 +191,13 @@ public class UserServiceImpl implements UserService {
         providerRepository.save(provider);
     }
 
-    @Override
-    public Collection<Role> getRolesForRetailCustomer() {
-        HashSet<Role> roles = new HashSet();
-        roles.add(roleRepository.findByName("ROLE_CUSTOMER_RETAIL"));
-        roles.add(roleRepository.findByName("ROLE_CUSTOMER"));
-        return roles;
-    }
+    //for Move method
+//    public Collection<Role> getRolesForRetailCustomer() {
+//        HashSet<Role> roles = new HashSet();
+//        roles.add(roleRepository.findByName("ROLE_CUSTOMER_RETAIL"));
+//        roles.add(roleRepository.findByName("ROLE_CUSTOMER"));
+//        return roles;
+//    }
 
 
     @Override
